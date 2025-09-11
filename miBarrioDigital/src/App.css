@@ -75,3 +75,72 @@ html, body, #root { height: 100%; width: 100%; font-family: Arial, sans-serif; }
   width: 100px;  /* ajusta el tamaño que quieras */
   height: auto; /* mantiene la proporción */
 }
+
+
+/*
+/* --- Carrusel --- */
+.carousel {
+  position: relative;
+  width: 100%;
+  max-width: 1000px;     /* ajusta el ancho máximo */
+  margin: 1.5rem auto;   /* centra el carrusel */
+  aspect-ratio: 16 / 9;  /* relación de aspecto */
+  overflow: hidden;
+  border-radius: 12px;
+  background: #e9eef3;
+}
+
+.carousel-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.carousel-caption {
+  position: absolute;
+  left: 0; right: 0; bottom: 0;
+  padding: 1rem 1.25rem;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,.55) 60%);
+  color: #fff;
+}
+.carousel-caption h3 { margin: 0 0 .25rem; }
+.carousel-caption p  { margin: 0; opacity: .95; }
+
+/* Botones prev/next estilo "carousel-control" */
+.carousel-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  border: none;
+  background: rgba(0,0,0,.4);
+  color: #fff;
+  width: 40px; height: 40px;
+  border-radius: 999px;
+  font-size: 24px;
+  line-height: 40px;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+.carousel-btn:hover { background: rgba(0,0,0,.6); }
+.carousel-btn.prev { left: 12px; }
+.carousel-btn.next { right: 12px; }
+
+/* Dots */
+.carousel-dots {
+  position: absolute;
+  left: 0; right: 0; bottom: 10px;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+.dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,.6);
+  cursor: pointer;
+}
+.dot.active { background: #fff; }
+
+/* (Resto de tus estilos previos) */

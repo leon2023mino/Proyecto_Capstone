@@ -1,11 +1,80 @@
+import { useEffect, useState } from "react";
 import "./App.css";
+
+// ✅ IMPORTA el logo y las imágenes del carrusel desde assets
+import logo from "./assets/logopng.png";
+import slide1 from "./assets/slide1.jpg";
+import slide2 from "./assets/slide2.jpg";
+import slide3 from "./assets/slide3.jpg";
+
+// --- Componente Carousel ---
+type Slide = { src: string; title?: string; text?: string };
+
+function Carousel({ slides, interval = 5000 }: { slides: Slide[]; interval?: number }) {
+  const [index, setIndex] = useState(0);
+  const total = slides.length;
+
+  const goTo = (i: number) => setIndex((i + total) % total);
+  const next = () => goTo(index + 1);
+  const prev = () => goTo(index - 1);
+
+  // Autoplay
+  useEffect(() => {
+    const id = setInterval(next, interval);
+    return () => clearInterval(id);
+  }, [index, interval]);
+
+  if (!total) return null;
+
+  return (
+    <div className="carousel" aria-roledescription="carousel">
+      <img
+        key={index}
+        src={slides[index].src}
+        alt={slides[index].title ?? `Slide ${index + 1}`}
+        className="carousel-image"
+      />
+
+      {/* Leyenda opcional */}
+      {(slides[index].title || slides[index].text) && (
+        <div className="carousel-caption">
+          {slides[index].title && <h3>{slides[index].title}</h3>}
+          {slides[index].text && <p>{slides[index].text}</p>}
+        </div>
+      )}
+
+      {/* Controles */}
+      <button className="carousel-btn prev" onClick={prev} aria-label="Anterior">‹</button>
+      <button className="carousel-btn next" onClick={next} aria-label="Siguiente">›</button>
+
+      {/* Indicadores */}
+      <div className="carousel-dots">
+        {slides.map((_, i) => (
+          <button
+            key={i}
+            className={`dot ${i === index ? "active" : ""}`}
+            onClick={() => goTo(i)}
+            aria-label={`Ir al slide ${i + 1}`}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function App() {
+  const slides: Slide[] = [
+    { src: slide1, title: "Feria de Emprendedores", text: "Sábado 21, Plaza Central" },
+    { src: slide2, title: "Operativo de Salud", text: "Vacunación y controles gratuitos" },
+    { src: slide3, title: "Campeonato Barrial", text: "Inscripciones abiertas" },
+  ];
+
   return (
     <div className="app">
       {/* Header superior */}
       <header className="header-top">
         <div className="logo">
-          <img src="src\assets\logopng.png" alt="Logo" />
+          <img src={logo} alt="Logo" />
           <h1>Mi Barrio Digital</h1>
         </div>
       </header>
@@ -13,13 +82,13 @@ function App() {
       {/* Header inferior con navegación */}
       <header className="header-bottom">
         <nav>
-          <a href="#">Inicio</a>
-          <a href="#">Registro / Ingreso</a>
-          <a href="#">Certificados</a>  
-          <a href="#">Proyectos</a>
-          <a href="#">Reservas</a>  
-          <a href="#">Noticias</a>
-          <a href="#">Contacto</a>
+          <a href="#">INICIO</a>
+          <a href="#">REGISTRO / INGRESO</a>
+          <a href="#">CERTIFICADO</a>
+          <a href="#">PROYECTOS</a>
+          <a href="#">RESERVAS</a>
+          <a href="#">NOTICIAS</a>
+          <a href="#">CONTACTO</a>
         </nav>
       </header>
 
@@ -27,6 +96,12 @@ function App() {
       <main className="main">
         <h2>Bienvenido 👋</h2>
         <p>Esta es tu página inicial con doble header.</p>
+
+        {/* Carrusel de Noticias/Eventos */}
+        <section className="home-section">
+          <h3>Noticias y Eventos</h3>
+          <Carousel slides={slides} interval={5000} />
+        </section>
       </main>
 
       {/* Footer */}
