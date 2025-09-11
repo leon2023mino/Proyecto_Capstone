@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import "./App.css";
+import "../App.css";
 
-// ✅ IMPORTA el logo y las imágenes del carrusel desde assets
-import logo from "./assets/logopng.png";
-import slide1 from "./assets/slide1.jpg";
-import slide2 from "./assets/slide2.jpg";
-import slide3 from "./assets/slide3.jpg";
+import slide1 from "../assets/slide1.jpg";
+import slide2 from "../assets/slide2.jpg";
+import slide3 from "../assets/slide3.jpg";
 
 // --- Componente Carousel ---
 type Slide = { src: string; title?: string; text?: string };
@@ -71,27 +69,7 @@ function App() {
 
   return (
     <div className="app">
-      {/* Header superior */}
-      <header className="header-top">
-        <div className="logo">
-          <img src={logo} alt="Logo" />
-          <h1>Mi Barrio Digital</h1>
-        </div>
-      </header>
-
-      {/* Header inferior con navegación */}
-      <header className="header-bottom">
-        <nav>
-          <a href="#">INICIO</a>
-          <a href="#">REGISTRO / INGRESO</a>
-          <a href="#">CERTIFICADO</a>
-          <a href="#">PROYECTOS</a>
-          <a href="#">RESERVAS</a>
-          <a href="#">NOTICIAS</a>
-          <a href="#">CONTACTO</a>
-        </nav>
-      </header>
-
+    
       {/* Contenido principal */}
       <main className="main">
         <h2>Bienvenido 👋</h2>
