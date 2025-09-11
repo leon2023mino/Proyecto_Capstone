@@ -1,35 +1,40 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-
+import "./App.css";
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <div className="app">
+      {/* Header superior */}
+      <header className="header-top">
+        <div className="logo">
+          <img src="src\assets\logopng.png" alt="Logo" />
+          <h1>Mi Barrio Digital</h1>
+        </div>
+      </header>
+
+      {/* Header inferior con navegación */}
+      <header className="header-bottom">
+        <nav>
+          <a href="#">Inicio</a>
+          <a href="#">Registro / Ingreso</a>
+          <a href="#">Certificados</a>  
+          <a href="#">Proyectos</a>
+          <a href="#">Reservas</a>  
+          <a href="#">Noticias</a>
+          <a href="#">Contacto</a>
+        </nav>
+      </header>
+
+      {/* Contenido principal */}
+      <main className="main">
+        <h2>Bienvenido 👋</h2>
+        <p>Esta es tu página inicial con doble header.</p>
+      </main>
+
+      {/* Footer */}
+      <footer className="footer">
+        <p>&copy; 2025 Mi Barrio Digital - Todos los derechos reservados</p>
+      </footer>
+    </div>
+  );
 }
 
-export default App
+export default App;
