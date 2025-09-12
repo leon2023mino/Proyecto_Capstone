@@ -1,40 +1,57 @@
 :root {
+  /* ===== Colores base ===== */
+  --text-color: #2e2e2e;               /* color de texto general */
+  --bg-color: #d4fdd2;                 /* fondo general (verde muy claro) */
+
+  /* ===== Marca / acentos ===== */
+  --brand-green: #57b460;
+  --brand-green-dark: #2f5d31;
+  --link: #646cff;
+  --link-hover: #535bf2;
+
+  /* ===== Main (editable desde acá) ===== */
+  --main-text-color: #333;             /* 👈 cambia el color del texto de .main aquí */
+
+  /* ===== Tipografía y render ===== */
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
-  color-scheme: light dark;
-  color: rgba(255, 255, 255, 0.87);
-  background-color: #d4fdd2;
-
+  color-scheme: light;                  /* declaramos light por defecto */
+  color: var(--text-color);
+  background-color: var(--bg-color);
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
+/* Links */
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--link);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--link-hover);
 }
 
+/* Página */
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  /* 👇 Quitamos el flex que centraba todo y rompía el header */
+  /* display: flex;
+     place-items: center; */
 }
 
+/* Títulos genéricos (opcional) */
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
 }
 
+/* Botones base (si te sirven globalmente) */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -42,27 +59,30 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: #d4fdd2;
+  color: #fff;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: border-color 0.25s, background-color 0.25s, color 0.25s;
 }
-button:hover {
-  border-color: #646cff;
-}
+button:hover { border-color: var(--link); }
 button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
+button:focus-visible { outline: 4px auto -webkit-focus-ring-color; }
+
+/* Modo oscuro automático si el usuario lo prefiere */
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --text-color: #333333;
+    --bg-color: #d4fdd2;
+    color: var(--text-color);
+    background-color: var(--bg-color);
+    --link: #9aa5ff;
+    --link-hover: #b5bdff;
+  }
+  button { background-color: #2a2a2a; }
 }
 
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #213547;
-    background-color: #ffffff;
-  }
-  a:hover {
-    color: #747bff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
+/* 👇 Si quieres que .main use la variable global definida arriba */
+.main {
+  color: var(--main-text-color);
 }

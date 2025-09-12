@@ -3,45 +3,44 @@ import logo from "../assets/logopng.png";
 import { NavLink } from "react-router-dom";
 
 function Header() {
-  const linkStyle = ({ isActive }: { isActive: boolean }) =>
-    `px-3 py-2 ${
-      isActive
-        ? "text-green-600 font-bold"
-        : "text-gray-700 hover:text-green-600"
-    }`;
   return (
-    <div >
+    <div>
       {/* Header superior */}
       <header className="header-top">
+        {/* Izquierda: logo + título */}
         <div className="logo">
           <img src={logo} alt="Logo" />
           <h1>Mi Barrio Digital</h1>
+        </div>
+
+        {/* Derecha: botón de registro */}
+        <div className="header-actions">
+          <NavLink to="/registro" className="btn-registro">
+            Registro / Ingreso
+          </NavLink>
         </div>
       </header>
 
       {/* Header inferior con navegación */}
       <header className="header-bottom">
         <nav>
-          <NavLink to="/" end className={linkStyle}>
-            Inicio
+          <NavLink to="/" end className="nav-link">
+            INICIO
           </NavLink>
-          <NavLink to="/registro" className={linkStyle}>
-            Registro / Ingreso
+          <NavLink to="/certificados" className="nav-link">
+            CERTIFICADO
           </NavLink>
-          <NavLink to="/certificados" className={linkStyle}>
-            Certificados
+          <NavLink to="/proyectos" className="nav-link">
+            PROYECTOS
           </NavLink>
-          <NavLink to="/proyectos" className={linkStyle}>
-            Proyectos
+          <NavLink to="/reservas" className="nav-link">
+            RESERVAS
           </NavLink>
-          <NavLink to="/reservas" className={linkStyle}>
-            Reservas
+          <NavLink to="/noticias" className="nav-link">
+            NOTICIAS
           </NavLink>
-          <NavLink to="/noticias" className={linkStyle}>
-            Noticias
-          </NavLink>
-          <NavLink to="/contacto" className={linkStyle}>
-            Contacto
+          <NavLink to="/contacto" className="nav-link">
+            CONTACTO
           </NavLink>
         </nav>
       </header>
