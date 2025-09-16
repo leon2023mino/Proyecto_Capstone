@@ -72,9 +72,7 @@ export default function Home() {
     
       {/* Contenido principal */}
       <main className="main">
-        <h2>Bienvenido 👋</h2>
-        <p>Esta es tu página inicial con doble header.</p>
-
+    
         {/* Carrusel de Noticias/Eventos */}
         <section className="home-section">
           <h3>Noticias y Eventos</h3>
