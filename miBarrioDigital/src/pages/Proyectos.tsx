@@ -1,4 +1,4 @@
-import "../App.css";
+import "../styles/Proyectos.css";
 
 type Proyecto = {
   id: number;

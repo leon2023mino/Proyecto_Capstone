@@ -1,4 +1,4 @@
-import "../App.css";
+import "../styles/Noticias.css";
 
 type Noticia = {
   id: number;

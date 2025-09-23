@@ -1,3 +1,4 @@
+import "../styles/Contacto.css";  // 👈 importa los estilos de esta págin
 export default function Contacto() {
   return (
     <div className="contact-page">

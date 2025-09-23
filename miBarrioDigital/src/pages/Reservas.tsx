@@ -1,4 +1,4 @@
-import "../App.css";
+import "../styles/Reservas.css";
 import { useState } from "react";
 
 export default function Reservas() {

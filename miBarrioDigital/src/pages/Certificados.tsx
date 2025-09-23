@@ -1,4 +1,4 @@
-import "../App.css";
+import "../styles/Certificados.css";
 import { useState } from "react";
 
 export default function Certificados() {
