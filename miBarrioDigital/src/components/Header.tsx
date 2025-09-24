@@ -2,7 +2,7 @@ import "../App.css";
 import logo from "../assets/logopng.png";
 import { NavLink } from "react-router-dom";
 
-function Header() {
+export function Header() {
   return (
     <div>
       {/* Header superior */}
@@ -48,4 +48,10 @@ function Header() {
   );
 }
 
-export default Header;
+export function Footer() {
+  return (
+    <footer className="footer">
+      <p>&copy; 2025 Mi Barrio Digital - Todos los derechos reservados</p>
+    </footer>
+  );
+}

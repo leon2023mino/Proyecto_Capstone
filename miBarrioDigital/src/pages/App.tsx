@@ -8,7 +8,13 @@ import slide3 from "../assets/slide3.jpg";
 // --- Componente Carousel ---
 type Slide = { src: string; title?: string; text?: string };
 
-function Carousel({ slides, interval = 5000 }: { slides: Slide[]; interval?: number }) {
+function Carousel({
+  slides,
+  interval = 5000,
+}: {
+  slides: Slide[];
+  interval?: number;
+}) {
   const [index, setIndex] = useState(0);
   const total = slides.length;
 
@@ -42,8 +48,20 @@ function Carousel({ slides, interval = 5000 }: { slides: Slide[]; interval?: num
       )}
 
       {/* Controles */}
-      <button className="carousel-btn prev" onClick={prev} aria-label="Anterior">‹</button>
-      <button className="carousel-btn next" onClick={next} aria-label="Siguiente">›</button>
+      <button
+        className="carousel-btn prev"
+        onClick={prev}
+        aria-label="Anterior"
+      >
+        ‹
+      </button>
+      <button
+        className="carousel-btn next"
+        onClick={next}
+        aria-label="Siguiente"
+      >
+        ›
+      </button>
 
       {/* Indicadores */}
       <div className="carousel-dots">
@@ -62,14 +80,25 @@ function Carousel({ slides, interval = 5000 }: { slides: Slide[]; interval?: num
 
 function App() {
   const slides: Slide[] = [
-    { src: slide1, title: "Feria de Emprendedores", text: "Sábado 21, Plaza Central" },
-    { src: slide2, title: "Operativo de Salud", text: "Vacunación y controles gratuitos" },
-    { src: slide3, title: "Campeonato Barrial", text: "Inscripciones abiertas" },
+    {
+      src: slide1,
+      title: "Feria de Emprendedores",
+      text: "Sábado 21, Plaza Central",
+    },
+    {
+      src: slide2,
+      title: "Operativo de Salud",
+      text: "Vacunación y controles gratuitos",
+    },
+    {
+      src: slide3,
+      title: "Campeonato Barrial",
+      text: "Inscripciones abiertas",
+    },
   ];
 
   return (
     <div className="app">
-    
       {/* Contenido principal */}
       <main className="main">
         <h2>Bienvenido 👋</h2>
@@ -81,11 +110,6 @@ function App() {
           <Carousel slides={slides} interval={5000} />
         </section>
       </main>
-
-      {/* Footer */}
-      <footer className="footer">
-        <p>&copy; 2025 Mi Barrio Digital - Todos los derechos reservados</p>
-      </footer>
     </div>
   );
 }
