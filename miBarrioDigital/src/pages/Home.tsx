@@ -11,10 +11,10 @@ type Slide = { src: string; title?: string; text?: string };
 function Carousel({
   slides,
   interval = 5000,
-}: {
+}: Readonly<{
   slides: Slide[];
   interval?: number;
-}) {
+}>) {
   const [index, setIndex] = useState(0);
   const total = slides.length;
 
