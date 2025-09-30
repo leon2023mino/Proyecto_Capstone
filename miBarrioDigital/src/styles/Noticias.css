@@ -1,56 +1,98 @@
 /* =========================
-   NOTICIAS
+   NOTICIAS (cards modernas)
 ========================= */
+
 .noticias-page {
-  max-width: 1000px;
+  max-width: 1100px;
   margin: 2rem auto;
-  padding: 1rem;
+  padding: 0 1rem;
 }
 
+.noticias-page h2 {
+  font-size: 1.6rem;
+  color: var(--brand-dark, #2f5d31);
+  margin-bottom: .25rem;
+}
+.noticias-page p {
+  color: #5f6b62;
+}
+
+/* Grid */
 .noticias-lista {
-  display: flex;
-  flex-direction: column;
-  gap: 1.5rem;
-  margin-top: 2rem;
+  display: grid;
+  gap: 1.2rem;
+  margin-top: 1.5rem;
+}
+@media (min-width: 720px) {
+  .noticias-lista {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .noticias-lista {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
 }
 
+/* Card */
 .noticia-card {
   display: flex;
-  gap: 1rem;
-  background: #f9f9f9;
-  border-radius: 8px;
-  padding: 1rem;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  flex-direction: column;
+  background: #fff;
+  border: 1px solid #e6f2e8;
+  border-radius: var(--radius, 12px);
+  box-shadow: var(--shadow, 0 12px 28px rgba(0,0,0,.08));
+  overflow: hidden;
+  transition: transform .08s ease, box-shadow .2s ease;
+}
+.noticia-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 14px 34px rgba(0,0,0,.1);
 }
 
+/* Imagen */
 .noticia-card img {
-  width: 180px;
-  height: 120px;
+  width: 100%;
+  height: 160px;
   object-fit: cover;
-  border-radius: 6px;
+  background: #eef5ef;
 }
 
+/* Contenido */
 .noticia-contenido {
-  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
+}
+
+.noticia-contenido h3 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: #2f2f2f;
 }
 
 .noticia-fecha {
-  font-size: 0.85rem;
-  color: #666;
-  display: block;
-  margin-bottom: 0.5rem;
+  font-size: .85rem;
+  font-weight: 600;
+  color: #57b460;
 }
 
+/* Botón */
 .btn-leer-mas {
-  margin-top: 0.5rem;
-  background: #57b460;
-  color: white;
+  margin-top: auto;
+  align-self: flex-start;
+  background: var(--brand, #57b460);
+  color: #fff;
   border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  padding: .55rem .9rem;
+  border-radius: 10px;
+  font-weight: 800;
   cursor: pointer;
-  transition: background 0.2s ease;
+  transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+  box-shadow: 0 8px 20px rgba(87,180,96,.18);
 }
 .btn-leer-mas:hover {
-  background: #2f5d31;
+  background: var(--brand-dark, #2f5d31);
+  transform: translateY(-1px);
 }

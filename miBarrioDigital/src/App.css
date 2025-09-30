@@ -1,11 +1,27 @@
 /* =========================
-   RESET & BASE
+   VARIABLES & BASE
 ========================= */
+:root {
+  --brand: #57b460;
+  --brand-dark: #2f5d31;
+  --text: #333;
+  --footer-bg: #333333;
+  --hero-bg: #d4fdd2;
+  --radius: 12px;
+  --shadow: 0 12px 28px rgba(0,0,0,.08);
+}
+
 * { margin: 0; padding: 0; box-sizing: border-box; }
-html, body, #root { 
-  height: 100%; 
-  width: 100%; 
-  font-family: Arial, sans-serif; 
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  font-family: Arial, sans-serif;
+
+  /* 🎨 Fondo con patrón sutil */
+  background-color: #d4fdd2; /* tu verde claro base */
+
+background-size: 20px 20px;
+  background-size: 20px 20px; /* tamaño del patrón */
 }
 
 /* Contenedor general */
@@ -19,7 +35,7 @@ html, body, #root {
    HEADER SUPERIOR
 ========================= */
 .header-top {
-  background: #d4fdd2;          /* verde muy claro */
+  background: var(--hero-bg);    /* verde muy claro */
   color: rgb(65, 65, 65);
   padding: 1rem 2rem;
   display: flex;
@@ -36,12 +52,12 @@ html, body, #root {
 .logo img,
 .header-top img {
   width: 110px;
-  height: 110px;
+  height: auto; /* 👈 evita deformaciones */
 }
 
 /* Botón de registro/ingreso */
 .btn-registro {
-  background: #57b460;     /* verde */
+  background: var(--brand);
   color: #fff;
   padding: 0.5rem 1rem;
   border-radius: 6px;
@@ -50,15 +66,15 @@ html, body, #root {
   transition: background 0.2s ease, color 0.2s ease;
 }
 .btn-registro:hover {
-  background: #2f5d31;     /* verde oscuro */
-  color: rgb(255, 255, 255);           /* texto amarillo al hover */
+  background: var(--brand-dark);
+  color: #fff; /* texto blanco al hover */
 }
 
 /* =========================
    HEADER INFERIOR (NAV)
 ========================= */
 .header-bottom {
-  background: #57b460;
+  background: var(--brand);
   padding: 1rem;
   display: flex;
   justify-content: center;
@@ -85,44 +101,47 @@ html, body, #root {
 ========================= */
 .main {
   flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
   padding: 2rem;
-  text-align: center;
-
-  /* 🎨 Personaliza aquí el color de las letras del main */
-  color: #333; /* cambia a rojo, azul, blanco, etc */
+  /* Deja el layout neutro para que cada página decida su diseño */
+  /* Si quieres centrar solo en Home, hazlo en Home.css */
+  color: var(--text);
+  text-align: center; /* opcional: quítalo si prefieres izquierda por defecto */
 }
 
 .footer {
-  background: #333333;
+  background: var(--footer-bg);
+  color: #fff;  /* 👈 accesible sobre fondo oscuro */
   padding: 1rem;
   text-align: center;
 }
 
-/* =========================
-   CARRUSEL (SLIDER)
-========================= */
+/* Contenedor principal del carrusel */
 .carousel {
   position: relative;
   width: 100%;
   max-width: 1000px;
   margin: 1.5rem auto;
+  border-radius: var(--radius, 12px);
+  overflow: hidden;
+  background: #e9eef3;
+  box-shadow: var(--shadow, 0 12px 28px rgba(0,0,0,.08));
 }
+
+/* Ventana que recorta lo que se sale */
 .carousel-viewport {
   overflow: hidden;
-  border-radius: 12px;
-  background: #e9eef3;
   aspect-ratio: 16 / 9;
 }
+
+/* Pista horizontal que se mueve */
 .carousel-track {
   display: flex;
   width: 100%;
   height: 100%;
-  transition: transform .5s ease;
+  transition: transform .5s ease;  /* 👈 suavidad del slide */
 }
+
+/* Cada slide ocupa todo el ancho */
 .slide {
   min-width: 100%;
   height: 100%;
@@ -134,6 +153,8 @@ html, body, #root {
   object-fit: cover;
   display: block;
 }
+
+/* Leyenda/Caption */
 .carousel-caption {
   position: absolute;
   left: 0; right: 0; bottom: 0;
@@ -143,29 +164,36 @@ html, body, #root {
 }
 .carousel-caption h3 { margin: 0 0 .25rem; }
 .carousel-caption p  { margin: 0; opacity: .95; }
+
+/* Botones (flechas) mejorados */
 .carousel-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
   border: none;
-  background: rgba(0,0,0,.4);
+  background: rgba(0,0,0,.45);
   color: #fff;
-  width: 40px; height: 40px;
+  width: 44px; height: 44px;
   border-radius: 999px;
-  font-size: 24px;
-  line-height: 40px;
+  display: grid;
+  place-items: center;
   cursor: pointer;
-  transition: background .2s ease;
+  transition: background .2s ease, transform .08s ease, box-shadow .2s ease;
+  box-shadow: 0 6px 14px rgba(0,0,0,.18);
 }
-.carousel-btn:hover { background: rgba(0,0,0,.6); }
+.carousel-btn:hover { background: rgba(0,0,0,.65); transform: translateY(-50%) scale(1.03); }
+.carousel-btn:active { transform: translateY(-50%) scale(0.98); }
+.carousel-btn:focus-visible { outline: 3px solid rgba(255,255,255,.6); outline-offset: 2px; }
+.carousel-btn svg { width: 22px; height: 22px; fill: currentColor; }
+
 .carousel-btn.prev { left: 12px; }
 .carousel-btn.next { right: 12px; }
+
+/* Dots */
 .carousel-dots {
   position: absolute;
   left: 0; right: 0; bottom: 10px;
-  display: flex;
-  justify-content: center;
-  gap: 8px;
+  display: flex; justify-content: center; gap: 8px;
 }
 .dot {
   width: 10px; height: 10px;
@@ -173,6 +201,7 @@ html, body, #root {
   border: none;
   background: rgba(255,255,255,.6);
   cursor: pointer;
+  transition: transform .08s ease, background .2s ease;
 }
+.dot:hover { transform: scale(1.1); }
 .dot.active { background: #fff; }
-

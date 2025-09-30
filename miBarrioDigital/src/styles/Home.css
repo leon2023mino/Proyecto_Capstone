@@ -1,0 +1,70 @@
+/* ===== HOME (página principal) ===== */
+
+.home { padding-bottom: 2rem; }
+
+/* HERO */
+.hero {
+  background:
+    radial-gradient(1200px 600px at 10% -10%, rgba(87,180,96,0.20), transparent 60%),
+    radial-gradient(1200px 600px at 90% 0%, rgba(47,93,49,0.18), transparent 60%),
+    linear-gradient(180deg, #e7fbe6 0%, #d4fdd2 100%);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+  padding: 3rem 1rem 2rem;
+}
+.hero-content { max-width: 1050px; margin: 0 auto; text-align: center; }
+.hero h1 { font-size: clamp(1.8rem, 2.8vw + 1rem, 3rem); line-height: 1.15; color: #2f5d31; margin-bottom: .5rem; }
+.hero h1 span { color: #1f7a35; }
+.hero p { color: #4d4d4d; max-width: 760px; margin: 0.25rem auto 1.25rem; }
+.hero-actions { display: flex; justify-content: center; gap: .75rem; flex-wrap: wrap; }
+.btn {
+  display: inline-block; padding: .75rem 1rem; border-radius: 10px; font-weight: 700; text-decoration: none;
+  border: 1px solid transparent; transition: transform .08s ease, box-shadow .2s ease, background .2s ease, color .2s ease, border-color .2s ease;
+}
+.btn.primary { background: #57b460; color: #fff; box-shadow: 0 8px 20px rgba(87,180,96,.25); }
+.btn.primary:hover { background: #2f5d31; transform: translateY(-1px); }
+.btn.ghost { background: #ffffff; color: #2f5d31; border-color: #bfe5c3; }
+.btn.ghost:hover { background: #f1fff2; transform: translateY(-1px); }
+
+/* SECCIONES */
+.section { max-width: 1050px; margin: 1.5rem auto 0; padding: 0 1rem; }
+.section.block { margin-top: 2rem; }
+.section-title { font-size: 1.25rem; color: #2f5d31; margin-bottom: .75rem; }
+
+/* GRID ACCESOS + ASIDE */
+.layout { max-width: 1050px; margin: 1.5rem auto 0; padding: 0 1rem; display: grid; grid-template-columns: 1fr 320px; gap: 1rem; }
+@media (max-width: 980px) { .layout { grid-template-columns: 1fr; } }
+
+.grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+@media (max-width: 780px) { .grid { grid-template-columns: 1fr; } }
+
+/* Accesos rápidos (cards) */
+.card.quick {
+  background: #fff; border: 1px solid #e6f2e8; border-radius: 12px; padding: 1rem; text-decoration: none; color: #2f2f2f;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06); transition: transform .08s ease, box-shadow .2s ease, border-color .2s ease;
+}
+.card.quick:hover { transform: translateY(-2px); box-shadow: 0 10px 24px rgba(0,0,0,.10); border-color: #cfe9d3; }
+.card.quick .icon { font-size: 1.6rem; margin-bottom: .5rem; }
+.card.quick h3 { margin: 0 0 .25rem; color: #2f5d31; font-size: 1.05rem; }
+.card.quick p { margin: 0; color: #555; font-size: .95rem; }
+
+/* Aside */
+.aside { display: flex; flex-direction: column; gap: 1rem; }
+.aside-card { background: #fff; border: 1px solid #e6f2e8; border-radius: 12px; padding: 1rem; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+.aside-card h4 { margin: 0 0 .5rem; color: #2f5d31; }
+.aside-card ul { list-style: none; padding: 0; margin: 0; }
+.aside-card li { display: flex; align-items: center; gap: .5rem; padding: .4rem 0; border-bottom: 1px dashed #e9f4ec; }
+.aside-card li:last-child { border-bottom: 0; }
+.tag { background: #e8f7eb; color: #2f5d31; border: 1px solid #cfe9d3; padding: .15rem .45rem; border-radius: 999px; font-size: .8rem; font-weight: 700; }
+.bullets { list-style: disc; padding-left: 1.25rem !important; }
+.bullets li { border: none; padding: .25rem 0; }
+
+/* NOTICIAS */
+.news-grid { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+@media (max-width: 780px) { .news-grid { grid-template-columns: 1fr; } }
+.news-card { background: #fff; border: 1px solid #e6f2e8; border-radius: 12px; padding: 1rem; box-shadow: 0 6px 18px rgba(0,0,0,.06); }
+.news-card header { display: flex; align-items: center; gap: .5rem; }
+.pill { background: #2f5d31; color: #fff; padding: .25rem .5rem; border-radius: 999px; font-size: .8rem; font-weight: 700; }
+.news-card h3 { margin: 0; color: #2f2f2f; font-size: 1.05rem; }
+.news-card p { margin: .5rem 0 0; color: #555; }
+.link { display: inline-block; margin-top: .5rem; color: #1f7a35; text-decoration: none; font-weight: 700; }
+.link:hover { text-decoration: underline; }

@@ -1,45 +1,205 @@
 /* =========================
-   CERTIFICADOS
+   CERTIFICADOS (moderno)
 ========================= */
+
+/* Contenedor de la página */
 .certificados-page {
-  max-width: 800px;
+  max-width: 860px;
   margin: 2rem auto;
-  padding: 1rem;
+  padding: 0 1rem;
 }
 
+/* Card principal */
+.cert-card {
+  background: #fff;
+  border: 1px solid #e6f2e8;
+  border-radius: var(--radius, 12px);
+  box-shadow: var(--shadow, 0 12px 28px rgba(0,0,0,.08));
+  padding: 1.25rem;
+}
+
+@media (min-width: 720px) {
+  .cert-card { padding: 1.75rem; }
+}
+
+/* Título y subtítulo */
+.cert-title {
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  color: var(--brand-dark, #2f5d31);
+  margin: 0 0 .25rem;
+  font-size: 1.4rem;
+  font-weight: 800;
+}
+.cert-subtitle {
+  margin: 0 0 1rem;
+  color: #5f6b62;
+  font-size: .95rem;
+}
+
+/* Tips/alertas */
+.cert-info {
+  background: #f0faf2;
+  border: 1px dashed #bfe5c3;
+  color: #2f5d31;
+  border-radius: 10px;
+  padding: .75rem .9rem;
+  font-size: .95rem;
+  margin-bottom: 1rem;
+}
+
+/* Grid del formulario (responsive) */
 .certificado-form {
-  display: flex;
-  flex-direction: column;
+  display: grid;
   gap: 1rem;
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
-.certificado-form label {
+@media (min-width: 720px) {
+  .certificado-form {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .col-span-2 { grid-column: span 2; }
+}
+
+/* Campo */
+.field {
   display: flex;
   flex-direction: column;
-  font-weight: bold;
+  gap: .4rem;
 }
 
-.certificado-form input,
-.certificado-form select,
-.certificado-form textarea {
-  margin-top: 0.5rem;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
+/* Etiqueta */
+.field label {
+  font-weight: 700;
+  color: #2e2e2e;
+  font-size: .95rem;
+}
+
+/* Input / Select / Textarea */
+.input,
+.select,
+.textarea {
+  width: 100%;
+  margin: 0;
+  padding: .8rem .9rem;
+  border: 1px solid #dfe7e2;
+  border-radius: 10px;
   font-size: 1rem;
+  color: #2f2f2f;
+  background: #fff;
+  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
 }
 
-.btn-enviar {
-  background: #57b460;
-  color: white;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
-  cursor: pointer;
-  transition: background 0.2s ease;
+.textarea { min-height: 120px; resize: vertical; }
+
+/* Hover + Focus */
+.input:hover,
+.select:hover,
+.textarea:hover {
+  border-color: #cfe9d3;
 }
-.btn-enviar:hover {
-  background: #2f5d31;
+.input:focus,
+.select:focus,
+.textarea:focus {
+  outline: none;
+  border-color: var(--brand, #57b460);
+  box-shadow: 0 0 0 4px rgba(87,180,96,.15);
+}
+
+/* Placeholder suave */
+.input::placeholder,
+.textarea::placeholder {
+  color: #9aa8a0;
+}
+
+/* Ayuda / error */
+.helper {
+  font-size: .85rem;
+  color: #66746d;
+}
+.error {
+  font-size: .85rem;
+  color: #b33a3a;
+}
+
+/* Estados inválidos */
+.input.is-invalid,
+.select.is-invalid,
+.textarea.is-invalid {
+  border-color: #e2a3a3;
+  background: #fff7f7;
+}
+.input.is-invalid:focus,
+.select.is-invalid:focus,
+.textarea.is-invalid:focus {
+  box-shadow: 0 0 0 4px rgba(201,69,69,.15);
+}
+
+/* Botones */
+.actions {
+  margin-top: 1rem;
+  display: flex;
+  gap: .6rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--brand, #57b460);
+  color: #fff;
+  padding: .8rem 1rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
+  box-shadow: 0 8px 20px rgba(87,180,96,.18);
+}
+.btn-primary:hover {
+  background: var(--brand-dark, #2f5d31);
+  transform: translateY(-1px);
+}
+.btn-primary:active { transform: translateY(0); }
+
+.btn-ghost {
+  background: #fff;
+  color: var(--brand-dark, #2f5d31);
+  border: 1px solid #cfe9d3;
+  padding: .8rem 1rem;
+  border-radius: 10px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .08s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+}
+.btn-ghost:hover {
+  background: #f7fff8;
+  transform: translateY(-1px);
+}
+
+/* Divider suave */
+.divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, #e6f2e8, transparent);
+  margin: 1.25rem 0;
+}
+
+/* Footer dentro de la card (texto chico) */
+.card-footer {
+  color: #6b6b6b;
+  font-size: .85rem;
+}
+
+/* Pequeñas badges (chips) */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .25rem .55rem;
+  border-radius: 999px;
+  background: #e8f7eb;
+  border: 1px solid #cfe9d3;
+  color: #2f5d31;
+  font-weight: 800;
+  font-size: .8rem;
 }
