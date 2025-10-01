@@ -16,12 +16,8 @@ html, body, #root {
   height: 100%;
   width: 100%;
   font-family: Arial, sans-serif;
-
-  /* 🎨 Fondo con patrón sutil */
-  background-color: #d4fdd2; /* tu verde claro base */
-
-background-size: 20px 20px;
-  background-size: 20px 20px; /* tamaño del patrón */
+  background-color: #d4fdd2;
+  background-size: 20px 20px;
 }
 
 /* Contenedor general */
@@ -35,39 +31,95 @@ background-size: 20px 20px;
    HEADER SUPERIOR
 ========================= */
 .header-top {
-  background: var(--hero-bg);    /* verde muy claro */
-  color: rgb(65, 65, 65);
+  background:  #ffffff;
+  color: var(--text);
   padding: 1rem 2rem;
   display: flex;
-  justify-content: space-between; /* logo a la izq, botón a la der */
+  justify-content: space-between; 
   align-items: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
 }
 
-/* Logo + texto */
+/* Logo alineado a la izquierda */
 .logo {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  justify-content: flex-start;
 }
-.logo img,
-.header-top img {
-  width: 110px;
-  height: auto; /* 👈 evita deformaciones */
+.titulo-img {
+  width: auto;
+  height: 130px;   /* 🔥 título más grande */
+  object-fit: contain;
 }
 
-/* Botón de registro/ingreso */
-.btn-registro {
-  background: var(--brand);
-  color: #fff;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+/* ===== Header: contacto + login (derecha) ===== */
+.header-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.6rem;
+  min-width: 250px;
+}
+
+/* Contacto (solo texto) */
+.header-contact {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  align-items: flex-end;
+  font-size: 1rem;
+  font-weight: 500;
+  color: #2e2e2e;
+}
+.contact-item {
   text-decoration: none;
+  color: inherit;
+  transition: color .2s ease;
+}
+.contact-item:hover {
+  color: var(--brand-dark);
+}
+
+/* Botón Iniciar Sesión */
+.btn-registro {
+  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  color: #fff;
+  padding: 0.9rem 1.6rem; 
+  border-radius: 10px;
+  font-size: 1.05rem;
   font-weight: bold;
-  transition: background 0.2s ease, color 0.2s ease;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
 }
 .btn-registro:hover {
-  background: var(--brand-dark);
-  color: #fff; /* texto blanco al hover */
+  background: linear-gradient(135deg, var(--brand-dark), var(--brand));
+  transform: scale(1.06);
+}
+
+/* Responsive ajustes */
+@media (max-width: 880px) {
+  .header-actions {
+    min-width: 180px;
+    gap: 0.4rem;
+  }
+  .contact-item { font-size: 0.85rem; }
+  .titulo-img { height: 90px; }
+}
+@media (max-width: 520px) {
+  .header-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.6rem;
+  }
+  .header-actions { 
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .titulo-img { height: 70px; }
+  .btn-registro { padding: 0.6rem 1rem; font-size: 0.95rem; }
 }
 
 /* =========================
@@ -83,15 +135,11 @@ background-size: 20px 20px;
   display: flex;
   gap: 2rem;
 }
-
-/* Links del menú */
-.header-bottom nav a,
 .nav-link {
   color: #fff;
   text-decoration: none;
   font-weight: bold;
 }
-.header-bottom nav a:hover,
 .nav-link:hover {
   text-decoration: underline;
 }
@@ -102,46 +150,39 @@ background-size: 20px 20px;
 .main {
   flex: 1;
   padding: 2rem;
-  /* Deja el layout neutro para que cada página decida su diseño */
-  /* Si quieres centrar solo en Home, hazlo en Home.css */
   color: var(--text);
-  text-align: center; /* opcional: quítalo si prefieres izquierda por defecto */
+  text-align: center;
 }
-
 .footer {
   background: var(--footer-bg);
-  color: #fff;  /* 👈 accesible sobre fondo oscuro */
+  color: #fff;
   padding: 1rem;
   text-align: center;
 }
 
-/* Contenedor principal del carrusel */
+/* =========================
+   CAROUSEL
+========================= */
 .carousel {
   position: relative;
   width: 100%;
   max-width: 1000px;
   margin: 1.5rem auto;
-  border-radius: var(--radius, 12px);
+  border-radius: var(--radius);
   overflow: hidden;
   background: #e9eef3;
-  box-shadow: var(--shadow, 0 12px 28px rgba(0,0,0,.08));
+  box-shadow: var(--shadow);
 }
-
-/* Ventana que recorta lo que se sale */
 .carousel-viewport {
   overflow: hidden;
   aspect-ratio: 16 / 9;
 }
-
-/* Pista horizontal que se mueve */
 .carousel-track {
   display: flex;
   width: 100%;
   height: 100%;
-  transition: transform .5s ease;  /* 👈 suavidad del slide */
+  transition: transform .5s ease;
 }
-
-/* Cada slide ocupa todo el ancho */
 .slide {
   min-width: 100%;
   height: 100%;
@@ -153,8 +194,6 @@ background-size: 20px 20px;
   object-fit: cover;
   display: block;
 }
-
-/* Leyenda/Caption */
 .carousel-caption {
   position: absolute;
   left: 0; right: 0; bottom: 0;
@@ -164,8 +203,6 @@ background-size: 20px 20px;
 }
 .carousel-caption h3 { margin: 0 0 .25rem; }
 .carousel-caption p  { margin: 0; opacity: .95; }
-
-/* Botones (flechas) mejorados */
 .carousel-btn {
   position: absolute;
   top: 50%;
@@ -185,11 +222,8 @@ background-size: 20px 20px;
 .carousel-btn:active { transform: translateY(-50%) scale(0.98); }
 .carousel-btn:focus-visible { outline: 3px solid rgba(255,255,255,.6); outline-offset: 2px; }
 .carousel-btn svg { width: 22px; height: 22px; fill: currentColor; }
-
 .carousel-btn.prev { left: 12px; }
 .carousel-btn.next { right: 12px; }
-
-/* Dots */
 .carousel-dots {
   position: absolute;
   left: 0; right: 0; bottom: 10px;
