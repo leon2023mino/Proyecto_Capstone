@@ -15,8 +15,8 @@ export function Header() {
 
         {/* Derecha: botón de registro */}
         <div className="header-actions">
-          <NavLink to="/registro" className="btn-registro">
-            Registro / Ingreso
+          <NavLink to="/Login" className="btn-registro">
+            Ingreso
           </NavLink>
         </div>
       </header>

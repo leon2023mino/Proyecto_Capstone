@@ -1,4 +1,5 @@
-import "../styles/Proyectos.css";
+import "../../styles/Proyectos.css";
+import { NavLink } from "react-router-dom";
 
 type Estado = "En curso" | "Finalizado" | "Pendiente";
 
@@ -47,13 +48,18 @@ export default function Proyectos() {
         <div>
           <h2 className="proyectos-title">Proyectos Comunitarios</h2>
           <p className="proyectos-subtitle">
-            Revisa iniciativas en curso, finalizadas o en postulación dentro de la comunidad.
+            Revisa iniciativas en curso, finalizadas o en postulación dentro de
+            la comunidad.
           </p>
         </div>
 
         {/* Opcional: toolbar de búsqueda/filtro */}
         <div className="proyectos-toolbar">
-          <input className="input-search" type="search" placeholder="Buscar proyecto..." />
+          <input
+            className="input-search"
+            type="search"
+            placeholder="Buscar proyecto..."
+          />
           <select className="select-filter" defaultValue="">
             <option value="">Todos</option>
             <option value="En curso">En curso</option>
@@ -99,7 +105,9 @@ export default function Proyectos() {
               <p className="proyecto-desc">{p.descripcion}</p>
 
               <div className="proyecto-actions">
-                <button className="btn-ver-mas">Ver más</button>
+                <NavLink to="/ProyectosVer" className="btn-ver-mas">
+                  Ver más
+                </NavLink>
                 <button className="btn-ghost">Apoyar</button>
               </div>
             </div>

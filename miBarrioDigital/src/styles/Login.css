@@ -1,0 +1,87 @@
+/* Fondo general */
+.login-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background: #eaf7ee; /* mismo verde claro de tu layout */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Caja del formulario */
+.login-container {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  max-width: 400px;
+}
+
+/* Título */
+.login-container h2 {
+  text-align: center;
+  color: #2f5d31; /* verde oscuro */
+  margin-bottom: 1.5rem;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* Etiquetas */
+.login-container label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.3rem;
+}
+
+/* Inputs */
+.login-container input {
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  outline: none;
+  transition: border 0.2s, box-shadow 0.2s;
+}
+
+.login-container input:focus {
+  border-color: #57b460;
+  box-shadow: 0 0 0 2px rgba(87, 180, 96, 0.2);
+}
+
+/* Botón */
+.login-container button {
+  width: 100%;
+  background: #57b460;
+  color: #fff;
+  padding: 0.7rem;
+  margin-top: 1rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.login-container button:hover {
+  background: #2f5d31;
+}
+
+/* Texto inferior */
+.login-container p {
+  text-align: center;
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.login-container a {
+  color: #57b460;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.login-container a:hover {
+  text-decoration: underline;
+}

@@ -1,4 +1,4 @@
-import "../styles/Certificados.css";
+import "../../styles/Certificados.css";
 import { useState } from "react";
 
 export default function Certificados() {
@@ -11,7 +11,9 @@ export default function Certificados() {
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -39,10 +41,10 @@ export default function Certificados() {
       <div className="cert-card">
         <h2 className="cert-title">Solicitud de Certificados</h2>
         <p className="cert-subtitle">
-          Completa el formulario para generar tu certificado de residencia, participación u otros documentos oficiales.
+          Completa el formulario para generar tu certificado de residencia,
+          participación u otros documentos oficiales.
         </p>
 
-        
         {/* Formulario */}
         <form className="certificado-form" onSubmit={handleSubmit}>
           {/* Nombre */}
@@ -138,7 +140,8 @@ export default function Certificados() {
         </div>
 
         <div className="card-footer" style={{ marginTop: ".75rem" }}>
-          Al enviar, aceptas el uso de tus datos para la emisión del certificado.
+          Al enviar, aceptas el uso de tus datos para la emisión del
+          certificado.
         </div>
       </div>
     </div>

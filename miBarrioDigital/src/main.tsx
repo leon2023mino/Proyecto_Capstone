@@ -3,15 +3,23 @@ import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 
-import Registro from "./pages/Registro.tsx";
-import Certificados from "./pages/Certificados.tsx";
-import Contacto from "./pages/Contacto.tsx";
-import Noticias from "./pages/Noticias.tsx";
-import Reservas from "./pages/Reservas.tsx";
+import Registro from "./pages/user/Registro.tsx";
+import Certificados from "./pages/user/Certificados.tsx";
+import Contacto from "./pages/user/Contacto.tsx";
+import Noticias from "./pages/user/Noticias.tsx";
+import Reservas from "./pages/user/Reservas.tsx";
 import AppLayout from "./layout/AppLayout.tsx";
-import Proyectos from "./pages/Proyectos.tsx";
-import Home from "./pages/Home.tsx";
-import { Login } from "./pages/Login.tsx";
+import Proyectos from "./pages/user/Proyectos.tsx";
+import Home from "./pages/user/Home.tsx";
+import Login from "./pages/user/Login.tsx";
+import ProyectosVer from "./pages/user/ProyectosVer.tsx";
+import CrearProyecto from "./pages/admin/CrearProyecto.tsx";
+import AdministrarProyectos from "./pages/admin/AdministrarProyectos.tsx";
+import VerProyectoAdmin from "./pages/admin/VerProyectoAdmin.tsx";
+import AdministrarSolicitudes from "./pages/admin/AdministarSolicitudes.tsx";
+import NoticiasVer from "./pages/user/NoticiasVer.tsx";
+import AdministrarNoticias from "./pages/admin/AdministrarNoticias.tsx";
+import VerNoticiaAdmin from "./pages/admin/VerNoticiaAdmin.tsx";
 
 const router = createBrowserRouter([
   {
@@ -26,6 +34,14 @@ const router = createBrowserRouter([
       { path: "/contacto", element: <Contacto /> },
       { path: "/Proyectos", element: <Proyectos /> },
       { path: "/Login", element: <Login /> },
+      { path: "/ProyectosVer", element: <ProyectosVer /> },
+      { path: "/CrearProyecto", element: <CrearProyecto /> },
+      { path: "/AdministrarProyectos", element: <AdministrarProyectos /> },
+      { path: "/VerProyectoAdmin", element: <VerProyectoAdmin /> },
+      { path: "/AdministrarSolicitudes", element: <AdministrarSolicitudes /> },
+      { path: "/NoticiasVer", element: <NoticiasVer /> },
+      { path: "/AdministrarNoticias", element: <AdministrarNoticias /> },
+      { path: "/VerNoticiaAdmin", element: <VerNoticiaAdmin /> },
     ],
   },
 ]);

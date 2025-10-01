@@ -1,4 +1,4 @@
-import "../styles/Reservas.css";
+import "../../styles/Reservas.css";
 import { useMemo, useState } from "react";
 
 export default function Reservas() {
@@ -15,7 +15,9 @@ export default function Reservas() {
   const today = useMemo(() => new Date().toISOString().split("T")[0], []);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
   };
@@ -33,7 +35,14 @@ export default function Reservas() {
   };
 
   const validate = () => {
-    if (!form.nombre || !form.email || !form.espacio || !form.fecha || !form.horaInicio || !form.horaFin)
+    if (
+      !form.nombre ||
+      !form.email ||
+      !form.espacio ||
+      !form.fecha ||
+      !form.horaInicio ||
+      !form.horaFin
+    )
       return "Completa todos los campos obligatorios.";
 
     // Validación simple de rango horario (HH:MM)
@@ -67,10 +76,9 @@ export default function Reservas() {
       <div className="reserva-card">
         <h2 className="reserva-title">Reservas de Espacios Comunitarios</h2>
         <p className="reserva-subtitle">
-          Completa el formulario para reservar la sede social, multicancha o sala de reuniones.
+          Completa el formulario para reservar la sede social, multicancha o
+          sala de reuniones.
         </p>
-
-        
 
         <form className="reserva-form" onSubmit={handleSubmit}>
           {/* Nombre */}
@@ -134,7 +142,9 @@ export default function Reservas() {
               onChange={handleChange}
               required
             />
-            <small className="helper">No se permiten reservas en fechas pasadas.</small>
+            <small className="helper">
+              No se permiten reservas en fechas pasadas.
+            </small>
           </div>
 
           {/* Horarios */}
@@ -145,7 +155,11 @@ export default function Reservas() {
                 id="horaInicio"
                 name="horaInicio"
                 type="time"
-                className={`input ${form.horaFin && form.horaFin <= form.horaInicio ? "is-invalid" : ""}`}
+                className={`input ${
+                  form.horaFin && form.horaFin <= form.horaInicio
+                    ? "is-invalid"
+                    : ""
+                }`}
                 value={form.horaInicio}
                 onChange={handleChange}
                 required
@@ -157,13 +171,19 @@ export default function Reservas() {
                 id="horaFin"
                 name="horaFin"
                 type="time"
-                className={`input ${form.horaFin && form.horaFin <= form.horaInicio ? "is-invalid" : ""}`}
+                className={`input ${
+                  form.horaFin && form.horaFin <= form.horaInicio
+                    ? "is-invalid"
+                    : ""
+                }`}
                 value={form.horaFin}
                 onChange={handleChange}
                 required
               />
               {form.horaFin && form.horaFin <= form.horaInicio && (
-                <small className="error">La hora de término debe ser posterior a la de inicio.</small>
+                <small className="error">
+                  La hora de término debe ser posterior a la de inicio.
+                </small>
               )}
             </div>
           </div>

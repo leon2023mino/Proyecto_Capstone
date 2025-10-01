@@ -1,17 +1,29 @@
 // src/pages/Home.tsx
-import "../styles/Home.css";
-import Carousel from "../components/Carousel";
-import type { Slide } from "../components/Carousel";
+import "../../styles/Home.css";
+import Carousel from "../../components/Carousel";
+import type { Slide } from "../../components/Carousel";
 
-import slide1 from "../assets/slide1.jpg";
-import slide2 from "../assets/slide2.jpg";
-import slide3 from "../assets/slide3.jpg";
+import slide1 from "../../assets/slide1.jpg";
+import slide2 from "../../assets/slide2.jpg";
+import slide3 from "../../assets/slide3.jpg";
 
 export default function Home() {
   const slides: Slide[] = [
-    { src: slide1, title: "Feria de Emprendedores", text: "Sábado 21, Plaza Central" },
-    { src: slide2, title: "Operativo de Salud", text: "Vacunación y controles gratuitos" },
-    { src: slide3, title: "Campeonato Barrial", text: "Inscripciones abiertas" },
+    {
+      src: slide1,
+      title: "Feria de Emprendedores",
+      text: "Sábado 21, Plaza Central",
+    },
+    {
+      src: slide2,
+      title: "Operativo de Salud",
+      text: "Vacunación y controles gratuitos",
+    },
+    {
+      src: slide3,
+      title: "Campeonato Barrial",
+      text: "Inscripciones abiertas",
+    },
   ];
 
   const proximos = [
@@ -21,9 +33,21 @@ export default function Home() {
   ];
 
   const noticias = [
-    { titulo: "Nueva sede comunitaria", resumen: "Avances de obra y plazos de entrega", fecha: "29 Sep" },
-    { titulo: "Becas deportivas", resumen: "Inscripciones abiertas hasta el 10/10", fecha: "27 Sep" },
-    { titulo: "Operativo de vacunación", resumen: "Calendario de atención en barrio", fecha: "25 Sep" },
+    {
+      titulo: "Nueva sede comunitaria",
+      resumen: "Avances de obra y plazos de entrega",
+      fecha: "29 Sep",
+    },
+    {
+      titulo: "Becas deportivas",
+      resumen: "Inscripciones abiertas hasta el 10/10",
+      fecha: "27 Sep",
+    },
+    {
+      titulo: "Operativo de vacunación",
+      resumen: "Calendario de atención en barrio",
+      fecha: "25 Sep",
+    },
   ];
 
   return (

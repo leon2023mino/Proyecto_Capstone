@@ -1,4 +1,5 @@
-import "../styles/Noticias.css";
+import { NavLink } from "react-router";
+import "../../styles/Noticias.css";
 
 type Noticia = {
   id: number;
@@ -49,7 +50,9 @@ export default function Noticias() {
               <h3>{n.titulo}</h3>
               <span className="noticia-fecha">{n.fecha}</span>
               <p>{n.descripcion}</p>
-              <button className="btn-leer-mas">Leer más</button>
+              <NavLink to="/NoticiasVer" className="btn-leer-mas">
+                Leer más
+              </NavLink>
             </div>
           </article>
         ))}

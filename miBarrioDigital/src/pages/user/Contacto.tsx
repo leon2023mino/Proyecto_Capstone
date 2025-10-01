@@ -1,4 +1,4 @@
-import "../styles/Contacto.css";
+import "../../styles/Contacto.css";
 import { useState } from "react";
 
 export default function Contacto() {
@@ -53,11 +53,9 @@ export default function Contacto() {
         <div className="contact-card">
           <h2 className="contact-title">Contacto</h2>
           <p className="contact-subtitle">
-            Si tienes dudas, sugerencias o quieres comunicarte con la Junta de Vecinos,
-            utiliza el formulario o nuestros datos de contacto directo.
+            Si tienes dudas, sugerencias o quieres comunicarte con la Junta de
+            Vecinos, utiliza el formulario o nuestros datos de contacto directo.
           </p>
-
-        
 
           <form className="contact-form" onSubmit={handleSubmit}>
             <div className="field">
@@ -113,7 +111,9 @@ export default function Contacto() {
                 onChange={handleChange}
                 required
               />
-              <small className="helper">Sé lo más claro posible para ayudarte mejor.</small>
+              <small className="helper">
+                Sé lo más claro posible para ayudarte mejor.
+              </small>
             </div>
 
             <div className="actions">
@@ -123,7 +123,9 @@ export default function Contacto() {
               <button
                 type="button"
                 className="btn-ghost"
-                onClick={() => setForm({ nombre: "", email: "", asunto: "", mensaje: "" })}
+                onClick={() =>
+                  setForm({ nombre: "", email: "", asunto: "", mensaje: "" })
+                }
                 disabled={sending}
               >
                 Limpiar
@@ -146,7 +148,9 @@ export default function Contacto() {
             </li>
             <li>
               <span className="contact-chip">Email</span>
-              <a href="mailto:contacto@mibarriodigital.cl">contacto@mibarriodigital.cl</a>
+              <a href="mailto:contacto@mibarriodigital.cl">
+                contacto@mibarriodigital.cl
+              </a>
             </li>
           </ul>
 
