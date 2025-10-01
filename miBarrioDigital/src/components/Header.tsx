@@ -5,18 +5,21 @@ import { NavLink } from "react-router-dom";
 export function Header() {
   return (
     <div>
+      {/* Mini header arriba */}
+      
+
       {/* Header superior */}
       <header className="header-top" role="banner">
-        {/* Izquierda: solo el título como imagen */}
+        {/* Izquierda: título como imagen */}
         <div className="logo" aria-label="Mi Barrio Digital">
           <img src={titulo} alt="Mi Barrio Digital" className="titulo-img" />
         </div>
 
-        {/* Derecha: contacto (solo texto) + botón de login */}
+        {/* Derecha: contacto + botón de login */}
         <div className="header-actions" aria-hidden={false}>
           <div className="header-contact">
-            <span className="contact-text">contacto@mibarriodigital.cl</span>
-            <span className="contact-text">+56 9 1234 5678</span>
+            <span className="contact-text">✉️ contacto@mibarriodigital.cl</span>
+            <span className="contact-text">📞 +56 9 1234 5678</span>
           </div>
 
           <NavLink to="/Login" className="btn-registro" aria-label="Iniciar sesión">

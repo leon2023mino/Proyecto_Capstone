@@ -1,87 +1,192 @@
-/* Fondo general */
+/* Paleta consistente con tu App.css */
+:root {
+  --brand: #57b460;
+  --brand-dark: #2f5d31;
+  --text: #333;
+  --card-bg: #ffffff;
+  --muted: #6b7280;
+  --ring: rgba(87, 180, 96, 0.25);
+  --shadow: 0 12px 28px rgba(0,0,0,.08);
+}
+
+/* Fondo general centrado */
 .login-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
-  background: #eaf7ee; /* mismo verde claro de tu layout */
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  min-height: calc(100vh - 140px); /* deja espacio si hay header fijo grande */
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+  background: #d4fdd2; /* tu verde clarito */
 }
 
-/* Caja del formulario */
-.login-container {
-  background: #ffffff;
-  padding: 2rem;
-  border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+/* Tarjeta */
+.login-card {
   width: 100%;
-  max-width: 400px;
+  max-width: 420px;
+  background: var(--card-bg);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 1.25rem 1.25rem 1.5rem;
 }
 
-/* Título */
-.login-container h2 {
+/* Encabezado */
+.login-header {
   text-align: center;
-  color: #2f5d31; /* verde oscuro */
-  margin-bottom: 1.5rem;
-  font-size: 1.6rem;
-  font-weight: 700;
+  margin-bottom: 1rem;
+}
+.login-header h2 {
+  margin: 0;
+  font-size: 1.75rem;
+  color: var(--brand-dark);
+  letter-spacing: 0.2px;
+}
+.login-header p {
+  margin-top: .25rem;
+  color: var(--muted);
+  font-size: .95rem;
 }
 
-/* Etiquetas */
-.login-container label {
+/* Formulario */
+.login-form {
+  display: grid;
+  gap: 1rem;
+}
+.form-group label {
   display: block;
   font-weight: 600;
-  color: #333;
-  margin-bottom: 0.3rem;
+  color: var(--text);
+  margin-bottom: 0.35rem;
 }
 
-/* Inputs */
-.login-container input {
+.login-form input[type="email"],
+.login-form input[type="password"],
+.login-form input[type="text"] {
   width: 100%;
-  padding: 0.6rem 0.8rem;
-  border: 1px solid #ccc;
-  border-radius: 8px;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid #d4d6da;
+  border-radius: 10px;
   outline: none;
-  transition: border 0.2s, box-shadow 0.2s;
+  transition: border-color .2s, box-shadow .2s, background .2s;
+  background: #fff;
+  font-size: 0.98rem;
 }
 
-.login-container input:focus {
-  border-color: #57b460;
-  box-shadow: 0 0 0 2px rgba(87, 180, 96, 0.2);
+.login-form input:focus {
+  border-color: var(--brand);
+  box-shadow: 0 0 0 3px var(--ring);
 }
 
-/* Botón */
-.login-container button {
-  width: 100%;
-  background: #57b460;
-  color: #fff;
-  padding: 0.7rem;
-  margin-top: 1rem;
+/* Campo contraseña con botón ojo */
+.password-field {
+  position: relative;
+}
+.toggle-pass {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
   border: none;
-  border-radius: 8px;
-  font-weight: 600;
+  background: transparent;
   cursor: pointer;
-  transition: background 0.2s;
+  font-size: 1.05rem;
+  line-height: 1;
+  opacity: .75;
+  transition: opacity .15s ease, transform .1s ease;
+}
+.toggle-pass:hover { opacity: 1; transform: translateY(-50%) scale(1.05); }
+
+/* Fila: recordar + recuperar */
+.form-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: .25rem;
+  gap: .75rem;
+}
+.remember {
+  display: inline-flex;
+  align-items: center;
+  gap: .5rem;
+  color: var(--text);
+  font-size: .95rem;
+}
+.link-muted {
+  color: var(--muted);
+  text-decoration: none;
+  font-size: .92rem;
+}
+.link-muted:hover { text-decoration: underline; }
+
+/* Botón submit */
+.btn-submit {
+  width: 100%;
+  background: linear-gradient(135deg, var(--brand), var(--brand-dark));
+  color: #fff;
+  padding: 0.85rem 1rem;
+  border: none;
+  border-radius: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform .15s ease, filter .15s ease, box-shadow .2s ease;
+  box-shadow: 0 6px 16px rgba(87,180,96,.25);
+}
+.btn-submit:hover { filter: brightness(1.02); transform: translateY(-1px); }
+.btn-submit:active { transform: translateY(0); }
+.btn-submit:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+  box-shadow: none;
 }
 
-.login-container button:hover {
-  background: #2f5d31;
-}
-
-/* Texto inferior */
-.login-container p {
+/* Footer de la tarjeta */
+.login-footer {
   text-align: center;
   margin-top: 1rem;
-  font-size: 0.9rem;
-  color: #555;
+  font-size: .95rem;
+  color: var(--muted);
 }
-
-.login-container a {
-  color: #57b460;
-  font-weight: 600;
+.link-strong {
+  color: var(--brand);
+  font-weight: 700;
   text-decoration: none;
 }
+.link-strong:hover { text-decoration: underline; }
 
-.login-container a:hover {
-  text-decoration: underline;
+/* Responsive */
+@media (max-width: 420px) {
+  .login-card { border-radius: 14px; padding: 1.1rem 1rem 1.25rem; }
+  .btn-submit { border-radius: 10px; }
+}
+
+/* ====== Overrides para que el texto sea legible ====== */
+.login-page,
+.login-card,
+.login-form,
+.login-form label {
+  color: #222;              /* texto general oscuro */
+}
+
+.login-form input {
+  color: #222;              /* 👈 texto dentro del input */
+  background: #fff;         /* fondo blanco del input */
+  border: 1px solid #cfd8dc;
+}
+
+.login-form input::placeholder {
+  color: #9aa3ab;           /* placeholder gris */
+}
+
+.password-field .toggle-pass {
+  color: #555;              /* icono/emoji visible */
+  background: transparent;
+  border: 0;
+}
+
+.btn-submit {
+  color: #fff;              /* botón con texto blanco */
+}
+
+/* Si algún global te pisa los colores, usa !important (último recurso) */
+.login-form input {
+  color: #222 !important;
+  background: #fff !important;
 }

@@ -1,48 +1,186 @@
+/* ===== Página ===== */
 .registro-page {
-  max-width: 450px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  background: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  min-height: 100vh;
+  display: grid;
+  place-items: center;
+  padding: 2rem 1rem;
+  background: #d4fdd2; /* combina con tu paleta */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
 }
 
-.registro-page h2 {
+/* ===== Tarjeta ===== */
+.registro-card {
+  width: 100%;
+  max-width: 860px;
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 18px 40px rgba(0,0,0,.08);
+  padding: 1.6rem;
+}
+
+/* Encabezado */
+.registro-header {
   text-align: center;
-  color: #2f5d31;
+  margin-bottom: 1.2rem;
+}
+.registro-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+  color: #2f5d31; /* brand dark */
+  font-weight: 800;
+}
+.registro-header p {
+  margin-top: .5rem;
+  color: #4b5563;
+}
+
+/* Alert de validación */
+.registro-alert {
+  background: #fff5f5;
+  border: 1px solid #ffcaca;
+  color: #8a2020;
+  border-radius: 10px;
+  padding: .75rem 1rem;
   margin-bottom: 1rem;
 }
+.registro-alert ul { margin-left: 1rem; }
 
+/* ===== Formulario ===== */
 .registro-form {
   display: flex;
   flex-direction: column;
   gap: 1rem;
 }
 
-.registro-form label {
-  display: flex;
-  flex-direction: column;
-  font-weight: bold;
+/* Grid 2 columnas en desktop */
+.grid-2 {
+  display: grid;
+  gap: 1rem;
+  grid-template-columns: 1fr 1fr;
+}
+@media (max-width: 720px) {
+  .grid-2 { grid-template-columns: 1fr; }
 }
 
-.registro-form input {
-  margin-top: 0.5rem;
-  padding: 0.75rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  font-size: 1rem;
+.form-group label {
+  display: block;
+  font-weight: 700;
+  color: #374151;
+  margin-bottom: .35rem;
 }
 
-.btn-enviar {
-  background: #57b460;
-  color: white;
-  padding: 0.75rem;
-  border: none;
-  border-radius: 6px;
-  font-weight: bold;
+.form-group input {
+  width: 100%;
+  padding: .7rem .85rem;
+  border: 1px solid #cfd8dc;
+  border-radius: 10px;
+  background: #fff;
+  color: #222; /* 👈 asegura texto oscuro */
+  outline: none;
+  transition: border .2s, box-shadow .2s;
+}
+.form-group input::placeholder { color: #9aa3ab; }
+.form-group input:focus {
+  border-color: #57b460;
+  box-shadow: 0 0 0 3px rgba(87,180,96,.18);
+}
+
+/* Contraseñas con botón mostrar/ocultar */
+.password-field {
+  position: relative;
+}
+.password-field input {
+  padding-right: 2.4rem;
+}
+.toggle-pass {
+  position: absolute;
+  right: .35rem;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 0;
+  background: transparent;
+  font-size: 1.1rem;
   cursor: pointer;
-  transition: background 0.2s ease;
+  color: #4b5563;
 }
-.btn-enviar:hover {
-  background: #2f5d31;
+
+/* Indicador de fortaleza */
+.strength {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  margin-top: .45rem;
 }
+.strength .bar {
+  height: 7px;
+  flex: 1;
+  border-radius: 999px;
+  background: #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+.strength .bar::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 0%;
+  border-radius: inherit;
+  transition: width .25s ease, background .25s ease;
+}
+.strength .s-0::after { width: 15%; background: #ef4444; }
+.strength .s-1::after { width: 30%; background: #f97316; }
+.strength .s-2::after { width: 55%; background: #f59e0b; }
+.strength .s-3::after { width: 80%; background: #10b981; }
+.strength .s-4::after { width: 100%; background: #059669; }
+.strength .strength-label {
+  font-size: .85rem;
+  color: #6b7280;
+}
+
+/* Términos */
+.terms {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  font-size: .95rem;
+  color: #374151;
+}
+.terms a {
+  color: #2f5d31;
+  font-weight: 700;
+  text-decoration: none;
+}
+.terms a:hover { text-decoration: underline; }
+
+/* Botón submit */
+.btn-submit {
+  width: 100%;
+  padding: .9rem 1rem;
+  border: 0;
+  border-radius: 10px;
+  color: #fff;
+  font-weight: 700;
+  background: linear-gradient(135deg, #57b460, #2f5d31);
+  box-shadow: 0 6px 16px rgba(0,0,0,.12);
+  cursor: pointer;
+  transition: transform .08s ease, filter .2s ease;
+}
+.btn-submit:hover { filter: brightness(1.03); }
+.btn-submit:active { transform: scale(.99); }
+.btn-submit:disabled {
+  opacity: .65;
+  cursor: not-allowed;
+}
+
+/* Footer */
+.registro-footer {
+  text-align: center;
+  margin-top: 1rem;
+  color: #4b5563;
+}
+.registro-footer .link-strong {
+  color: #2f5d31;
+  font-weight: 800;
+  text-decoration: none;
+}
+.registro-footer .link-strong:hover { text-decoration: underline; }

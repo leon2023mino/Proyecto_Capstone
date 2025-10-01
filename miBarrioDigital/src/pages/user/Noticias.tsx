@@ -17,7 +17,7 @@ export default function Noticias() {
       fecha: "10 Septiembre 2025",
       descripcion:
         "Comenzaron las obras para la nueva sede social que estará lista en diciembre. Un espacio para reuniones, talleres y actividades del barrio.",
-      imagen: "/noticia1.jpg",
+      imagen: "/noticia1.avif",
     },
     {
       id: 2,
@@ -33,7 +33,7 @@ export default function Noticias() {
       fecha: "15 Agosto 2025",
       descripcion:
         "Se abre la inscripción para el campeonato anual. Equipos de 5 integrantes, categorías juveniles y adultos.",
-      imagen: "/noticia3.jpg", // 👈 mejor usar desde public/
+      imagen: "noticia3.jpg", // 👈 mejor usar desde public/
     },
   ];
 
