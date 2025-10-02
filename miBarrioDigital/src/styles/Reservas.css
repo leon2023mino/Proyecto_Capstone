@@ -10,7 +10,7 @@
 
 /* Card */
 .reserva-card {
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #e6f2e8;
   border-radius: var(--radius, 12px);
   box-shadow: var(--shadow, 0 12px 28px rgba(0,0,0,.08));
