@@ -1,11 +1,11 @@
 /* Paleta consistente con tu App.css */
 :root {
-  --brand: #57b460;
-  --brand-dark: #2f5d31;
+  --brand: #1b56a4;
+  --brand-dark: #143f77;
   --text: #333;
   --card-bg: #ffffff;
   --muted: #6b7280;
-  --ring: rgba(87, 180, 96, 0.25);
+  --ring: rgba(87, 96, 180, 0.25);
   --shadow: 0 12px 28px rgba(0,0,0,.08);
 }
 
@@ -15,7 +15,7 @@
   display: grid;
   place-items: center;
   padding: 2rem 1rem;
-  background: #d4fdd2; /* tu verde clarito */
+  background: #ffffff; /* tu verde clarito */
 }
 
 /* Tarjeta */

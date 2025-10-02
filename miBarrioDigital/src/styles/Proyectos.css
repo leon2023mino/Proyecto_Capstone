@@ -1,5 +1,7 @@
 /* =========================
    PROYECTOS (moderno)
+   Usa variables globales:
+   --brand-blue, --brand-blue-700, --brand-green, --brand-green-700, --accent-yellow, --radius, --shadow, --border
 ========================= */
 
 .proyectos-page {
@@ -18,7 +20,7 @@
   margin-bottom: 1rem;
 }
 .proyectos-title {
-  color: var(--brand-dark, #2f5d31);
+  color: var(--brand-blue-700);
   font-size: 1.6rem;
   font-weight: 800;
   margin: 0;
@@ -28,7 +30,7 @@
   margin: .25rem 0 0;
 }
 
-/* Opcional: barra de filtros/búsqueda */
+/* Barra de filtros/búsqueda */
 .proyectos-toolbar {
   display: flex;
   gap: .5rem;
@@ -37,7 +39,7 @@
 .input-search,
 .select-filter {
   background: #fff;
-  border: 1px solid #e6f2e8;
+  border: 1px solid var(--border, #e6f2e8);
   border-radius: 10px;
   padding: .6rem .8rem;
   font-size: .95rem;
@@ -51,16 +53,11 @@
   gap: 1rem;
   margin-top: 1rem;
 }
-
 @media (min-width: 720px) {
-  .proyectos-lista {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  .proyectos-lista { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 @media (min-width: 1024px) {
-  .proyectos-lista {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
+  .proyectos-lista { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 }
 
 /* Card del proyecto */
@@ -68,7 +65,7 @@
   display: flex;
   flex-direction: column;
   background: #fff;
-  border: 1px solid #e6f2e8;
+  border: 1px solid var(--border, #e6f2e8);
   border-radius: var(--radius, 12px);
   box-shadow: var(--shadow, 0 12px 28px rgba(0,0,0,.08));
   overflow: hidden;
@@ -114,9 +111,10 @@
 }
 .estado svg { width: 14px; height: 14px; }
 
-.estado-en-curso   { background: var(--brand, #57b460); }
-.estado-finalizado { background: var(--brand-dark, #2f5d31); }
-.estado-pendiente  { background: #f1c40f; color: #2f2f2f; }
+/* 🎯 Colores de estado coherentes con tu paleta */
+.estado-en-curso   { background: var(--brand-blue); }
+.estado-finalizado { background: var(--brand-green); }
+.estado-pendiente  { background: var(--accent-yellow); color: #1f2937; } /* buen contraste sobre amarillo */
 
 /* Descripción */
 .proyecto-desc {
@@ -132,7 +130,7 @@
   margin-top: .4rem;
 }
 .btn-ver-mas {
-  background: var(--brand, #57b460);
+  background: var(--brand-blue);
   color: #fff;
   border: none;
   padding: .55rem .9rem;
@@ -140,22 +138,22 @@
   font-weight: 800;
   cursor: pointer;
   transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
-  box-shadow: 0 8px 20px rgba(87,180,96,.18);
+  box-shadow: 0 8px 20px rgba(27,86,164,.18);
 }
-.btn-ver-mas:hover { background: var(--brand-dark, #2f5d31); transform: translateY(-1px); }
+.btn-ver-mas:hover { background: var(--brand-blue-700); transform: translateY(-1px); }
 .btn-ver-mas:active { transform: translateY(0); }
 
 .btn-ghost {
   background: #fff;
-  color: var(--brand-dark, #2f5d31);
-  border: 1px solid #cfe9d3;
+  color: var(--brand-blue-700);
+  border: 1px solid #cfe0f4;
   padding: .55rem .9rem;
   border-radius: 10px;
   font-weight: 800;
   cursor: pointer;
   transition: transform .08s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
 }
-.btn-ghost:hover { background: #f7fff8; transform: translateY(-1px); }
+.btn-ghost:hover { background: #f4f8ff; transform: translateY(-1px); }
 
 /* Footer (chips/meta) */
 .proyecto-meta {
@@ -168,9 +166,9 @@
   background: #fbfdfb;
 }
 .meta-chip {
-  background: #e8f7eb;
-  border: 1px solid #cfe9d3;
-  color: #2f5d31;
+  background: #e8f0f7;
+  border: 1px solid #cfdde9;
+  color: #2f435d;
   border-radius: 999px;
   font-weight: 800;
   font-size: .75rem;

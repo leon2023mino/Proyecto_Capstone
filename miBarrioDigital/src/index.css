@@ -1,22 +1,36 @@
 :root {
-  /* ===== Colores base ===== */
-  --text-color: #2e2e2e;               /* color de texto general */
-  --bg-color: #d4fdd2;                 /* fondo general (verde muy claro) */
+  /* ===== Paleta Mi Barrio Digital ===== */
+  --brand-blue: #1e4f91;        /* primario (confianza) */
+  --brand-blue-700: #153969;    /* hover/active azul */
+  --brand-green: #228b67;       /* secundario (comunidad) */
+  --brand-green-700: #17684d;   /* hover/active verde */
+  --accent-yellow: #fdbb2d;     /* acento (acciones puntuales) */
 
-  /* ===== Marca / acentos ===== */
-  --brand-green: #57b460;
-  --brand-green-dark: #2f5d31;
-  --link: #646cff;
-  --link-hover: #535bf2;
+  /* Neutros y superficies */
+  --bg-color: #f7f9fc;          /* fondo app (muy claro) */
+  --surface: #ffffff;           /* tarjetas, header-top */
+  --border: #e5e7eb;            /* bordes sutiles */
+  --shadow: 0 12px 28px rgba(0,0,0,.06);
 
-  /* ===== Main (editable desde acá) ===== */
-  --main-text-color: #333;             /* 👈 cambia el color del texto de .main aquí */
+  /* Tipografía */
+  --text-color: #2b2b2b;        /* texto principal */
+  --text-muted: #6b7280;        /* texto secundario */
 
-  /* ===== Tipografía y render ===== */
+  /* Links */
+  --link: var(--brand-blue);
+  --link-hover: var(--brand-blue-700);
+
+  /* Config extra */
+  --radius: 12px;
+  --focus-ring: 0 0 0 3px rgba(30,79,145,.25);
+
+  /* Si quieres cambiar el color del texto de .main desde un solo lugar */
+  --main-text-color: var(--text-color);
+
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  line-height: 1.55;
   font-weight: 400;
-  color-scheme: light;                  /* declaramos light por defecto */
+  color-scheme: light;
   color: var(--text-color);
   background-color: var(--bg-color);
   font-synthesis: none;
@@ -29,60 +43,60 @@
 a {
   font-weight: 500;
   color: var(--link);
-  text-decoration: inherit;
+  text-decoration: none;
 }
-a:hover {
-  color: var(--link-hover);
-}
+a:hover { color: var(--link-hover); text-decoration: underline; }
 
 /* Página */
+html, body { height: 100%; }
 body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  /* 👇 Quitamos el flex que centraba todo y rompía el header */
-  /* display: flex;
-     place-items: center; */
+  background: var(--bg-color);
 }
 
 /* Títulos genéricos (opcional) */
-h1 {
-  font-size: 3.2em;
-  line-height: 1.1;
-}
+h1 { font-size: 2.2rem; line-height: 1.2; color: var(--brand-blue); }
 
-/* Botones base (si te sirven globalmente) */
+/* Botones base (estándar accesible) */
 button {
-  border-radius: 8px;
+  border-radius: 10px;
   border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
+  padding: 0.65em 1.2em;
+  font-size: 1rem;
+  font-weight: 600;
   font-family: inherit;
-  background-color: #d4fdd2;
+  background-color: var(--brand-blue);
   color: #fff;
   cursor: pointer;
-  transition: border-color 0.25s, background-color 0.25s, color 0.25s;
+  transition: border-color .25s, background-color .25s, color .25s, transform .05s;
+  box-shadow: 0 3px 10px rgba(30,79,145,.18);
 }
-button:hover { border-color: var(--link); }
-button:focus,
-button:focus-visible { outline: 4px auto -webkit-focus-ring-color; }
+button:hover { background-color: var(--brand-blue-700); transform: translateY(-1px); }
+button:active { transform: translateY(0); }
+button:focus-visible { outline: none; box-shadow: var(--focus-ring); }
 
-/* Modo oscuro automático si el usuario lo prefiere */
+/* Variantes útiles */
+.button--secondary { background-color: var(--brand-green); box-shadow: 0 3px 10px rgba(34,139,103,.18); }
+.button--secondary:hover { background-color: var(--brand-green-700); }
+.button--accent { background-color: var(--accent-yellow); color: #1b1b1b; box-shadow: 0 3px 10px rgba(253,187,45,.25); }
+.button--ghost { background-color: transparent; color: var(--brand-blue); border: 1px solid var(--brand-blue); }
+
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --text-color: #333333;
-    --bg-color: #d4fdd2;
-    color: var(--text-color);
-    background-color: var(--bg-color);
-    --link: #9aa5ff;
-    --link-hover: #b5bdff;
+    --bg-color: #ffffff;          /* slate-900 */
+    --surface: #111827;           /* gray-900 */
+    --border: #1f2937;
+    --text-color: #e5e7eb;        /* gray-200 */
+    --text-muted: #9ca3af;        /* gray-400 */
+    --link: #7aa3e0;
+    --link-hover: #a8c0eb;
   }
-  button { background-color: #2a2a2a; }
+  body { background: var(--bg-color); }
+  button { background-color: var(--brand-blue-700); }
 }
 
-/* 👇 Si quieres que .main use la variable global definida arriba */
-.main {
-  color: var(--main-text-color);
-}
+/* Contenido principal que tome el color global configurable */
+.main { color: var(--main-text-color); }

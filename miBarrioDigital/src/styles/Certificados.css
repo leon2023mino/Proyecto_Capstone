@@ -40,9 +40,9 @@
 
 /* Tips/alertas */
 .cert-info {
-  background: #f0faf2;
-  border: 1px dashed #bfe5c3;
-  color: #2f5d31;
+  background: #f0f5fa;
+  border: 1px dashed #bfc3e5;
+  color: #2f325d;
   border-radius: 10px;
   padding: .75rem .9rem;
   font-size: .95rem;
@@ -104,8 +104,8 @@
 .select:focus,
 .textarea:focus {
   outline: none;
-  border-color: var(--brand, #57b460);
-  box-shadow: 0 0 0 4px rgba(87,180,96,.15);
+  border-color: var(--brand, #5770b4);
+  box-shadow: 0 0 0 4px rgba(87, 116, 180, 0.15);
 }
 
 /* Placeholder suave */
@@ -146,7 +146,7 @@
 }
 
 .btn-primary {
-  background: var(--brand, #57b460);
+  background: var(--brand, #5768b4);
   color: #fff;
   padding: .8rem 1rem;
   border: none;
@@ -164,7 +164,7 @@
 
 .btn-ghost {
   background: #fff;
-  color: var(--brand-dark, #2f5d31);
+  color: var(--brand-dark, #2f375d);
   border: 1px solid #cfe9d3;
   padding: .8rem 1rem;
   border-radius: 10px;
@@ -173,14 +173,14 @@
   transition: transform .08s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
 }
 .btn-ghost:hover {
-  background: #f7fff8;
+  background: #f7f8ff;
   transform: translateY(-1px);
 }
 
 /* Divider suave */
 .divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, #e6f2e8, transparent);
+  background: linear-gradient(90deg, transparent, #e6ebf2, transparent);
   margin: 1.25rem 0;
 }
 
@@ -198,8 +198,8 @@
   padding: .25rem .55rem;
   border-radius: 999px;
   background: #e8f7eb;
-  border: 1px solid #cfe9d3;
-  color: #2f5d31;
+  border: 1px solid #cfd6e9;
+  color: #2f3a5d;
   font-weight: 800;
   font-size: .8rem;
 }
