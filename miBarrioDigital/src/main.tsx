@@ -20,6 +20,7 @@ import AdministrarSolicitudes from "./pages/admin/AdministarSolicitudes.tsx";
 import NoticiasVer from "./pages/user/NoticiasVer.tsx";
 import AdministrarNoticias from "./pages/admin/AdministrarNoticias.tsx";
 import VerNoticiaAdmin from "./pages/admin/VerNoticiaAdmin.tsx";
+import { AuthProvider } from "./context/AuthContext.tsx";
 
 const router = createBrowserRouter([
   {
@@ -48,6 +49,8 @@ const router = createBrowserRouter([
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>
 );

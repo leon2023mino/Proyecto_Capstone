@@ -1,5 +1,12 @@
 import { useState } from "react";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendEmailVerification,
+} from "firebase/auth";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
+import { auth, db } from "../../firebase/config"; // 👈 ajusta si tu ruta difiere
 import "../../styles/Registro.css";
 
 type FormState = {
@@ -11,6 +18,10 @@ type FormState = {
   confirm: string;
   acepta: boolean;
 };
+
+function normalizarRut(rut: string) {
+  return rut.trim().replace(/\./g, "").toUpperCase(); // sin puntos; K mayúscula
+}
 
 export default function Registro() {
   const [form, setForm] = useState<FormState>({
@@ -26,10 +37,10 @@ export default function Registro() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [errors, setErrors] = useState<string[]>([]);
   const [sending, setSending] = useState(false);
+  const navigate = useNavigate();
 
   const onChange =
-    (field: keyof FormState) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
+    (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement>) => {
       const value =
         e.target.type === "checkbox"
           ? (e.target as HTMLInputElement).checked
@@ -57,22 +68,48 @@ export default function Registro() {
       errs.push("La contraseña debe tener al menos 8 caracteres.");
     if (form.password !== form.confirm)
       errs.push("Las contraseñas no coinciden.");
-    if (!form.acepta)
-      errs.push("Debes aceptar los términos y condiciones.");
+    if (!form.acepta) errs.push("Debes aceptar los términos y condiciones.");
     return errs;
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const v = validate();
     setErrors(v);
     if (v.length) return;
+
     setSending(true);
-    // Aquí conectarás con tu backend
-    console.log("Registrando usuario:", form);
-    setTimeout(() => {
-      setSending(false);
-      alert("¡Registro enviado! Revisa tu correo para confirmar la cuenta.");
+    try {
+      // 1) Crear cuenta en Auth
+      const cred = await createUserWithEmailAndPassword(
+        auth,
+        form.email.trim(),
+        form.password
+      );
+
+      // 2) Actualizar displayName en Auth (opcional)
+      await updateProfile(cred.user, { displayName: form.nombre.trim() });
+
+      // 3) Crear perfil extendido en Firestore: users/{uid}
+      await setDoc(doc(db, "users", cred.user.uid), {
+        displayName: form.nombre.trim(),
+        email: form.email.trim(),
+        rut: normalizarRut(form.rut),
+        address: form.direccion.trim() || null,
+        phone: null, // si luego agregas teléfono en este formulario, cámbialo
+        uv: null, // idem si agregas UV
+        role: "vecino",
+        membershipStatus: "pendiente",
+        createdAt: serverTimestamp(),
+      });
+
+      // 4) (Opcional) Verificación de email
+      try {
+        await sendEmailVerification(cred.user);
+      } catch {}
+
+      // 5) Feedback + redirección
+      alert("✅ ¡Cuenta creada! Revisa tu correo para verificar la cuenta.");
       setForm({
         nombre: "",
         rut: "",
@@ -82,7 +119,22 @@ export default function Registro() {
         confirm: "",
         acepta: false,
       });
-    }, 700);
+      navigate("/"); // o "/login" si prefieres que inicie sesión luego de verificar
+    } catch (err: any) {
+      // Mapeo de errores comunes
+      const map: Record<string, string> = {
+        "auth/email-already-in-use": "El correo ya está en uso.",
+        "auth/invalid-email": "Correo inválido.",
+        "auth/weak-password":
+          "La contraseña es muy débil (mínimo 6 caracteres).",
+        "auth/operation-not-allowed":
+          "Método de registro no habilitado en Firebase.",
+      };
+      setErrors([map[err?.code] ?? "No se pudo crear la cuenta."]);
+      console.error(err);
+    } finally {
+      setSending(false);
+    }
   };
 
   return (
@@ -106,6 +158,7 @@ export default function Registro() {
           </div>
         )}
 
+        {/* 👇 Mantengo tu mismo form y clases, solo llamo a handleSubmit */}
         <form className="registro-form" onSubmit={handleSubmit} noValidate>
           <div className="grid-2">
             <div className="form-group">
@@ -176,7 +229,9 @@ export default function Registro() {
                 <button
                   type="button"
                   className="toggle-pass"
-                  aria-label={showPass ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  aria-label={
+                    showPass ? "Ocultar contraseña" : "Mostrar contraseña"
+                  }
                   onClick={() => setShowPass((v) => !v)}
                 >
                   {showPass ? "🙈" : "👁️"}
@@ -185,7 +240,11 @@ export default function Registro() {
               <div className="strength">
                 <div className={`bar s-${passwordStrength}`} />
                 <span className="strength-label">
-                  {["Muy débil", "Débil", "Medio", "Fuerte", "Muy fuerte"][passwordStrength]}
+                  {
+                    ["Muy débil", "Débil", "Medio", "Fuerte", "Muy fuerte"][
+                      passwordStrength
+                    ]
+                  }
                 </span>
               </div>
             </div>
@@ -205,7 +264,9 @@ export default function Registro() {
                 <button
                   type="button"
                   className="toggle-pass"
-                  aria-label={showConfirm ? "Ocultar contraseña" : "Mostrar contraseña"}
+                  aria-label={
+                    showConfirm ? "Ocultar contraseña" : "Mostrar contraseña"
+                  }
                   onClick={() => setShowConfirm((v) => !v)}
                 >
                   {showConfirm ? "🙈" : "👁️"}
