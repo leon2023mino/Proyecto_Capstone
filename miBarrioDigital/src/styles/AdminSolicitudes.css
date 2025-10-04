@@ -1,0 +1,107 @@
+/* =========================
+   ADMINISTRAR SOLICITUDES
+========================= */
+
+.solicitudes-page {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.solicitudes-lista {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.solicitud-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1rem 1.25rem;
+  margin-bottom: 1rem;
+  transition: transform 0.08s ease, box-shadow 0.2s ease;
+}
+
+.solicitud-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+}
+
+.solicitud-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: .5rem;
+}
+
+.solicitud-nombre {
+  font-weight: 700;
+  color: var(--brand-blue);
+}
+
+.solicitud-tipo {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* Estado como "badge" */
+.solicitud-estado {
+  display: inline-block;
+  padding: .3rem .8rem;
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.85rem;
+  margin-bottom: .5rem;
+  text-transform: capitalize;
+}
+
+.estado-pendiente {
+  background: rgba(253,187,45,.15);
+  color: var(--accent-yellow);
+}
+
+.estado-aceptada {
+  background: rgba(34,139,103,.15);
+  color: var(--brand-green);
+}
+
+.estado-rechazada {
+  background: rgba(220,20,60,.12);
+  color: crimson;
+}
+
+.solicitud-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* Botones globales ya existen:
+   .button--secondary, .button--accent, .btn-ghost
+*/
+.solicitud-actions .button--secondary,
+.solicitud-actions .button--accent,
+.solicitud-actions .btn-ghost {
+  flex: 1;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform .05s ease;
+}
+
+.solicitud-actions .button--secondary:hover,
+.solicitud-actions .button--accent:hover,
+.solicitud-actions .btn-ghost:hover {
+  transform: translateY(-1px);
+}
+
+/* Estado deshabilitado */
+.solicitud-actions button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none !important;
+  box-shadow: none !important;
+}
