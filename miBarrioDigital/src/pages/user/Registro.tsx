@@ -3,7 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import {
   createUserWithEmailAndPassword,
   updateProfile,
-  sendEmailVerification,
+  // sendEmailVerification,
 } from "firebase/auth";
 import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 import { auth, db } from "../../firebase/config"; // 👈 ajusta si tu ruta difiere
@@ -104,9 +104,9 @@ export default function Registro() {
       });
 
       // 4) (Opcional) Verificación de email
-      try {
-        await sendEmailVerification(cred.user);
-      } catch {}
+      // try {
+      //   await sendEmailVerification(cred.user);
+      // } catch {}
 
       // 5) Feedback + redirección
       alert("✅ ¡Cuenta creada! Revisa tu correo para verificar la cuenta.");
