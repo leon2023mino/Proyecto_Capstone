@@ -1,12 +1,12 @@
-// src/types/Noticias.ts
-export interface Noticia {
+// types/Noticias.ts
+export type Noticia = {
   id: string;
   titulo: string;
   contenido: string;
   coverUrl?: string;
-  galeriaUrls?: string[];
+  galeriaUrls: string[];
   publicadoPor?: string;
-  createdAt?: Date;
-  visibleDesde?: Date | null;
-  visibleHasta?: Date | null;
-}
+  createdAt?: Date; // opcional (undefined si no hay)
+  visibleDesde?: Date; // idem
+  visibleHasta?: Date; // idem
+};
