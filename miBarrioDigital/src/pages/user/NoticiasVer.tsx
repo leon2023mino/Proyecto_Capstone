@@ -2,12 +2,15 @@
 import "../../styles/Noticias.css";
 import { NavLink } from "react-router-dom";
 
+// ✅ Importamos la imagen desde assets
+import noticia1 from "../../assets/noticia1.avif";
+
 export default function NoticiasVer() {
   return (
     <div className="noticias-page">
       <article className="noticia-detalle">
         <img
-          src="/noticia1.avif"
+          src={noticia1}
           alt="Nueva sede comunitaria en construcción"
           className="noticia-imagen"
         />

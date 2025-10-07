@@ -1,6 +1,11 @@
 import "../../styles/Proyectos.css";
 import { NavLink } from "react-router-dom";
 
+// ✅ Importa las imágenes desde src/assets
+import img1 from "../../assets/proyecto1.jpg";
+import img2 from "../../assets/proyecto2.jpg";
+import img3 from "../../assets/proyecto3.webp";
+
 type Estado = "En curso" | "Finalizado" | "Pendiente";
 
 type Proyecto = {
@@ -8,7 +13,7 @@ type Proyecto = {
   titulo: string;
   estado: Estado;
   descripcion: string;
-  imagen?: string; // si usas /public/proyectoX.jpg, deja la ruta absoluta. Si es de src/assets, impórtala.
+  imagen?: string;
 };
 
 export default function Proyectos() {
@@ -19,7 +24,7 @@ export default function Proyectos() {
       estado: "En curso",
       descripcion:
         "Proyecto aprobado para instalar juegos infantiles y máquinas de ejercicio en la plaza central.",
-      imagen: "/proyecto1.jpg", // o import img1 from "../assets/proyecto1.jpg";
+      imagen: img1, // 👈 ahora usa la importación
     },
     {
       id: 2,
@@ -27,7 +32,7 @@ export default function Proyectos() {
       estado: "Finalizado",
       descripcion:
         "Vecinos artistas pintaron murales que representan la historia del barrio.",
-      imagen: "/proyecto2.jpg",
+      imagen: img2,
     },
     {
       id: 3,
@@ -35,7 +40,7 @@ export default function Proyectos() {
       estado: "Pendiente",
       descripcion:
         "Propuesta para cultivar frutas y verduras en un terreno baldío.",
-      imagen: "/proyecto3.jpg",
+      imagen: img3,
     },
   ];
 
@@ -82,26 +87,7 @@ export default function Proyectos() {
             {/* Contenido */}
             <div className="proyecto-body">
               <h3>{p.titulo}</h3>
-              <span className={estadoClass(p.estado)}>
-                {/* Icono simple por estado */}
-                {p.estado === "En curso" && (
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <circle cx="12" cy="12" r="5" />
-                  </svg>
-                )}
-                {p.estado === "Finalizado" && (
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M20 6L9 17l-5-5" />
-                  </svg>
-                )}
-                {p.estado === "Pendiente" && (
-                  <svg viewBox="0 0 24 24" aria-hidden="true">
-                    <path d="M12 7v5l3 3" />
-                  </svg>
-                )}
-                {p.estado}
-              </span>
-
+              <span className={estadoClass(p.estado)}>{p.estado}</span>
               <p className="proyecto-desc">{p.descripcion}</p>
 
               <div className="proyecto-actions">
@@ -112,7 +98,7 @@ export default function Proyectos() {
               </div>
             </div>
 
-            {/* Meta/chips (opcional) */}
+            {/* Meta/chips */}
             <div className="proyecto-meta">
               <span className="meta-chip">Comunal</span>
               <span className="meta-chip">Participativo</span>

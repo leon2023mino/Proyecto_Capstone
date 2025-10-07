@@ -2,13 +2,16 @@
 import "../../styles/Proyectos.css";
 import { NavLink } from "react-router-dom";
 
+// ✅ Importa la imagen desde src/assets
+import img1 from "../../assets/proyecto1.jpg";
+
 export default function ProyectosVer() {
   return (
     <div className="proyectos-page">
       <article className="proyecto-detalle">
         {/* Imagen grande del proyecto */}
         <img
-          src="/proyecto1.jpg"
+          src={img1}
           alt="Plaza con Juegos Infantiles"
           className="proyecto-imagen"
         />

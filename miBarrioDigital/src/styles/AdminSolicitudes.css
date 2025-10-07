@@ -12,96 +12,111 @@
   list-style: none;
   padding: 0;
   margin: 0;
+  display: grid;
+  gap: 1rem;
 }
 
+/* ===== Card ===== */
 .solicitud-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
   box-shadow: var(--shadow);
-  padding: 1rem 1.25rem;
-  margin-bottom: 1rem;
-  transition: transform 0.08s ease, box-shadow 0.2s ease;
+  padding: 1.25rem 1.4rem;
+  transition: transform 0.12s ease, box-shadow 0.25s ease, border-color .2s ease;
+  display: flex;
+  flex-direction: column;
+  gap: .5rem;
 }
-
 .solicitud-card:hover {
   transform: translateY(-2px);
-  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 14px 32px rgba(0, 0, 0, 0.10);
+}
+.solicitud-card:focus-within {
+  border-color: rgba(27,86,164,.35);             /* var(--brand-blue) */
+  box-shadow: 0 0 0 3px rgba(27,86,164,.12);
 }
 
+/* Encabezado */
 .solicitud-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: .5rem;
+  gap: .75rem;
+  margin-bottom: .25rem;
 }
-
 .solicitud-nombre {
-  font-weight: 700;
+  font-weight: 800;
   color: var(--brand-blue);
+  font-size: 1.05rem;
 }
-
 .solicitud-tipo {
-  font-size: 0.95rem;
+  font-size: .95rem;
   color: var(--text-muted);
+  white-space: nowrap;
 }
 
-/* Estado como "badge" */
+/* ===== Estado (badge) ===== */
 .solicitud-estado {
   display: inline-block;
-  padding: .3rem .8rem;
+  padding: .32rem .75rem;
   border-radius: 999px;
-  font-weight: 700;
-  font-size: 0.85rem;
-  margin-bottom: .5rem;
+  font-weight: 800;
+  font-size: .85rem;
   text-transform: capitalize;
+  width: fit-content;
 }
 
 .estado-pendiente {
-  background: rgba(253,187,45,.15);
-  color: var(--accent-yellow);
+  background: rgba(253,187,45,.18);  /* amarillo suave */
+  color: #7c5700;                     /* mejor contraste sobre amarillo */
 }
-
 .estado-aceptada {
-  background: rgba(34,139,103,.15);
+  background: rgba(34,139,103,.16);  /* verde suave */
   color: var(--brand-green);
 }
-
 .estado-rechazada {
-  background: rgba(220,20,60,.12);
+  background: rgba(220,20,60,.14);   /* rojo suave */
   color: crimson;
 }
 
+/* ===== Acciones ===== */
+/* Grid: mantiene los botones alineados y evita desbordes */
 .solicitud-actions {
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.75rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: .6rem;
+  margin-top: .75rem;
 }
 
 /* Botones globales ya existen:
-   .button--secondary, .button--accent, .btn-ghost
+   .button--secondary (verde), .button--accent (amarillo), .btn-ghost (borde)
 */
 .solicitud-actions .button--secondary,
 .solicitud-actions .button--accent,
 .solicitud-actions .btn-ghost {
-  flex: 1;
-  padding: 0.6rem 1rem;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: transform .05s ease;
+  padding: .6rem 1rem;
+  border-radius: 10px;
+  font-weight: 700;
+  transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
 }
-
 .solicitud-actions .button--secondary:hover,
 .solicitud-actions .button--accent:hover,
 .solicitud-actions .btn-ghost:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
-/* Estado deshabilitado */
+/* Deshabilitado */
 .solicitud-actions button:disabled {
   opacity: 0.55;
   cursor: not-allowed;
   transform: none !important;
   box-shadow: none !important;
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 600px) {
+  .solicitud-header { flex-direction: column; align-items: flex-start; }
+  .solicitud-tipo { white-space: normal; }
+  .solicitud-actions { grid-template-columns: 1fr; }  /* botones en columna */
 }

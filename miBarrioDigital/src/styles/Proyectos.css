@@ -174,3 +174,36 @@
   font-size: .75rem;
   padding: .15rem .5rem;
 }
+/* =========================
+   DETALLE DE PROYECTO
+========================= */
+.proyecto-detalle {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+}
+
+.proyecto-imagen {
+  width: 100%;
+  max-height: 400px;
+  object-fit: cover;
+  border-radius: var(--radius);
+}
+
+.proyecto-contenido h2 {
+  margin-top: 0;
+  color: var(--brand-blue);
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.proyecto-contenido p {
+  color: var(--text);
+  line-height: 1.6;
+  margin-top: 0.75rem;
+}

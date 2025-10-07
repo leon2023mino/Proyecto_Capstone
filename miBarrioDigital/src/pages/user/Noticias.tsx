@@ -1,6 +1,11 @@
 import { NavLink } from "react-router";
 import "../../styles/Noticias.css";
 
+// ✅ Import imágenes desde assets
+import noticia1 from "../../assets/noticia1.avif";
+import noticia2 from "../../assets/noticia2.jpg";
+import noticia3 from "../../assets/noticia3.jpg";
+
 type Noticia = {
   id: number;
   titulo: string;
@@ -21,10 +26,10 @@ export default function Noticias() {
       fecha: "10 Septiembre 2025",
       descripcion:
         "Comenzaron las obras para la nueva sede social que estará lista en diciembre. Un espacio para reuniones, talleres y actividades del barrio.",
-      imagen: "/noticia1.avif",
+      imagen: noticia1,
       fechaCreacion: "2 de octubre de 2025",
       visibleDesde: "1 de octubre de 2025",
-      visibleHasta: " 1 de enero de 2026",
+      visibleHasta: "1 de enero de 2026",
       autor: "leo minion",
     },
     {
@@ -33,10 +38,10 @@ export default function Noticias() {
       fecha: "25 Agosto 2025",
       descripcion:
         "Vecinos se unieron en una jornada de limpieza y reciclaje en la plaza central. ¡Gracias a todos los participantes!",
-      imagen: "/noticia2.jpg",
+      imagen: noticia2,
       fechaCreacion: "2 de octubre de 2025",
       visibleDesde: "1 de octubre de 2025",
-      visibleHasta: " 1 de enero de 2026",
+      visibleHasta: "1 de enero de 2026",
       autor: "leo minion",
     },
     {
@@ -45,10 +50,10 @@ export default function Noticias() {
       fecha: "15 Agosto 2025",
       descripcion:
         "Se abre la inscripción para el campeonato anual. Equipos de 5 integrantes, categorías juveniles y adultos.",
-      imagen: "noticia3.jpg", // 👈 mejor usar desde public/
+      imagen: noticia3,
       fechaCreacion: "2 de octubre de 2025",
       visibleDesde: "1 de octubre de 2025",
-      visibleHasta: " 1 de enero de 2026",
+      visibleHasta: "1 de enero de 2026",
       autor: "leo minion",
     },
   ];
