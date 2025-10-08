@@ -144,10 +144,10 @@ button:disabled,
 @media (prefers-color-scheme: dark) {
   :root {
     color-scheme: dark;
-    --bg-color: #111827;          
+    --bg-color: #ffffff;          
     --surface: #1f2937;           
     --border: #374151;
-    --text-color: #e5e7eb;        
+    --text-color: #696969;        
     --text-muted: #9ca3af;        
     --link: #7aa3e0;
     --link-hover: #a8c0eb;
