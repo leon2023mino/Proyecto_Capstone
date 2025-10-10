@@ -9,9 +9,34 @@ import {
   Timestamp,
   type DocumentData,
   QueryDocumentSnapshot,
+  onSnapshot,
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import type { Noticia } from "../../types/typeNoticia";
+
+export function subscribeToNoticias(callback: (items: Noticia[]) => void) {
+  const q = query(collection(db, "posts"), orderBy("createdAt", "desc"));
+
+  return onSnapshot(q, (snapshot) => {
+    const items: Noticia[] = snapshot.docs.map((d) => {
+      const data = d.data();
+      return {
+        id: d.id,
+        titulo: String(data.titulo ?? ""),
+        contenido: String(data.Contenido ?? data.contenido ?? ""),
+        coverUrl: data.coverUrl ? String(data.coverUrl) : undefined,
+        galeriaUrls: Array.isArray(data.galeriaUrls)
+          ? data.galeriaUrls.map((u: any) => String(u))
+          : [],
+        publicadoPor: data.publicadoPor ? String(data.publicadoPor) : undefined,
+        createdAt: toDateUndef(data.createdAt),
+        visibleDesde: toDateUndef(data.visibleDesde),
+        visibleHasta: toDateUndef(data.visibleHasta),
+      };
+    });
+    callback(items);
+  });
+}
 
 const toDateUndef = (v: any): Date | undefined =>
   v instanceof Timestamp ? v.toDate() : v ? new Date(v) : undefined;

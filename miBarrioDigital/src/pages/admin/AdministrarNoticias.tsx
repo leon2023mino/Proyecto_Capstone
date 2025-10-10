@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import {
   fetchNoticiasPage,
   type PageResult,
+  subscribeToNoticias,
 } from "../../components/noticias/getNoticias";
 import { type Noticia } from "../../types/typeNoticia";
 // import "../../styles/NoticiasLista.css"; // opcional
@@ -12,6 +13,15 @@ export default function NoticiasLista() {
   const [cursor, setCursor] = useState<PageResult["nextCursor"]>();
   const [loading, setLoading] = useState(false);
   const [end, setEnd] = useState(false);
+
+  useEffect(() => {
+    // Suscribirse a los cambios en tiempo real
+    const unsubscribe = subscribeToNoticias((noticias) => {
+      setItems(noticias);
+    });
+    // Limpiar la suscripción al desmontar el componente
+    return () => unsubscribe();
+  }, []);
 
   useEffect(() => {
     cargar(true);
