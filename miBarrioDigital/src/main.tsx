@@ -45,6 +45,7 @@ const router = createBrowserRouter([
       { path: "/AdministrarNoticias", element: <AdministrarNoticias /> },
       { path: "/VerNoticiaAdmin", element: <VerNoticiaAdmin /> },
       { path: "/CrearNoticia", element: <CrearNoticia /> },
+      { path: "/VerNoticiasAdmin", element: <VerNoticiaAdmin /> },
     ],
   },
 ]);

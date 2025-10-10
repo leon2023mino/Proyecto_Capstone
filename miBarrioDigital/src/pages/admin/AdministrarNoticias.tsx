@@ -6,6 +6,7 @@ import {
   subscribeToNoticias,
 } from "../../components/noticias/getNoticias";
 import { type Noticia } from "../../types/typeNoticia";
+import { NavLink } from "react-router-dom";
 // import "../../styles/NoticiasLista.css"; // opcional
 
 export default function NoticiasLista() {
@@ -48,9 +49,7 @@ export default function NoticiasLista() {
     <div className="section" style={{ maxWidth: 900, margin: "2rem auto" }}>
       <h2 style={{ marginBottom: ".5rem" }}>Noticias</h2>
       <p style={{ color: "var(--text-muted)" }}>Últimas novedades del barrio</p>
-
       {items.length === 0 && !loading && <p>No hay noticias disponibles.</p>}
-
       <ul
         style={{
           listStyle: "none",
@@ -96,6 +95,9 @@ export default function NoticiasLista() {
                   Publicado: {n.createdAt.toLocaleString()}
                 </p>
               )}
+              <NavLink to="/VerNoticiasAdmin">
+                <button>Editar noticia</button>
+              </NavLink>
             </div>
           </li>
         ))}
