@@ -66,6 +66,7 @@ export default function CrearNoticia() {
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     if (!formIsValid) return;
 
     const now = new Date();
@@ -117,7 +118,7 @@ export default function CrearNoticia() {
     });
   };
 
-  const handleReset = () =>
+  const handleReset = async () =>
     setNoticia({
       titulo: "",
       descripcion: "",
