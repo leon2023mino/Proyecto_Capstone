@@ -1,13 +1,16 @@
 import { useMemo, useState } from "react";
 import "../../styles/CrearNoticia.css";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
+import { db } from "../../firebase/config";
 
 type NuevaNoticia = {
   titulo: string;
   descripcion: string;
   coverUrl: string;
-  galeriaRaw: string;      // input de texto, separado por coma
-  visibleDesde: string;    // yyyy-mm-dd
-  visibleHasta: string;    // yyyy-mm-dd
+  createdAt: Timestamp | string;
+  galeriaRaw: string; // input de texto, separado por coma
+  visibleDesde: string; // yyyy-mm-dd
+  visibleHasta: string; // yyyy-mm-dd
   autor: string;
 };
 
@@ -19,6 +22,7 @@ export default function CrearNoticia() {
   const [noticia, setNoticia] = useState<NuevaNoticia>({
     titulo: "",
     descripcion: "",
+    createdAt: Timestamp.now(),
     coverUrl: "",
     galeriaRaw: "",
     visibleDesde: "",
@@ -61,27 +65,50 @@ export default function CrearNoticia() {
     setNoticia((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
     if (!formIsValid) return;
 
-    // 🚀 Aquí conectarías con Firestore (addDoc a "noticias")
+    const now = new Date();
+    // UTC-3: restar 3 horas
+    now.setHours(now.getHours() - 3);
+
     const payload = {
       titulo: noticia.titulo.trim(),
       contenido: noticia.descripcion.trim(),
+      createdAt: Timestamp.fromDate(now), // Guarda como Timestamp ajustado a UTC-3
       coverUrl: noticia.coverUrl.trim(),
       galeriaUrls,
       visibleDesde: noticia.visibleDesde || null,
       visibleHasta: noticia.visibleHasta || null,
       autor: noticia.autor.trim(),
     };
+    try {
+      await addDoc(collection(db, "posts"), payload);
+      alert("Noticia creada correctamente.");
+      setNoticia({
+        titulo: "",
+        descripcion: "",
+        createdAt: "",
+        coverUrl: "",
+        galeriaRaw: "",
+        visibleDesde: "",
+        visibleHasta: "",
+        autor: "",
+      });
+    } catch (error) {
+      alert("Error al crear la noticia.");
+      console.error(error);
+    }
+
+    // 🚀 Aquí conectarías con Firestore (addDoc a "noticias")
+
     console.log("Noticia a crear:", payload);
-    alert("Noticia creada (demo). Conectar a Firestore aquí.");
 
     // Reset suave
     setNoticia({
       titulo: "",
       descripcion: "",
+      createdAt: Timestamp.now(),
       coverUrl: "",
       galeriaRaw: "",
       visibleDesde: "",
@@ -94,6 +121,7 @@ export default function CrearNoticia() {
     setNoticia({
       titulo: "",
       descripcion: "",
+      createdAt: Timestamp.now(),
       coverUrl: "",
       galeriaRaw: "",
       visibleDesde: "",
@@ -145,7 +173,9 @@ export default function CrearNoticia() {
             <div className="meta-row">
               <small className="help">Máx. {MAX_DESC} caracteres</small>
               <small
-                className={`counter ${descRest < 0 ? "invalid" : descRest < 60 ? "warn" : ""}`}
+                className={`counter ${
+                  descRest < 0 ? "invalid" : descRest < 60 ? "warn" : ""
+                }`}
               >
                 {descRest}
               </small>
@@ -176,7 +206,8 @@ export default function CrearNoticia() {
           </div>
           {!fechasValidas && (
             <div className="inline-alert error">
-              La fecha “Visible hasta” debe ser igual o posterior a “Visible desde”.
+              La fecha “Visible hasta” debe ser igual o posterior a “Visible
+              desde”.
             </div>
           )}
 
@@ -211,7 +242,9 @@ export default function CrearNoticia() {
                 Usa una URL pública (https). Formato recomendado: JPG/PNG/WEBP.
               </small>
               {!coverIsValid && (
-                <small className="error-text">Ingresa una URL válida (http/https).</small>
+                <small className="error-text">
+                  Ingresa una URL válida (http/https).
+                </small>
               )}
             </div>
 
@@ -236,7 +269,9 @@ export default function CrearNoticia() {
 
           <div className="card">
             <div className="field">
-              <label htmlFor="galeriaRaw">Galería (URLs separadas por coma)</label>
+              <label htmlFor="galeriaRaw">
+                Galería (URLs separadas por coma)
+              </label>
               <input
                 id="galeriaRaw"
                 name="galeriaRaw"
@@ -251,7 +286,8 @@ export default function CrearNoticia() {
               </small>
               {!galeriaAllValid && (
                 <small className="error-text">
-                  Una o más URLs no parecen válidas (deben iniciar con http/https).
+                  Una o más URLs no parecen válidas (deben iniciar con
+                  http/https).
                 </small>
               )}
             </div>
@@ -286,7 +322,11 @@ export default function CrearNoticia() {
 
         {/* acciones */}
         <div className="form-actions">
-          <button type="submit" className="button--secondary" disabled={!formIsValid}>
+          <button
+            type="submit"
+            className="button--secondary"
+            disabled={!formIsValid}
+          >
             Crear noticia
           </button>
           <button type="button" className="btn-ghost" onClick={handleReset}>
