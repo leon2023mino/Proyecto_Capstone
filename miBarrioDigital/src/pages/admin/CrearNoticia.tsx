@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import "../../styles/CrearNoticia.css";
-import { addDoc, collection, Timestamp } from "firebase/firestore";
+import { addDoc, collection, Timestamp /*, serverTimestamp*/ } from "firebase/firestore";
 import { db } from "../../firebase/config";
 
 type NuevaNoticia = {
@@ -15,7 +15,6 @@ type NuevaNoticia = {
 };
 
 const MAX_DESC = 600;
-
 const isHttpUrl = (v: string) => /^https?:\/\/.+/i.test(v.trim());
 
 export default function CrearNoticia() {
@@ -69,27 +68,26 @@ export default function CrearNoticia() {
     e.preventDefault();
     if (!formIsValid) return;
 
-    const now = new Date();
-    // UTC-3: restar 3 horas
-    now.setHours(now.getHours() - 3);
-
+    // Guarda en UTC (Firestore maneja UTC). No restes manualmente 3 horas.
     const payload = {
       titulo: noticia.titulo.trim(),
       contenido: noticia.descripcion.trim(),
-      createdAt: Timestamp.fromDate(now), // Guarda como Timestamp ajustado a UTC-3
+      createdAt: Timestamp.now(), // o serverTimestamp() si prefieres el reloj del servidor
       coverUrl: noticia.coverUrl.trim(),
       galeriaUrls,
       visibleDesde: noticia.visibleDesde || null,
       visibleHasta: noticia.visibleHasta || null,
-      autor: noticia.autor.trim(),
+      autor: noticia.autor.trim() || null,
     };
+
     try {
-      await addDoc(collection(db, "posts"), payload);
+      await addDoc(collection(db, "noticias"), payload);
       alert("Noticia creada correctamente.");
+      // Reset consistente (mantén el tipo de createdAt como Timestamp)
       setNoticia({
         titulo: "",
         descripcion: "",
-        createdAt: "",
+        createdAt: Timestamp.now(),
         coverUrl: "",
         galeriaRaw: "",
         visibleDesde: "",
@@ -97,28 +95,12 @@ export default function CrearNoticia() {
         autor: "",
       });
     } catch (error) {
-      alert("Error al crear la noticia.");
       console.error(error);
+      alert("Error al crear la noticia.");
     }
-
-    // 🚀 Aquí conectarías con Firestore (addDoc a "noticias")
-
-    console.log("Noticia a crear:", payload);
-
-    // Reset suave
-    setNoticia({
-      titulo: "",
-      descripcion: "",
-      createdAt: Timestamp.now(),
-      coverUrl: "",
-      galeriaRaw: "",
-      visibleDesde: "",
-      visibleHasta: "",
-      autor: "",
-    });
   };
 
-  const handleReset = async () =>
+  const handleReset = () =>
     setNoticia({
       titulo: "",
       descripcion: "",
@@ -142,7 +124,7 @@ export default function CrearNoticia() {
         </div>
       </header>
 
-      <form onSubmit={handleSubmit} className="crear-noticia-form">
+      <form onSubmit={handleSubmit} className="crear-noticia-form" noValidate>
         {/* Columna izquierda */}
         <div className="form-col">
           <div className="field">
@@ -251,7 +233,6 @@ export default function CrearNoticia() {
 
             <div className="cover-preview">
               {noticia.coverUrl ? (
-                // previsualización
                 <img
                   src={noticia.coverUrl}
                   alt="Previsualización de portada"
