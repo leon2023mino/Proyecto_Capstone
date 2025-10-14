@@ -22,6 +22,8 @@ import AdministrarNoticias from "./pages/admin/AdministrarNoticias.tsx";
 import VerNoticiaAdmin from "./pages/admin/VerNoticiaAdmin.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import CrearNoticia from "./pages/admin/CrearNoticia.tsx";
+import RegistroUserAdmin from "./pages/admin/RegistroUserAdmin.tsx";
+import { ListaSolicitudes } from "./pages/admin/ListaSolicitudes.tsx";
 
 const router = createBrowserRouter([
   {
@@ -46,6 +48,8 @@ const router = createBrowserRouter([
       { path: "/VerNoticiaAdmin", element: <VerNoticiaAdmin /> },
       { path: "/CrearNoticia", element: <CrearNoticia /> },
       { path: "/VerNoticiasAdmin", element: <VerNoticiaAdmin /> },
+      { path: "/RegistroUserAdmin", element: <RegistroUserAdmin /> },
+      { path: "/ListaSolicitudes", element: <ListaSolicitudes /> },
     ],
   },
 ]);

@@ -2,17 +2,7 @@ import { useMemo, useState } from "react";
 import "../../styles/CrearNoticia.css";
 import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { db } from "../../firebase/config";
-
-type NuevaNoticia = {
-  titulo: string;
-  descripcion: string;
-  coverUrl: string;
-  createdAt: Timestamp | string;
-  galeriaRaw: string; // input de texto, separado por coma
-  visibleDesde: string; // yyyy-mm-dd
-  visibleHasta: string; // yyyy-mm-dd
-  autor: string;
-};
+import { type NuevaNoticia } from "../../types/typeNuevaNoticia";
 
 const MAX_DESC = 600;
 
