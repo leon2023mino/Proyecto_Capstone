@@ -1,6 +1,10 @@
 import { useMemo, useState } from "react";
 import "../../styles/CrearNoticia.css";
-import { addDoc, collection, Timestamp /*, serverTimestamp*/ } from "firebase/firestore";
+import {
+  addDoc,
+  collection,
+  Timestamp /*, serverTimestamp*/,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { type NuevaNoticia } from "../../types/typeNuevaNoticia";
 
@@ -71,7 +75,7 @@ export default function CrearNoticia() {
     };
 
     try {
-      await addDoc(collection(db, "noticias"), payload);
+      await addDoc(collection(db, "posts"), payload);
       alert("Noticia creada correctamente.");
       // Reset consistente (mantén el tipo de createdAt como Timestamp)
       setNoticia({
