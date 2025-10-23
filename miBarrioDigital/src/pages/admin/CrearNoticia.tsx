@@ -1,10 +1,6 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import "../../styles/CrearNoticia.css";
-import {
-  addDoc,
-  collection,
-  Timestamp /*, serverTimestamp*/,
-} from "firebase/firestore";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
 import { db, storage } from "../../firebase/config";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { type NuevaNoticia } from "../../types/typeNuevaNoticia";
@@ -19,44 +15,29 @@ export default function CrearNoticia() {
     descripcion: "",
     createdAt: Timestamp.now(),
     coverUrl: "",
-    galeriaRaw: "",
     visibleDesde: "",
     visibleHasta: "",
     autor: "",
+    galeriaRaw: "", // lo mantenemos en el tipo, pero no se usa
   });
 
   const [coverFile, setCoverFile] = useState<File | null>(null);
   const [coverPreview, setCoverPreview] = useState<string | null>(null);
-  const [galeriaFiles, setGaleriaFiles] = useState<File[]>([]);
-  const [galeriaPreviews, setGaleriaPreviews] = useState<string[]>([]);
   const [subiendo, setSubiendo] = useState(false);
 
   const descRest = MAX_DESC - noticia.descripcion.length;
 
-  const galeriaUrls = useMemo(
-    () =>
-      noticia.galeriaRaw
-        .split(",")
-        .map((u) => u.trim())
-        .filter(Boolean),
-    [noticia.galeriaRaw]
-  );
-
   const coverIsValid = !noticia.coverUrl || isHttpUrl(noticia.coverUrl);
-  const galeriaAllValid =
-    galeriaUrls.length === 0 || galeriaUrls.every((u) => isHttpUrl(u));
-
-  const fechasValidas = useMemo(() => {
-    if (!noticia.visibleDesde || !noticia.visibleHasta) return true;
-    return new Date(noticia.visibleDesde) <= new Date(noticia.visibleHasta);
-  }, [noticia.visibleDesde, noticia.visibleHasta]);
+  const fechasValidas =
+    !noticia.visibleDesde ||
+    !noticia.visibleHasta ||
+    new Date(noticia.visibleDesde) <= new Date(noticia.visibleHasta);
 
   const formIsValid =
     noticia.titulo.trim().length > 0 &&
     noticia.descripcion.trim().length > 0 &&
     noticia.descripcion.length <= MAX_DESC &&
     coverIsValid &&
-    galeriaAllValid &&
     fechasValidas;
 
   const handleChange = (
@@ -74,12 +55,6 @@ export default function CrearNoticia() {
     }
   };
 
-  const handleGaleriaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    setGaleriaFiles(files);
-    setGaleriaPreviews(files.map((f) => URL.createObjectURL(f)));
-  };
-
   const uploadImage = async (file: File, path: string) => {
     const storageRef = ref(storage, path);
     await uploadBytes(storageRef, file);
@@ -92,6 +67,7 @@ export default function CrearNoticia() {
     setSubiendo(true);
 
     let coverUrlFinal = noticia.coverUrl.trim();
+
     if (coverFile) {
       const resized = await resizeImage(coverFile, 900, 600);
       coverUrlFinal = await uploadImage(
@@ -100,29 +76,11 @@ export default function CrearNoticia() {
       );
     }
 
-    // 🔹 Subir galería (si hay archivos)
-    const galeriaUrlsFinal: string[] = [];
-    for (const file of galeriaFiles) {
-      const resized = await resizeImage(file, 900, 600);
-      const url = await uploadImage(
-        resized,
-        `noticias/galeria/${Date.now()}-${resized.name}`
-      );
-      galeriaUrlsFinal.push(url);
-    }
-
-    const galeriaCombinada = [
-      ...galeriaUrlsFinal,
-      ...galeriaUrls.filter((u) => isHttpUrl(u)),
-    ];
-
-    // Guarda en UTC (Firestore maneja UTC). No restes manualmente 3 horas.
     const payload = {
       titulo: noticia.titulo.trim(),
       contenido: noticia.descripcion.trim(),
-      createdAt: Timestamp.now(), // o serverTimestamp() si prefieres el reloj del servidor
+      createdAt: Timestamp.now(),
       coverUrl: coverUrlFinal,
-      galeriaUrls: galeriaCombinada,
       visibleDesde: noticia.visibleDesde || null,
       visibleHasta: noticia.visibleHasta || null,
       autor: noticia.autor.trim() || null,
@@ -130,21 +88,25 @@ export default function CrearNoticia() {
 
     try {
       await addDoc(collection(db, "posts"), payload);
-      alert("Noticia creada correctamente.");
-      // Reset consistente (mantén el tipo de createdAt como Timestamp)
+      alert("✅ Noticia creada correctamente.");
+
       setNoticia({
         titulo: "",
         descripcion: "",
         createdAt: Timestamp.now(),
         coverUrl: "",
-        galeriaRaw: "",
         visibleDesde: "",
         visibleHasta: "",
         autor: "",
+        galeriaRaw: "",
       });
+      setCoverFile(null);
+      setCoverPreview(null);
     } catch (error) {
       console.error(error);
-      alert("Error al crear la noticia.");
+      alert("❌ Error al crear la noticia.");
+    } finally {
+      setSubiendo(false);
     }
   };
 
@@ -154,12 +116,11 @@ export default function CrearNoticia() {
       descripcion: "",
       createdAt: Timestamp.now(),
       coverUrl: "",
-      galeriaRaw: "",
       visibleDesde: "",
       visibleHasta: "",
       autor: "",
+      galeriaRaw: "",
     });
-
     setCoverFile(null);
     setCoverPreview(null);
   };
@@ -262,75 +223,27 @@ export default function CrearNoticia() {
         {/* Columna derecha */}
         <div className="form-col">
           <div className="card">
-            <div className="form-col">
-              <div className="card">
-                <label>Portada</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleCoverChange}
-                />
-                {coverPreview && (
-                  <img
-                    src={coverPreview}
-                    alt="Portada"
-                    className="preview-img"
-                  />
-                )}
-              </div>
-            </div>
-
-            <div className="cover-preview">
-              {noticia.coverUrl ? (
-                <img
-                  src={noticia.coverUrl}
-                  alt="Previsualización de portada"
-                  onError={(e) => {
-                    (e.currentTarget as HTMLImageElement).src =
-                      "https://via.placeholder.com/900x500?text=Sin+previsualizaci%C3%B3n";
-                  }}
-                />
-              ) : (
-                <div className="cover-placeholder">
-                  <span>Previsualización de portada</span>
-                </div>
-              )}
-            </div>
+            <label>Portada</label>
+            <input type="file" accept="image/*" onChange={handleCoverChange} />
+            {coverPreview && (
+              <img src={coverPreview} alt="Portada" className="preview-img" />
+            )}
           </div>
 
-          <div className="card">
-            <label>Galería</label>
-            <input
-              type="file"
-              accept="image/*"
-              multiple
-              onChange={handleGaleriaChange}
-            />
-
-            {galeriaUrls.length > 0 && (
-              <>
-                <div className="chips">
-                  {galeriaUrls.map((u, i) => (
-                    <span key={i} className="chip" title={u}>
-                      {u.length > 28 ? u.slice(0, 28) + "…" : u}
-                    </span>
-                  ))}
-                </div>
-
-                <div className="galeria-preview">
-                  {galeriaUrls.slice(0, 6).map((u, i) => (
-                    <img
-                      key={i}
-                      src={u}
-                      alt={`Imagen ${i + 1}`}
-                      onError={(e) => {
-                        (e.currentTarget as HTMLImageElement).src =
-                          "https://via.placeholder.com/300x180?text=Sin+imagen";
-                      }}
-                    />
-                  ))}
-                </div>
-              </>
+          <div className="cover-preview">
+            {noticia.coverUrl ? (
+              <img
+                src={noticia.coverUrl}
+                alt="Previsualización de portada"
+                onError={(e) => {
+                  (e.currentTarget as HTMLImageElement).src =
+                    "https://via.placeholder.com/900x500?text=Sin+previsualizaci%C3%B3n";
+                }}
+              />
+            ) : (
+              <div className="cover-placeholder">
+                <span>Previsualización de portada</span>
+              </div>
             )}
           </div>
         </div>
@@ -340,9 +253,9 @@ export default function CrearNoticia() {
           <button
             type="submit"
             className="button--secondary"
-            disabled={!formIsValid}
+            disabled={!formIsValid || subiendo}
           >
-            Crear noticia
+            {subiendo ? "Creando..." : "Crear noticia"}
           </button>
           <button type="button" className="btn-ghost" onClick={handleReset}>
             Limpiar
