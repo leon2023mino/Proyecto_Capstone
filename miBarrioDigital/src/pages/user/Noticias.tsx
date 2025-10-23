@@ -1,10 +1,5 @@
 import { NavLink } from "react-router";
 import { subscribeToNoticias } from "../../components/noticias/getNoticias";
-
-// ✅ Import imágenes desde assets
-import noticia1 from "../../assets/noticia1.avif";
-import noticia2 from "../../assets/noticia2.jpg";
-
 import { type Noticia } from "../../types/typeNoticia";
 import "../../styles/Noticias.css";
 import { useEffect, useState } from "react";
@@ -35,9 +30,9 @@ export default function Noticias() {
                   : "Fecha desconocida"}
               </span>
               <p>{n.contenido}</p>
-              <NavLink to="/NoticiasVer" className="btn-leer-mas">
-                Leer más
-              </NavLink>
+              <NavLink to={`/NoticiasVer/${n.id}`} className="btn-leer-mas">
+  Leer más
+</NavLink>
             </div>
           </article>
         ))}

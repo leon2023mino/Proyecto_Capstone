@@ -43,7 +43,7 @@ const router = createBrowserRouter([
       { path: "/AdministrarProyectos", element: <AdministrarProyectos /> },
       { path: "/VerProyectoAdmin", element: <VerProyectoAdmin /> },
       { path: "/AdministrarSolicitudes", element: <AdministrarSolicitudes /> },
-      { path: "/NoticiasVer", element: <NoticiasVer /> },
+      { path: "/NoticiasVer/:id", element: <NoticiasVer /> },
       { path: "/AdministrarNoticias", element: <AdministrarNoticias /> },
       { path: "/VerNoticiaAdmin/:id", element: <VerNoticiaAdmin /> },
       { path: "/CrearNoticia", element: <CrearNoticia /> },
