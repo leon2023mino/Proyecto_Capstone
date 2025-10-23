@@ -70,17 +70,17 @@ export default function VerNoticiaAdmin() {
         <div style={{ marginTop: "1rem" }}>
           {noticia.visibleDesde && (
             <p style={{ color: "var(--text-muted)", fontSize: ".9rem" }}>
-              📅 Visible desde: {noticia.visibleDesde}
+              📅 Visible desde: {noticia.visibleDesde.toString()}
             </p>
           )}
           {noticia.visibleHasta && (
             <p style={{ color: "var(--text-muted)", fontSize: ".9rem" }}>
-              📆 Visible hasta: {noticia.visibleHasta}
+              📆 Visible hasta: {noticia.visibleHasta.toString()}
             </p>
           )}
-          {noticia.autor && (
+          {noticia.publicadoPor && (
             <p style={{ color: "var(--text-muted)", fontSize: ".9rem" }}>
-              ✍️ Autor: {noticia.autor}
+              ✍️ Autor: {noticia.publicadoPor}
             </p>
           )}
           {noticia.createdAt && (

@@ -5,8 +5,10 @@ import {
   collection,
   Timestamp /*, serverTimestamp*/,
 } from "firebase/firestore";
-import { db } from "../../firebase/config";
+import { db, storage } from "../../firebase/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { type NuevaNoticia } from "../../types/typeNuevaNoticia";
+import { resizeImage } from "../../components/noticias/ResizeImage";
 
 const MAX_DESC = 600;
 const isHttpUrl = (v: string) => /^https?:\/\/.+/i.test(v.trim());
@@ -22,6 +24,12 @@ export default function CrearNoticia() {
     visibleHasta: "",
     autor: "",
   });
+
+  const [coverFile, setCoverFile] = useState<File | null>(null);
+  const [coverPreview, setCoverPreview] = useState<string | null>(null);
+  const [galeriaFiles, setGaleriaFiles] = useState<File[]>([]);
+  const [galeriaPreviews, setGaleriaPreviews] = useState<string[]>([]);
+  const [subiendo, setSubiendo] = useState(false);
 
   const descRest = MAX_DESC - noticia.descripcion.length;
 
@@ -58,17 +66,63 @@ export default function CrearNoticia() {
     setNoticia((prev) => ({ ...prev, [name]: value }));
   };
 
+  const handleCoverChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setCoverFile(file);
+      setCoverPreview(URL.createObjectURL(file));
+    }
+  };
+
+  const handleGaleriaChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setGaleriaFiles(files);
+    setGaleriaPreviews(files.map((f) => URL.createObjectURL(f)));
+  };
+
+  const uploadImage = async (file: File, path: string) => {
+    const storageRef = ref(storage, path);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formIsValid) return;
+    setSubiendo(true);
+
+    let coverUrlFinal = noticia.coverUrl.trim();
+    if (coverFile) {
+      const resized = await resizeImage(coverFile, 900, 600);
+      coverUrlFinal = await uploadImage(
+        resized,
+        `noticias/portadas/${Date.now()}-${resized.name}`
+      );
+    }
+
+    // 🔹 Subir galería (si hay archivos)
+    const galeriaUrlsFinal: string[] = [];
+    for (const file of galeriaFiles) {
+      const resized = await resizeImage(file, 900, 600);
+      const url = await uploadImage(
+        resized,
+        `noticias/galeria/${Date.now()}-${resized.name}`
+      );
+      galeriaUrlsFinal.push(url);
+    }
+
+    const galeriaCombinada = [
+      ...galeriaUrlsFinal,
+      ...galeriaUrls.filter((u) => isHttpUrl(u)),
+    ];
 
     // Guarda en UTC (Firestore maneja UTC). No restes manualmente 3 horas.
     const payload = {
       titulo: noticia.titulo.trim(),
       contenido: noticia.descripcion.trim(),
       createdAt: Timestamp.now(), // o serverTimestamp() si prefieres el reloj del servidor
-      coverUrl: noticia.coverUrl.trim(),
-      galeriaUrls,
+      coverUrl: coverUrlFinal,
+      galeriaUrls: galeriaCombinada,
       visibleDesde: noticia.visibleDesde || null,
       visibleHasta: noticia.visibleHasta || null,
       autor: noticia.autor.trim() || null,
@@ -94,7 +148,7 @@ export default function CrearNoticia() {
     }
   };
 
-  const handleReset = () =>
+  const handleReset = () => {
     setNoticia({
       titulo: "",
       descripcion: "",
@@ -105,6 +159,10 @@ export default function CrearNoticia() {
       visibleHasta: "",
       autor: "",
     });
+
+    setCoverFile(null);
+    setCoverPreview(null);
+  };
 
   return (
     <div className="crear-noticia-page">
@@ -204,25 +262,22 @@ export default function CrearNoticia() {
         {/* Columna derecha */}
         <div className="form-col">
           <div className="card">
-            <div className="field">
-              <label htmlFor="coverUrl">Imagen de portada (URL)</label>
-              <input
-                id="coverUrl"
-                name="coverUrl"
-                type="url"
-                value={noticia.coverUrl}
-                onChange={handleChange}
-                placeholder="https://…"
-                className={!coverIsValid ? "invalid" : ""}
-              />
-              <small className="help">
-                Usa una URL pública (https). Formato recomendado: JPG/PNG/WEBP.
-              </small>
-              {!coverIsValid && (
-                <small className="error-text">
-                  Ingresa una URL válida (http/https).
-                </small>
-              )}
+            <div className="form-col">
+              <div className="card">
+                <label>Portada</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleCoverChange}
+                />
+                {coverPreview && (
+                  <img
+                    src={coverPreview}
+                    alt="Portada"
+                    className="preview-img"
+                  />
+                )}
+              </div>
             </div>
 
             <div className="cover-preview">
@@ -244,29 +299,13 @@ export default function CrearNoticia() {
           </div>
 
           <div className="card">
-            <div className="field">
-              <label htmlFor="galeriaRaw">
-                Galería (URLs separadas por coma)
-              </label>
-              <input
-                id="galeriaRaw"
-                name="galeriaRaw"
-                type="text"
-                value={noticia.galeriaRaw}
-                onChange={handleChange}
-                placeholder="https://img1.jpg, https://img2.jpg, …"
-                className={!galeriaAllValid ? "invalid" : ""}
-              />
-              <small className="help">
-                Agrega varias imágenes separadas por coma (https).
-              </small>
-              {!galeriaAllValid && (
-                <small className="error-text">
-                  Una o más URLs no parecen válidas (deben iniciar con
-                  http/https).
-                </small>
-              )}
-            </div>
+            <label>Galería</label>
+            <input
+              type="file"
+              accept="image/*"
+              multiple
+              onChange={handleGaleriaChange}
+            />
 
             {galeriaUrls.length > 0 && (
               <>
