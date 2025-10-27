@@ -8,26 +8,45 @@ export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
+  const [msgType, setMsgType] = useState<"error" | "info" | "success" | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMsg(null);
+    setMsgType(null);
     setLoading(true);
+
     try {
       await signInWithEmailAndPassword(auth, email.trim(), password);
-      // éxito: redirige a Home (o panel)
-      navigate("/");
+      setMsg("✅ Inicio de sesión exitoso. Redirigiendo...");
+      setMsgType("success");
+      setTimeout(() => navigate("/"), 1500);
     } catch (err: any) {
       const code = err?.code || "";
-      const map: Record<string, string> = {
-        "auth/invalid-email": "Correo inválido.",
-        "auth/user-not-found": "Usuario no existe.",
-        "auth/wrong-password": "Contraseña incorrecta.",
-        "auth/too-many-requests": "Demasiados intentos. Intenta más tarde.",
-      };
-      setMsg(map[code] ?? "No se pudo iniciar sesión.");
+      let message = "❌ No se pudo iniciar sesión.";
+      let type: "error" | "info" = "error";
+
+      switch (code) {
+        case "auth/invalid-email":
+          message = "⚠️ El formato del correo no es válido. Revisa tu dirección de email.";
+          break;
+        case "auth/user-not-found":
+          message = "🚫 No existe una cuenta registrada con este correo electrónico.";
+          break;
+        case "auth/wrong-password":
+          message = "🔐 Contraseña incorrecta. Intenta nuevamente.";
+          break;
+        case "auth/too-many-requests":
+          message = "⏳ Has intentado demasiadas veces. Espera unos minutos e inténtalo otra vez.";
+          break;
+        default:
+          message = "❌ Ocurrió un error inesperado al iniciar sesión.";
+      }
+
+      setMsg(message);
+      setMsgType(type);
     } finally {
       setLoading(false);
     }
@@ -35,40 +54,62 @@ export default function Login() {
 
   return (
     <div className="login-page">
-      <div className="login-container">
-        <h2>Iniciar Sesión</h2>
-        <form onSubmit={handleSubmit}>
-          <div>
+      <div className="login-card">
+        <div className="login-header">
+          <h2>Iniciar Sesión</h2>
+          <p>Bienvenido a <strong>Mi Barrio Digital</strong></p>
+        </div>
+
+        <form className="login-form" onSubmit={handleSubmit}>
+          <div className="form-group">
             <label htmlFor="email">Correo electrónico</label>
             <input
               id="email"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              placeholder="tu@correo.com"
               required
             />
           </div>
-          <div>
+
+          <div className="form-group">
             <label htmlFor="password">Contraseña</label>
             <input
               id="password"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              placeholder="********"
               required
             />
           </div>
 
-          <button type="submit" disabled={loading || !email || !password}>
+          <button
+            className="btn-submit"
+            type="submit"
+            disabled={loading || !email || !password}
+          >
             {loading ? "Iniciando..." : "Iniciar Sesión"}
           </button>
         </form>
 
-        {msg && <p style={{ marginTop: 8, color: "#b91c1c" }}>{msg}</p>}
+        {msg && (
+          <p
+            className={`login-message ${
+              msgType === "success" ? "success" : "error"
+            }`}
+          >
+            {msg}
+          </p>
+        )}
 
-        <p>
-          ¿No tienes cuenta? <NavLink to="/registro">Regístrate aquí</NavLink>
-        </p>
+        <div className="login-footer">
+          ¿No tienes cuenta?{" "}
+          <NavLink to="/registro" className="link-strong">
+            Regístrate aquí
+          </NavLink>
+        </div>
       </div>
     </div>
   );

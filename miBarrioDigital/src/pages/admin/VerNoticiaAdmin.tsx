@@ -33,7 +33,7 @@ export default function VerNoticiaAdmin() {
         const snap = await getDoc(ref);
         if (snap.exists()) {
           const data = snap.data() as any;
-          const n: Noticia = { id: snap.id, ...(data as Noticia) };
+         const n: Noticia = { ...(data as Noticia), id: snap.id };
           setNoticia(n);
           setTitulo(String(data.titulo ?? ""));
           setContenido(String(data.contenido ?? ""));
