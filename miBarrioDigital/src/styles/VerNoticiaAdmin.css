@@ -1,0 +1,144 @@
+/* ===============================
+   VER NOTICIA ADMIN
+   Estilo limpio y profesional
+   Paleta azul oscuro
+=============================== */
+
+:root {
+  --brand-blue: #1b3c78;
+  --brand-blue-dark: #142c57;
+  --border: #dfe5ee;
+  --surface: #ffffff;
+  --text: #2f2f2f;
+  --text-muted: #6b7280;
+  --radius: 12px;
+  --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+}
+
+/* ===== Contenedor general ===== */
+.ver-noticia-admin {
+  max-width: 900px;
+  margin: 2.5rem auto;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+/* ===== Portada ===== */
+.ver-noticia-admin img.portada {
+  width: 100%;
+  height: 320px;
+  object-fit: cover;
+  background: #eaf0f8;
+}
+
+/* ===== Contenido / formulario ===== */
+.noticia-admin-content {
+  padding: 1.8rem;
+}
+
+.noticia-admin-content h2 {
+  color: var(--brand-blue);
+  font-size: 1.6rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Campos */
+.field {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  font-weight: 600;
+  color: var(--brand-blue);
+  margin-bottom: 0.4rem;
+}
+
+.field input,
+.field textarea {
+  padding: 0.6rem 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 1rem;
+  color: var(--text);
+  outline: none;
+  transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.field input:focus,
+.field textarea:focus {
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 3px rgba(27, 60, 120, 0.15);
+}
+
+/* Fechas */
+.field-group {
+  display: flex;
+  gap: 1rem;
+}
+
+.field-group .field {
+  flex: 1;
+}
+
+/* ===== Botones ===== */
+.actions {
+  margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.actions-left {
+  display: flex;
+  gap: 0.6rem;
+}
+
+.btn-primary {
+  background: var(--brand-blue);
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.1s ease;
+}
+
+.btn-primary:hover {
+  background: var(--brand-blue-dark);
+  transform: translateY(-1px);
+}
+
+.btn-secondary {
+  background: #e7ebf2;
+  color: #222;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn-secondary:hover {
+  background: #d7ddea;
+}
+
+/* ===== Mensajes ===== */
+.message {
+  font-weight: 600;
+}
+
+.message.success {
+  color: #1b7d32;
+}
+
+.message.error {
+  color: crimson;
+}
