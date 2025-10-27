@@ -24,6 +24,8 @@ import { AuthProvider } from "./context/AuthContext.tsx";
 import CrearNoticia from "./pages/admin/CrearNoticia.tsx";
 import RegistroUserAdmin from "./pages/admin/RegistroUserAdmin.tsx";
 import { ListaSolicitudes } from "./pages/admin/ListaSolicitudes.tsx";
+import { CambiarContraseña } from "./pages/user/CambiarContraseña.tsx";
+import { MiPerfil } from "./pages/user/MiPerfil.tsx";
 
 const router = createBrowserRouter([
   {
@@ -50,6 +52,8 @@ const router = createBrowserRouter([
       { path: "/VerNoticiasAdmin", element: <VerNoticiaAdmin /> },
       { path: "/RegistroUserAdmin", element: <RegistroUserAdmin /> },
       { path: "/ListaSolicitudes", element: <ListaSolicitudes /> },
+      { path: "/CambiarContraseña", element: <CambiarContraseña /> },
+      { path: "/MiPerfil", element: <MiPerfil /> },
     ],
   },
 ]);

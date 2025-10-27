@@ -5,17 +5,33 @@ import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
+import { useEffect, useRef, useState } from "react";
 
 export function Header() {
   const { user, loading } = useAuth();
 
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement | null>(null);
+
   const handleLogout = async () => {
     try {
+      setMenuOpen(false);
       await signOut(auth);
     } catch (err) {
       console.error("Error al cerrar sesión:", err);
     }
   };
+
+  useEffect(() => {
+    const onDocClick = (e: MouseEvent) => {
+      if (!menuRef.current) return;
+      if (!menuRef.current.contains(e.target as Node)) {
+        setMenuOpen(false);
+      }
+    };
+    document.addEventListener("click", onDocClick);
+    return () => document.removeEventListener("click", onDocClick);
+  }, []);
 
   return (
     <div>
@@ -38,11 +54,87 @@ export function Header() {
           {loading ? (
             <span>...</span>
           ) : user ? (
-            <div className="flex items-center gap-2">
-              <span className="text-sm">{user.email ?? user.displayName}</span>
-              <button onClick={handleLogout} className="btn">
-                Cerrar sesión
+            // usuario: botón con icono que abre menú contextual
+            <div
+              className="user-menu"
+              ref={menuRef}
+              style={{ position: "relative" }}
+            >
+              <button
+                aria-haspopup="true"
+                aria-expanded={menuOpen}
+                onClick={() => setMenuOpen((s) => !s)}
+                className="btn"
+                title={user.email ?? user.displayName ?? "Cuenta"}
+                style={{ display: "inline-flex", alignItems: "center", gap: 8 }}
+              >
+                {/* icono simple; reemplaza por SVG si prefieres */}
+                <span style={{ fontSize: 18 }}>👤</span>
+                <span style={{ display: "none" }}>Abrir menú de usuario</span>
               </button>
+
+              {menuOpen && (
+                <div
+                  role="menu"
+                  style={{
+                    position: "absolute",
+                    right: 0,
+                    top: "calc(100% + 8px)",
+                    background: "#fff",
+                    borderRadius: 8,
+                    boxShadow: "0 6px 18px rgba(0,0,0,0.12)",
+                    padding: 8,
+                    minWidth: 180,
+                    zIndex: 40,
+                  }}
+                >
+                  <NavLink
+                    to="/MiPerfil"
+                    className="menu-link"
+                    onClick={() => setMenuOpen(false)}
+                    style={{
+                      display: "block",
+                      padding: "8px 10px",
+                      color: "#111",
+                      textDecoration: "none",
+                    }}
+                  >
+                    Mi perfil
+                  </NavLink>
+                  <NavLink
+                    to="/CambiarContraseña"
+                    className="menu-link"
+                    onClick={() => setMenuOpen(false)}
+                    style={{
+                      display: "block",
+                      padding: "8px 10px",
+                      color: "#111",
+                      textDecoration: "none",
+                    }}
+                  >
+                    Cambiar contraseña
+                  </NavLink>
+
+                  <div
+                    style={{ height: 1, background: "#eee", margin: "8px 0" }}
+                  />
+
+                  <button
+                    onClick={handleLogout}
+                    style={{
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "8px 10px",
+                      background: "transparent",
+                      border: "none",
+                      cursor: "pointer",
+                      color: "crimson",
+                    }}
+                  >
+                    Cerrar sesión
+                  </button>
+                </div>
+              )}
             </div>
           ) : (
             <NavLink to="/Login">
