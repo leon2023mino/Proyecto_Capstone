@@ -26,6 +26,8 @@ import RegistroUserAdmin from "./pages/admin/RegistroUserAdmin.tsx";
 import { ListaSolicitudes } from "./pages/admin/ListaSolicitudes.tsx";
 import { CambiarContraseña } from "./pages/user/CambiarContraseña.tsx";
 import { MiPerfil } from "./pages/user/MiPerfil.tsx";
+import ElegirTipoCertificado from "./pages/user/ElegirTipoCertificado.tsx";
+import ExportCertificado from "./pages/user/ObetenerCertificado.tsx";
 
 const router = createBrowserRouter([
   {
@@ -54,6 +56,8 @@ const router = createBrowserRouter([
       { path: "/ListaSolicitudes", element: <ListaSolicitudes /> },
       { path: "/CambiarContraseña", element: <CambiarContraseña /> },
       { path: "/MiPerfil", element: <MiPerfil /> },
+      { path: "/ElegirTipoCertificado", element: <ElegirTipoCertificado /> },
+      { path: "/ObetenerCertificado", element: <ExportCertificado /> },
     ],
   },
 ]);

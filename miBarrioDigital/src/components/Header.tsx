@@ -154,7 +154,7 @@ export function Header() {
           <NavLink to="/" end className="nav-link">
             INICIO
           </NavLink>
-          <NavLink to="/certificados" className="nav-link">
+          <NavLink to="/ElegirTipoCertificado" className="nav-link">
             CERTIFICADO
           </NavLink>
           <NavLink to="/proyectos" className="nav-link">
