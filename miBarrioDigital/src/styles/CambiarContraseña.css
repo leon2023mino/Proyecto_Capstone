@@ -185,3 +185,49 @@ input:focus {
     width: 100%;
   }
 }
+.password-field {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-pass {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.toggle-pass:hover {
+  opacity: 1;
+}
+
+/* ===== Indicador de seguridad de contraseña ===== */
+.password-strength {
+  margin-top: 0.5rem;
+  height: 8px;
+  border-radius: 6px;
+  background: #e5e7eb;
+  position: relative;
+  overflow: hidden;
+}
+
+.password-strength .bar {
+  height: 100%;
+  border-radius: 6px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-text {
+  display: inline-block;
+  margin-top: 0.35rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  transition: color 0.3s ease;
+}
