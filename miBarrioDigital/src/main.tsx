@@ -28,6 +28,8 @@ import { CambiarContraseña } from "./pages/user/CambiarContraseña.tsx";
 import { MiPerfil } from "./pages/user/MiPerfil.tsx";
 import ElegirTipoCertificado from "./pages/user/ElegirTipoCertificado.tsx";
 import ExportCertificado from "./pages/user/ObetenerCertificado.tsx";
+import CrearEspacio from "./pages/admin/CrearEspacio.tsx";
+import AdministrarEspacios from "./pages/admin/AdministrarEspacios.tsx";
 
 const router = createBrowserRouter([
   {
@@ -58,6 +60,8 @@ const router = createBrowserRouter([
       { path: "/MiPerfil", element: <MiPerfil /> },
       { path: "/ElegirTipoCertificado", element: <ElegirTipoCertificado /> },
       { path: "/ObetenerCertificado", element: <ExportCertificado /> },
+      { path: "/CrearEspacio", element: <CrearEspacio /> },
+      {path : "/AdministrarEspacios", element: <AdministrarEspacios /> },
     ],
   },
 ]);
