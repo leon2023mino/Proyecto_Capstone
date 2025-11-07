@@ -94,7 +94,7 @@ export default function ExportCertificado() {
         <p style={{ textAlign: "justify" }}>
           Certifico que <strong>{profile?.nombre ?? "—"}</strong>, RUT:{" "}
           <strong>{profile?.rut ?? "—"}</strong>, domiciliado(a) en{" "}
-          <strong>{profile?.direccion ?? "—"}</strong>, comuna de{" "}
+          <strong>{profile?.address ?? "—"}</strong>, comuna de{" "}
           <strong>{profile?.comuna ?? "—"}</strong>, se encuentra habitando en
           el domicilio indicado y reside habitualmente en el mismo.
         </p>
