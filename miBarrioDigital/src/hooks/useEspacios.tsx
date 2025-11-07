@@ -6,13 +6,13 @@ import { query, collection, orderBy, onSnapshot } from "firebase/firestore";
 export type Espacio = {
     id: string;
     nombre: string;
-    ubicacion: string;
+    Ubicacion: string;
     aforo: number;
     tipo: string;
     activo: boolean;
 }
 
-export function CrearEspacio() {
+export function useEspacios() {
 
     const [espacios, setEspacios] = useState<Espacio[]>([]);
     const [loading, setLoading] = useState(false)
