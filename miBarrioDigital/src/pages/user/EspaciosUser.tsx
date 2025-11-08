@@ -2,6 +2,7 @@ import { EspacioCard } from "../../components/espacios/EspacioCard";
 import { useEspacios } from "../../hooks/useEspacios";
 import { useUserRole } from "../../hooks/useUserRole";
 import "../../styles/AdministrarEspacios.css";
+import { NavLink } from "react-router-dom";
 
 export default function EspaciosUser() {
   const { espacios, loading } = useEspacios();
@@ -22,6 +23,11 @@ export default function EspaciosUser() {
           />
         ))}
       </div>
+       <NavLink to="/AdministrarEspacios">
+        <button className="admin-button">Administrar Espacios</button></NavLink>
     </div>
+   
+
+    
   );
 }

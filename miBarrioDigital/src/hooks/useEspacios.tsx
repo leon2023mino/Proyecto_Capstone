@@ -6,7 +6,7 @@ import { query, collection, orderBy, onSnapshot } from "firebase/firestore";
 export type Espacio = {
     id: string;
     nombre: string;
-    Ubicacion: string;
+    ubicacion: string;
     aforo: number;
     tipo: string;
     activo: boolean;

@@ -1,7 +1,7 @@
 import "../../styles/Reservas.css";
 import { useMemo, useState } from "react";
 
-export default function Reservas() {
+export default function HacerReservas() {
   const [form, setForm] = useState({
     nombre: "",
     email: "",

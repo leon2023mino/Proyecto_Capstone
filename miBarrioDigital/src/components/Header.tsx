@@ -160,7 +160,7 @@ export function Header() {
           <NavLink to="/proyectos" className="nav-link">
             PROYECTOS
           </NavLink>
-          <NavLink to="/reservas" className="nav-link">
+          <NavLink to="/EspaciosUser" className="nav-link">
             RESERVAS
           </NavLink>
           <NavLink to="/noticias" className="nav-link">

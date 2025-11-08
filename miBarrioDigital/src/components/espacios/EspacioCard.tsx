@@ -3,18 +3,20 @@ import { db } from "../../firebase/config";
 import { type Espacio } from "../../hooks/useEspacios";
 import "../../styles/AdministrarEspacios.css";
 
-export function EspacioCard({ espacio }: { espacio: Espacio }) {
+type EspacioCardProps = {
+  espacio: Espacio;
+  role?: string; // 👈 agregamos la prop opcional "rol"
+};
+
+export function EspacioCard({ espacio, role }: EspacioCardProps) {
   const toggleActivo = async () => {
     const nuevoEstado = !espacio.activo;
-
-    // 🔹 Mostrar confirmación
     const confirmar = window.confirm(
       `¿Estás seguro que deseas marcar este espacio como ${
         nuevoEstado ? "Activo" : "Inactivo"
       }?`
     );
-
-    if (!confirmar) return; // ❌ cancelar
+    if (!confirmar) return;
 
     try {
       const ref = doc(db, "spaces", espacio.id);
@@ -22,7 +24,7 @@ export function EspacioCard({ espacio }: { espacio: Espacio }) {
       alert(`✅ Estado cambiado a ${nuevoEstado ? "Activo" : "Inactivo"}`);
     } catch (error) {
       console.error("Error al actualizar el estado:", error);
-      alert("❌ Hubo un error al intentar cambiar el estado.");
+      alert("❌ Error al cambiar el estado.");
     }
   };
 
@@ -31,18 +33,32 @@ export function EspacioCard({ espacio }: { espacio: Espacio }) {
       <div className="espacio-header">
         <h3>{espacio.nombre}</h3>
 
-        {/* 🔹 Botón de estado */}
-        <button
-          onClick={toggleActivo}
-          className={`estado-btn ${espacio.activo ? "activo" : "inactivo"}`}
-        >
-          {espacio.activo ? "Activo" : "Inactivo"}
-        </button>
+        {/* 🔹 Mostrar botón solo si el rol es admin */}
+        {role === "admin" ? (
+          <button
+            onClick={toggleActivo}
+            className={`estado-btn ${espacio.activo ? "activo" : "inactivo"}`}
+          >
+            {espacio.activo ? "Activo" : "Inactivo"}
+          </button>
+        ) : (
+          <span
+            className={`estado-label ${espacio.activo ? "activo" : "inactivo"}`}
+          >
+            {espacio.activo ? "Activo" : "Inactivo"}
+          </span>
+        )}
       </div>
 
-      <p><strong>Tipo:</strong> {espacio.tipo}</p>
-      <p><strong>Aforo:</strong> {espacio.aforo}</p>
-      <p><strong>Ubicación:</strong> {espacio.Ubicacion}</p>
+      <p>
+        <strong>Tipo:</strong> {espacio.tipo}
+      </p>
+      <p>
+        <strong>Aforo:</strong> {espacio.aforo}
+      </p>
+      <p>
+        <strong>Ubicación:</strong> {espacio.ubicacion}
+      </p>
     </div>
   );
 }

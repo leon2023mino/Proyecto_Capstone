@@ -7,7 +7,8 @@ import Registro from "./pages/user/Registro.tsx";
 import Certificados from "./pages/user/Certificados.tsx";
 import Contacto from "./pages/user/Contacto.tsx";
 import Noticias from "./pages/user/Noticias.tsx";
-import Reservas from "./pages/user/Reservas.tsx";
+import HacerReservas from "./pages/user/HacerReservas.tsx";
+import EspaciosUser from "./pages/user/EspaciosUser.tsx"; 
 import AppLayout from "./layout/AppLayout.tsx";
 import Proyectos from "./pages/user/Proyectos.tsx";
 import Home from "./pages/user/Home.tsx";
@@ -39,7 +40,8 @@ const router = createBrowserRouter([
       { index: true, element: <Home /> },
       { path: "/registro", element: <Registro /> },
       { path: "/certificados", element: <Certificados /> },
-      { path: "/reservas", element: <Reservas /> },
+      { path: "/EspaciosUser", element: <EspaciosUser /> },
+      { path: "/HacerReservas", element: <HacerReservas /> },
       { path: "/noticias", element: <Noticias /> },
       { path: "/contacto", element: <Contacto /> },
       { path: "/Proyectos", element: <Proyectos /> },
@@ -61,7 +63,7 @@ const router = createBrowserRouter([
       { path: "/ElegirTipoCertificado", element: <ElegirTipoCertificado /> },
       { path: "/ObetenerCertificado", element: <ExportCertificado /> },
       { path: "/CrearEspacio", element: <CrearEspacio /> },
-      {path : "/AdministrarEspacios", element: <AdministrarEspacios /> },
+      { path : "/AdministrarEspacios", element: <AdministrarEspacios /> },
     ],
   },
 ]);
