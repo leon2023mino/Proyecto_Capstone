@@ -1,17 +1,33 @@
 /* =========================
-   CONTACTO (moderno)
+   CONTACTO (texto negro, limpio y profesional)
+   Paleta azul oscuro institucional
 ========================= */
 
+:root {
+  --brand-blue: #1b3c78;
+  --brand-blue-dark: #142c57;
+  --border: #dfe5ee;
+  --surface: #ffffff;
+  --text: #000000;        /* 🔹 Todo texto negro */
+  --text-muted: #333333;  /* 🔹 Subtexto gris oscuro */
+  --radius: 12px;
+  --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+  --accent: #fdbb2d;
+}
+
+/* ===== CONTENEDOR PRINCIPAL ===== */
 .contact-page {
   max-width: 1050px;
   margin: 2rem auto;
   padding: 0 1rem;
+  color: var(--text);
+  background: transparent;
 }
 
-/* Layout: formulario + info lateral (se apila en mobile) */
+/* Layout: formulario + info lateral */
 .contact-grid {
   display: grid;
-  gap: 1rem;
+  gap: 1.25rem;
 }
 @media (min-width: 900px) {
   .contact-grid {
@@ -19,152 +35,212 @@
   }
 }
 
-/* Card genérica */
+/* ===== TARJETA PRINCIPAL ===== */
 .contact-card {
-  background: #fff;
-  border: 1px solid #e6f2e8;
-  border-radius: var(--radius, 12px);
-  box-shadow: var(--shadow, 0 12px 28px rgba(0,0,0,.08));
-  padding: 1.25rem;
-}
-@media (min-width: 720px) {
-  .contact-card { padding: 1.75rem; }
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.75rem;
 }
 
-/* Títulos */
+/* ===== TÍTULOS ===== */
 .contact-title {
   display: flex;
   align-items: center;
-  gap: .6rem;
-  color: var(--brand-dark, #2f3e5d);
-  margin: 0 0 .25rem;
-  font-size: 1.4rem;
+  gap: 0.6rem;
+  color: var(--text); /* negro */
+  margin: 0 0 0.3rem;
+  font-size: 1.6rem;
   font-weight: 800;
 }
 .contact-subtitle {
-  margin: 0 0 1rem;
-  color: #5f6b62;
-  font-size: .95rem;
+  margin: 0 0 1.2rem;
+  color: var(--text-muted);
+  font-size: 0.95rem;
 }
 
-/* Mensaje informativo */
+/* ===== MENSAJE INFORMATIVO ===== */
 .contact-info-banner {
-  background: #f0f1fa;
-  border: 1px dashed #bfc8e5;
-  color: #2f3a5d;
+  background: #f9f9f9;
+  border: 1px dashed #ccc;
+  color: var(--text);
   border-radius: 10px;
-  padding: .75rem .9rem;
-  font-size: .95rem;
-  margin-bottom: 1rem;
+  padding: 0.75rem 0.9rem;
+  font-size: 0.95rem;
+  margin-bottom: 1.25rem;
 }
 
-/* Formulario */
+/* ===== FORMULARIO ===== */
 .contact-form {
   display: grid;
   gap: 1rem;
-  margin-top: .5rem;
+  margin-top: 0.5rem;
 }
 
+/* Campos */
 .field {
   display: flex;
   flex-direction: column;
-  gap: .4rem;
+  gap: 0.35rem;
 }
 .field label {
   font-weight: 700;
-  color: #2e2e2e;
-  font-size: .95rem;
+  color: var(--text);
+  font-size: 0.95rem;
 }
 
-/* Controles */
+/* ===== INPUTS / TEXTAREAS ===== */
 .input,
 .textarea {
   width: 100%;
-  padding: .8rem .9rem;
-  border: 1px solid #dfe7e2;
+  padding: 0.8rem 0.9rem;
+  border: 1px solid var(--border);
   border-radius: 10px;
   font-size: 1rem;
-  color: #2f2f2f;
+  color: var(--text);
   background: #fff;
-  transition: border-color .2s ease, box-shadow .2s ease, background .2s ease;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
-.textarea { min-height: 140px; resize: vertical; }
+.textarea {
+  min-height: 140px;
+  resize: vertical;
+}
 
-.input:hover, .textarea:hover { border-color: #cfd7e9; }
-.input:focus, .textarea:focus {
+.input:hover,
+.textarea:hover {
+  border-color: #c5cbd9;
+}
+.input:focus,
+.textarea:focus {
   outline: none;
-  border-color: var(--brand, #5774b4);
-  box-shadow: 0 0 0 4px rgba(87, 112, 180, 0.15);
+  border-color: var(--brand-blue);
+  box-shadow: 0 0 0 3px rgba(27, 60, 120, 0.15);
 }
-.input::placeholder, .textarea::placeholder { color: #9aa8a0; }
-
-/* Ayuda / error */
-.helper { font-size: .85rem; color: #666874; }
-.error  { font-size: .85rem; color: #b33a3a; }
-
-.input.is-invalid, .textarea.is-invalid {
-  border-color: #e2a3a3; background: #fff7f7;
-}
-.input.is-invalid:focus, .textarea.is-invalid:focus {
-  box-shadow: 0 0 0 4px rgba(201,69,69,.15);
+.input::placeholder,
+.textarea::placeholder {
+  color: #666;
 }
 
-/* Acciones */
+/* ===== VALIDACIÓN ===== */
+.helper {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.error {
+  font-size: 0.85rem;
+  color: #b33a3a;
+}
+.input.is-invalid,
+.textarea.is-invalid {
+  border-color: #e2a3a3;
+  background: #fff7f7;
+}
+.input.is-invalid:focus,
+.textarea.is-invalid:focus {
+  box-shadow: 0 0 0 3px rgba(201, 69, 69, 0.15);
+}
+
+/* ===== BOTONES ===== */
 .actions {
-  margin-top: .5rem;
+  margin-top: 0.75rem;
   display: flex;
-  gap: .6rem;
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
+
 .btn-primary {
-  background: var(--brand, #5770b4);
+  background: var(--brand-blue);
   color: #fff;
-  padding: .8rem 1rem;
+  padding: 0.8rem 1.2rem;
   border: none;
   border-radius: 10px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
-  transition: transform .08s ease, box-shadow .2s ease, background .2s ease;
-  box-shadow: 0 8px 20px rgba(87, 112, 180, 0.18);
+  transition: background 0.25s ease, transform 0.1s ease, box-shadow 0.2s ease;
+  box-shadow: 0 6px 14px rgba(27, 60, 120, 0.18);
 }
-.btn-primary:hover { background: var(--brand-dark, #2f3e5d); transform: translateY(-1px); }
-.btn-primary:active { transform: translateY(0); }
+.btn-primary:hover {
+  background: var(--brand-blue-dark);
+  transform: translateY(-1px);
+}
+.btn-primary:active {
+  transform: translateY(0);
+}
 
 .btn-ghost {
   background: #fff;
-  color: var(--brand-dark, #2f3b5d);
+  color: var(--text);
   border: 1px solid #cfd6e9;
-  padding: .8rem 1rem;
+  padding: 0.8rem 1.2rem;
   border-radius: 10px;
-  font-weight: 800;
+  font-weight: 700;
   cursor: pointer;
-  transition: transform .08s ease, box-shadow .2s ease, background .2s ease, color .2s ease;
+  transition: all 0.2s ease;
 }
-.btn-ghost:hover { background: #f7faff; transform: translateY(-1px); }
+.btn-ghost:hover {
+  background: #f2f4f8;
+  transform: translateY(-1px);
+}
 
-/* Tarjeta lateral (datos / redes / mapa) */
-.sidebar-card { background: #fff; border: 1px solid #e6e9f2; border-radius: 12px; box-shadow: var(--shadow, 0 12px 28px rgba(0,0,0,.08)); padding: 1rem; }
-.sidebar-card h3 { margin: 0 0 .5rem; color: #2f3b5d; }
+/* ===== SIDEBAR (info lateral) ===== */
+.sidebar-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+.sidebar-card h3 {
+  margin: 0 0 0.75rem;
+  color: var(--text);
+}
 
-.contact-list { list-style: none; margin: 0; padding: 0; }
-.contact-list li { display: flex; gap: .6rem; align-items: center; padding: .35rem 0; border-bottom: 1px dashed #e9edf4; }
-.contact-list li:last-child { border-bottom: 0; }
-.contact-chip { background: #e8edf7; border: 1px solid #cfd8e9; color: #2f3b5d; border-radius: 999px; font-weight: 800; font-size: .8rem; padding: .15rem .5rem; }
+/* Lista de contacto */
+.contact-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.contact-list li {
+  display: flex;
+  gap: 0.6rem;
+  align-items: center;
+  padding: 0.4rem 0;
+  border-bottom: 1px dashed #ddd;
+}
+.contact-list li:last-child {
+  border-bottom: 0;
+}
 
-/* Mapa opcional */
+.contact-chip {
+  background: #f0f3fa;
+  border: 1px solid #d0d7e9;
+  color: var(--text);
+  border-radius: 999px;
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 0.15rem 0.5rem;
+}
+
+/* ===== MAPA ===== */
 .map-box {
-  margin-top: .75rem;
+  margin-top: 0.75rem;
   border-radius: 10px;
   overflow: hidden;
-  border: 1px solid #e6eaf2;
+  border: 1px solid var(--border);
   aspect-ratio: 16 / 9;
-  background: #eeeff6;
+  background: #f5f7fb;
 }
-.map-box iframe { width: 100%; height: 100%; border: 0; }
+.map-box iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
 
-/* Divider suave */
+/* ===== DIVIDER ===== */
 .divider {
   height: 1px;
-  background: linear-gradient(90deg, transparent, #e6eaf2, transparent);
+  background: linear-gradient(90deg, transparent, #ccc, transparent);
   margin: 1.25rem 0;
 }

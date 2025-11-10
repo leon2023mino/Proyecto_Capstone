@@ -1,79 +1,103 @@
-/* =========================
-   VER PROYECTO (ADMIN)
-========================= */
-
-.ver-proyecto-page {
-  max-width: 800px;
+.ver-proyecto-admin {
+  max-width: 850px;
   margin: 2rem auto;
-  padding: 1.5rem;
   background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
+  border-radius: 12px;
   box-shadow: var(--shadow);
+  overflow: hidden;
+  color: var(--text);
 }
 
-.ver-proyecto-header {
+.portada {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+}
+
+.proyecto-admin-content {
+  padding: 1.5rem;
+}
+
+.field {
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.field label {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: var(--text-muted);
+}
+
+.field input,
+.field textarea,
+.field select {
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+  color: var(--text);
+  background: #fff;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  border-color: var(--brand-blue);
+}
+
+.actions {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: .75rem;
-  margin-bottom: 1rem;
+  margin-top: 1.2rem;
 }
 
-.ver-proyecto-titulo {
-  margin: 0;
-  font-size: 1.5rem;
-  font-weight: 800;
+.actions-left {
+  display: flex;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.btn-primary {
+  background: var(--brand-blue);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+}
+
+.btn-secondary {
+  background: #e0e0e0;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+}
+
+.btn-danger {
+  background: #d93025;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  color: white;
+  cursor: pointer;
+}
+
+.message {
+  font-weight: 600;
+  margin-top: 0.5rem;
+}
+
+.message.success {
   color: var(--brand-blue);
 }
 
-/* Badge de estado */
-.ver-proyecto-estado {
-  padding: .3rem .7rem;
-  border-radius: 999px;
-  font-weight: 700;
-  font-size: .85rem;
-  text-transform: capitalize;
-}
-.estado-en-curso  { color: #0b3b86; background: rgba(27,86,164,.15); }
-.estado-finalizado{ color: #065f46; background: rgba(34,139,103,.18); }
-.estado-pendiente { color: #7c5700; background: rgba(253,187,45,.22); }
-
-.ver-proyecto-desc {
-  font-size: 1rem;
-  color: var(--text);
-  line-height: 1.6;
-  margin-bottom: 1.25rem;
-}
-
-.ver-proyecto-info {
-  font-size: .95rem;
-  color: var(--text-muted);
-  margin-bottom: 1.5rem;
-}
-
-.ver-proyecto-actions {
-  display: flex;
-  gap: .75rem;
-  justify-content: flex-end;
-}
-
-/* Botón eliminar rojo (usa la misma clase global que en AdminProyectos) */
-.button--danger {
-  background: #e63946;
-  color: #fff;
-  border: none;
-  padding: .55rem .9rem;
-  border-radius: 10px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: transform .08s ease, background .2s ease, box-shadow .2s ease;
-  box-shadow: 0 6px 14px rgba(230,57,70,.25);
-}
-.button--danger:hover { background: #c92a3b; }
-.button--danger:active { transform: translateY(0); }
-
-.ver-proyecto-warning {
-  color: var(--text-muted);
-  margin: .5rem 0 1rem;
+.message.error {
+  color: #d93025;
 }

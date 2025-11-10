@@ -32,6 +32,11 @@ import ExportCertificado from "./pages/user/ObetenerCertificado.tsx";
 import CrearEspacio from "./pages/admin/CrearEspacio.tsx";
 import AdministrarEspacios from "./pages/admin/AdministrarEspacios.tsx";
 import AdminSolicitudes from "./pages/admin/AdminSolicitudes.tsx";
+import CrearActividad from "./pages/admin/CrearActividad.tsx";
+import ActividadesUser from "./pages/user/ActividadesUser.tsx";
+import VerActividadAdmin from "./pages/admin/VerActividadAdmin.tsx";
+import AdministrarActividades from "./pages/admin/AdministrarActividades.tsx";
+
 
 const router = createBrowserRouter([
   {
@@ -47,10 +52,10 @@ const router = createBrowserRouter([
       { path: "/contacto", element: <Contacto /> },
       { path: "/Proyectos", element: <Proyectos /> },
       { path: "/Login", element: <Login /> },
-      { path: "/ProyectosVer", element: <ProyectosVer /> },
+      { path: "/ProyectosVer/:id", element: <ProyectosVer /> },
       { path: "/CrearProyecto", element: <CrearProyecto /> },
       { path: "/AdministrarProyectos", element: <AdministrarProyectos /> },
-      { path: "/VerProyectoAdmin", element: <VerProyectoAdmin /> },
+      { path: "/VerProyectoAdmin/:id", element: <VerProyectoAdmin /> },
       { path: "/AdministrarSolicitudes", element: <AdministrarSolicitudes /> },
       { path: "/NoticiasVer/:id", element: <NoticiasVer /> },
       { path: "/AdministrarNoticias", element: <AdministrarNoticias /> },
@@ -66,6 +71,10 @@ const router = createBrowserRouter([
       { path: "/CrearEspacio", element: <CrearEspacio /> },
       { path : "/AdministrarEspacios", element: <AdministrarEspacios /> },
       { path : "/AdminSolicitudes", element: <AdminSolicitudes /> },
+      { path: "/CrearActividad", element: <CrearActividad /> },
+      { path: "/Actividades", element: <ActividadesUser /> },
+      { path: "/AdministrarActividades", element: <AdministrarActividades /> },
+{ path: "/VerActividadAdmin/:id", element: <VerActividadAdmin /> },
     ],
   },
 ]);

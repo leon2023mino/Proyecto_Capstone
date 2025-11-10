@@ -1,0 +1,232 @@
+/* =========================
+   CREAR ACTIVIDAD (ADMIN)
+   Basado en CrearNoticia.css
+   Estilo limpio, fondo blanco, texto negro y acento azul oscuro.
+========================= */
+
+:root {
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --radius: 14px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --text-color: #111827;
+  --text-muted: #6b7280;
+  --brand-blue: #0f3d91;
+}
+
+/* Página principal */
+.crear-actividad-page {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+/* Header */
+.crear-actividad-header {
+  margin-bottom: 1rem;
+}
+.crear-actividad-title {
+  margin: 0;
+  color: var(--brand-blue);
+  font-size: 1.7rem;
+  font-weight: 800;
+}
+.crear-actividad-subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--text-muted);
+}
+
+/* ====== FORMULARIO PRINCIPAL ====== */
+.crear-actividad-form {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 980px) {
+  .crear-actividad-form {
+    grid-template-columns: 1fr 1fr;
+    gap: 1.25rem;
+    padding: 1.5rem;
+  }
+}
+
+.form-col {
+  display: grid;
+  gap: 1rem;
+}
+
+/* Campos */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+.field label {
+  font-weight: 700;
+  color: var(--text-color);
+}
+
+/* Inputs y textarea */
+.field input,
+.field textarea,
+.field select {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
+  font-size: 0.95rem;
+  background: #fff !important;
+  color: #111 !important;
+  transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: #6b7280 !important;
+}
+
+/* Focus */
+.field input:focus,
+.field textarea:focus,
+.field select:focus {
+  outline: none;
+  border-color: rgba(15, 61, 145, 0.5);
+  box-shadow: 0 0 0 3px rgba(15, 61, 145, 0.12);
+}
+
+/* Invalid */
+.field input.invalid,
+.field textarea.invalid {
+  border-color: rgba(230, 57, 70, 0.6);
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.16);
+}
+
+/* Textos auxiliares */
+.help {
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.meta-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.counter {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+}
+.counter.warn {
+  color: #b45309;
+}
+.counter.invalid {
+  color: #c92a3b;
+}
+
+/* Grid para grupos pequeños */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+@media (min-width: 640px) {
+  .grid-2 {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ===== Tarjeta lateral ===== */
+.card {
+  background: #fff;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+  display: grid;
+  gap: 0.75rem;
+}
+
+/* Imagen de previsualización */
+.cover-preview {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #eef3f9;
+  border: 1px solid var(--border);
+  display: grid;
+  place-items: center;
+}
+.cover-preview img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cover-placeholder {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* ===== Acciones ===== */
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding-top: 0.25rem;
+}
+
+/* Botones */
+.button--secondary {
+  background: var(--brand-blue);
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 0.7rem 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+.button--secondary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.btn-ghost {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: #111;
+  border-radius: 999px;
+  padding: 0.7rem 1.1rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* Alertas */
+.inline-alert.error {
+  background: rgba(230, 57, 70, 0.08);
+  color: #c92a3b;
+  border: 1px solid rgba(230, 57, 70, 0.25);
+  border-radius: 10px;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.9rem;
+}
+
+/* Asegurar contraste */
+.crear-actividad-form {
+  background: #fff !important;
+}
+.field label {
+  color: #111 !important;
+}
+
+/* Imagen de vista previa */
+.preview-img {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  object-fit: cover;
+}

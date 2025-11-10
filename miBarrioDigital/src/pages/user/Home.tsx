@@ -1,91 +1,116 @@
-// src/pages/Home.tsx
+import { useEffect, useState } from "react";
 import "../../styles/Home.css";
 import Carousel from "../../components/Carousel";
 import type { Slide } from "../../components/Carousel";
+import { collection, onSnapshot, orderBy, query, limit } from "firebase/firestore";
+import { db } from "../../firebase/config";
+import { NavLink } from "react-router-dom";
 
+// 📸 Imágenes estáticas del carrusel
 import slide1 from "../../assets/slide1.jpg";
 import slide2 from "../../assets/slide2.jpg";
 import slide3 from "../../assets/slide3.jpg";
 
+// 🔹 Tipos
+type Noticia = {
+  id: string;
+  titulo: string;
+  contenido: string;
+  createdAt?: any;
+  coverUrl?: string;
+};
+
+type Actividad = {
+  id: string;
+  titulo: string;
+  fecha: string;
+  hora: string;
+  lugar: string;
+};
+
 export default function Home() {
   const slides: Slide[] = [
-    {
-      src: slide1,
-      title: "Feria de Emprendedores",
-      text: "Sábado 21, Plaza Central",
-    },
-    {
-      src: slide2,
-      title: "Operativo de Salud",
-      text: "Vacunación y controles gratuitos",
-    },
-    {
-      src: slide3,
-      title: "Campeonato Barrial",
-      text: "Inscripciones abiertas",
-    },
+    { src: slide1, title: "Feria de Emprendedores", text: "Sábado 21, Plaza Central" },
+    { src: slide2, title: "Operativo de Salud", text: "Vacunación y controles gratuitos" },
+    { src: slide3, title: "Campeonato Barrial", text: "Inscripciones abiertas" },
   ];
 
-  const proximos = [
-    { fecha: "05 Oct", titulo: "Taller de reciclaje" },
-    { fecha: "10 Oct", titulo: "Reunión Junta" },
-    { fecha: "15 Oct", titulo: "Campeonato baby fútbol" },
-  ];
+  const [noticias, setNoticias] = useState<Noticia[]>([]);
+  const [actividades, setActividades] = useState<Actividad[]>([]);
 
-  const noticias = [
-    {
-      titulo: "Nueva sede comunitaria",
-      resumen: "Avances de obra y plazos de entrega",
-      fecha: "29 Sep",
-    },
-    {
-      titulo: "Becas deportivas",
-      resumen: "Inscripciones abiertas hasta el 10/10",
-      fecha: "27 Sep",
-    },
-    {
-      titulo: "Operativo de vacunación",
-      resumen: "Calendario de atención en barrio",
-      fecha: "25 Sep",
-    },
-  ];
+  // 🔹 Cargar últimas noticias
+ useEffect(() => {
+  const q = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(3));
+  const unsub = onSnapshot(q, (snapshot) => {
+    const docs = snapshot.docs.map((doc) => ({
+      ...(doc.data() as Noticia),
+      id: doc.id, // ✅ al final, sin error
+    }));
+    setNoticias(docs);
+  });
+  return () => unsub();
+}, []);
 
+// 🔹 Cargar próximas actividades
+useEffect(() => {
+  const q = query(collection(db, "actividades"), orderBy("fecha", "asc"), limit(3));
+  const unsub = onSnapshot(q, (snapshot) => {
+    const docs = snapshot.docs.map((doc) => ({
+      ...(doc.data() as Actividad),
+      id: doc.id, // ✅ también al final
+    }));
+    setActividades(docs);
+  });
+  return () => unsub();
+}, []);
   return (
     <main className="home">
-      {/* CARRUSEL */}
+      {/* 📰 Carrusel principal */}
       <section className="section block">
         <h2 className="section-title">Noticias y eventos</h2>
         <Carousel slides={slides} interval={5000} />
       </section>
 
-      {/* ACCESOS + LATERAL */}
+      {/* ⚙️ Accesos rápidos */}
       <section className="layout">
         <div className="grid">
-          <a className="card quick" href="/reservas">
-            <h3>Reservar espacio</h3>
+          <NavLink className="card quick" to="/EspaciosUser">
+            <h3>🏠 Reservar espacio</h3>
             <p>Agenda la sede social, multicancha o sala de reuniones.</p>
-          </a>
-          <a className="card quick" href="/proyectos">
-            <h3>Proyectos</h3>
-            <p>Revisa iniciativas, apoya o propone ideas.</p>
-          </a>
-          <a className="card quick" href="/noticias">
-            <h3>Noticias</h3>
-            <p>Comunicados, actividades y operativos.</p>
-          </a>
+          </NavLink>
+
+          <NavLink className="card quick" to="/Proyectos">
+            <h3>💡 Proyectos</h3>
+            <p>Revisa iniciativas, apoya o propone ideas para tu barrio.</p>
+          </NavLink>
+
+          <NavLink className="card quick" to="/ActividadesUser">
+            <h3>🎉 Actividades</h3>
+            <p>Participa en talleres, operativos y eventos comunitarios.</p>
+          </NavLink>
+
+          <NavLink className="card quick" to="/noticias">
+            <h3>📰 Noticias</h3>
+            <p>Infórmate de las últimas novedades del barrio.</p>
+          </NavLink>
         </div>
 
+        {/* 📅 Lateral derecho */}
         <aside className="aside">
           <div className="aside-card">
             <h4>Próximas actividades</h4>
-            <ul>
-              {proximos.map((e, i) => (
-                <li key={i}>
-                  <span className="tag">{e.fecha}</span>
-                  <span>{e.titulo}</span>
-                </li>
-              ))}
-            </ul>
+            {actividades.length === 0 ? (
+              <p style={{ color: "#777" }}>No hay actividades próximas.</p>
+            ) : (
+              <ul>
+                {actividades.map((a) => (
+                  <li key={a.id}>
+                    <span className="tag">{a.fecha}</span>
+                    <span>{a.titulo}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
 
           <div className="aside-card">
@@ -99,22 +124,33 @@ export default function Home() {
         </aside>
       </section>
 
-      {/* NOTICIAS RECIENTES */}
+      {/* 🗞️ Noticias recientes */}
       <section className="section">
         <h2 className="section-title">Últimas noticias</h2>
         <div className="news-grid">
-          {noticias.map((n, i) => (
-            <article key={i} className="news-card">
-              <header>
-                <span className="pill">{n.fecha}</span>
-                <h3>{n.titulo}</h3>
-              </header>
-              <p>{n.resumen}</p>
-              <a className="link" href="/noticias">
-                Leer más →
-              </a>
-            </article>
-          ))}
+          {noticias.length === 0 ? (
+            <p>No hay noticias publicadas.</p>
+          ) : (
+            noticias.map((n) => (
+              <article key={n.id} className="news-card">
+                {n.coverUrl && (
+                  <img src={n.coverUrl} alt={n.titulo} className="news-cover" />
+                )}
+                <header>
+                  <span className="pill">
+                    {n.createdAt?.toDate
+                      ? n.createdAt.toDate().toLocaleDateString()
+                      : ""}
+                  </span>
+                  <h3>{n.titulo}</h3>
+                </header>
+                <p>{n.contenido?.slice(0, 90) || "Sin descripción..."}</p>
+                <NavLink className="link" to={`/NoticiasVer/${n.id}`}>
+                  Leer más →
+                </NavLink>
+              </article>
+            ))
+          )}
         </div>
       </section>
     </main>

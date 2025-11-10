@@ -1,0 +1,172 @@
+/* ================================
+   ESTILOS - ACTIVIDADES (USUARIO)
+   ================================ */
+
+/* Colores base */
+:root {
+  --azul-principal: #0f3d91;
+  --verde-acento: #57b460;
+  --gris-texto: #333;
+  --gris-muted: #6b7280;
+  --borde: #e5e7eb;
+  --sombra: 0 4px 16px rgba(0, 0, 0, 0.06);
+  --fondo-card: #fff;
+}
+
+/* ===== Página general ===== */
+.actividades-page {
+  max-width: 1100px;
+  margin: 2rem auto;
+  padding: 0 1rem 3rem;
+  color: var(--gris-texto);
+}
+
+/* ===== Header ===== */
+.actividades-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.actividades-title {
+  color: var(--azul-principal);
+  font-weight: 800;
+  font-size: 1.8rem;
+  margin-bottom: 0.25rem;
+}
+
+.actividades-subtitle {
+  color: var(--gris-muted);
+  font-size: 1rem;
+}
+
+/* ===== Grid principal ===== */
+.actividades-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .actividades-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  }
+}
+
+/* ===== Tarjeta ===== */
+.actividad-card {
+  background: var(--fondo-card);
+  border: 1px solid var(--borde);
+  border-radius: 12px;
+  box-shadow: var(--sombra);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.actividad-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+}
+
+/* Imagen */
+.actividad-img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--borde);
+}
+
+/* Contenido */
+.actividad-content {
+  padding: 1rem 1.25rem;
+  flex-grow: 1;
+}
+
+.actividad-titulo {
+  color: var(--azul-principal);
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+.actividad-desc {
+  color: var(--gris-texto);
+  font-size: 0.95rem;
+  margin-bottom: 1rem;
+  line-height: 1.4;
+}
+
+/* Información */
+.actividad-info {
+  display: grid;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+  color: var(--gris-texto);
+  margin-bottom: 1rem;
+}
+
+.actividad-info b {
+  color: var(--azul-principal);
+}
+
+/* ===== Botones ===== */
+.actividad-actions {
+  margin-top: auto;
+  display: flex;
+  justify-content: center;
+  padding-top: 0.5rem;
+}
+
+.btn-inscribirse {
+  background: var(--azul-principal);
+  color: #fff;
+  border: none;
+  padding: 0.7rem 1.2rem;
+  border-radius: 999px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.btn-inscribirse:hover {
+  background: #103a7a;
+  transform: scale(1.03);
+}
+
+.btn-disabled,
+.btn-inscribirse:disabled {
+  background: #ccc;
+  color: #666;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ===== Loading ===== */
+.loading {
+  text-align: center;
+  color: var(--gris-muted);
+  font-size: 1.1rem;
+  margin-top: 2rem;
+}
+
+/* ===== Mensaje cuando no hay actividades ===== */
+.actividades-page p {
+  text-align: center;
+  color: var(--gris-muted);
+  font-size: 1rem;
+}
+
+/* ===== Responsivo ===== */
+@media (max-width: 640px) {
+  .actividad-desc {
+    font-size: 0.9rem;
+  }
+  .actividad-info {
+    font-size: 0.85rem;
+  }
+  .btn-inscribirse {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
+  }
+}
