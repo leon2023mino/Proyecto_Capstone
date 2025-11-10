@@ -17,7 +17,7 @@ import ProyectosVer from "./pages/user/ProyectosVer.tsx";
 import CrearProyecto from "./pages/admin/CrearProyecto.tsx";
 import AdministrarProyectos from "./pages/admin/AdministrarProyectos.tsx";
 import VerProyectoAdmin from "./pages/admin/VerProyectoAdmin.tsx";
-import AdministrarSolicitudes from "./pages/admin/AdministarSolicitudes.tsx";
+import AdministrarSolicitudes from "./pages/admin/AdminSolicitudes.tsx";
 import NoticiasVer from "./pages/user/NoticiasVer.tsx";
 import AdministrarNoticias from "./pages/admin/AdministrarNoticias.tsx";
 import VerNoticiaAdmin from "./pages/admin/VerNoticiaAdmin.tsx";
@@ -31,6 +31,7 @@ import ElegirTipoCertificado from "./pages/user/ElegirTipoCertificado.tsx";
 import ExportCertificado from "./pages/user/ObetenerCertificado.tsx";
 import CrearEspacio from "./pages/admin/CrearEspacio.tsx";
 import AdministrarEspacios from "./pages/admin/AdministrarEspacios.tsx";
+import AdminSolicitudes from "./pages/admin/AdminSolicitudes.tsx";
 
 const router = createBrowserRouter([
   {
@@ -64,6 +65,7 @@ const router = createBrowserRouter([
       { path: "/ObetenerCertificado", element: <ExportCertificado /> },
       { path: "/CrearEspacio", element: <CrearEspacio /> },
       { path : "/AdministrarEspacios", element: <AdministrarEspacios /> },
+      { path : "/AdminSolicitudes", element: <AdminSolicitudes /> },
     ],
   },
 ]);
