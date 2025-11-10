@@ -100,10 +100,9 @@
 }
 
 .btn-submit:hover {
-  filter: brightness(1.05);
+  background: linear-gradient(135deg, #22488e, #163772);
   transform: translateY(-2px);
 }
-
 .btn-submit:disabled {
   opacity: 0.6;
   cursor: not-allowed;

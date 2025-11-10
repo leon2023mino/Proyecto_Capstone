@@ -97,7 +97,7 @@ export function Header() {
           INICIO
         </NavLink>
         <NavLink to="/ElegirTipoCertificado" className="nav-link">
-          CERTIFICADO
+          CERTIFICADOS
         </NavLink>
         <NavLink to="/proyectos" className="nav-link">
           PROYECTOS

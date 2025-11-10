@@ -8,7 +8,7 @@
   --brand-blue-dark: #142c57;
   --border: #dfe5ee;
   --surface: #ffffff;
-  --text: #000000;        /* 🔹 Todo texto negro */
+  --text: #142c57;        /* 🔹 Todo texto negro */
   --text-muted: #333333;  /* 🔹 Subtexto gris oscuro */
   --radius: 12px;
   --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
@@ -20,7 +20,7 @@
   max-width: 1050px;
   margin: 2rem auto;
   padding: 0 1rem;
-  color: var(--text);
+  color:#0e244a;
   background: transparent;
 }
 
@@ -49,7 +49,7 @@
   display: flex;
   align-items: center;
   gap: 0.6rem;
-  color: var(--text); /* negro */
+  color:#023285;
   margin: 0 0 0.3rem;
   font-size: 1.6rem;
   font-weight: 800;
@@ -243,4 +243,33 @@
   height: 1px;
   background: linear-gradient(90deg, transparent, #ccc, transparent);
   margin: 1.25rem 0;
+}
+/* ===== Personalización de la barra lateral ===== */
+
+.sidebar-card {
+  background: #eaf0fb;              /* Fondo del recuadro */
+  border: 1px solid #c5d4ef;        /* Borde suave */
+}
+
+.sidebar-card h3 {
+  color: #0e244a;                   /* Título azul oscuro */
+}
+
+.contact-list li {
+  color: #000;                      /* Texto principal negro */
+}
+
+.contact-list a {
+  color: #1b3c78;                   /* Enlaces azul institucional */
+  text-decoration: none;
+}
+.contact-list a:hover {
+  text-decoration: underline;
+  color: #142c57;
+}
+
+.contact-chip {
+  background: #d7f3e3;              /* Fondo del chip (verde claro) */
+  border: 1px solid #b8e0c7;
+  color: #13653f;                   /* Texto verde oscuro */
 }

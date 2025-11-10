@@ -143,7 +143,7 @@ button:disabled {
 ================================= */
 @media (prefers-color-scheme: dark) {
   :root {
-    --bg-color: #0d1f3d;
+    --bg-color: #ffffff;
     --surface: #102b52;
     --text-color: #ffffff;
   }

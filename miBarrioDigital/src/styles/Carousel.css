@@ -1,31 +1,20 @@
-/* =======================================
-   CARRUSEL CON ANIMACIÓN DE DESLIZAMIENTO
-   ======================================= */
+/* ============================
+   CARRUSEL SIMPLE Y ELEGANTE
+============================ */
 
 .carousel {
   position: relative;
   overflow: hidden;
   width: 100%;
-  border-radius: 14px;
-  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.08);
-  background: #000;
-  max-height: 420px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
 }
 
-/* Viewport */
-.carousel-viewport {
-  overflow: hidden;
-  width: 100%;
-}
-
-/* Pista que se desliza */
 .carousel-track {
   display: flex;
   transition: transform 0.9s ease-in-out;
-  will-change: transform;
 }
 
-/* Cada slide */
 .slide {
   min-width: 100%;
   position: relative;
@@ -38,69 +27,57 @@
   display: block;
 }
 
-/* ======== Texto sobre imagen ======== */
+/* Texto sobre imagen */
 .carousel-caption {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.65) 100%);
+  background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.6));
   color: #fff;
-  padding: 1.2rem 1.5rem;
-  text-align: left;
+  padding: 1rem 1.25rem;
 }
 
 .carousel-caption h3 {
-  font-size: 1.4rem;
+  font-size: 1.3rem;
   margin: 0;
   font-weight: 700;
 }
 
 .carousel-caption p {
-  margin: 0.25rem 0 0;
   font-size: 1rem;
-  opacity: 0.9;
+  margin: 0.25rem 0 0;
 }
 
-/* ======== Botones Flecha ======== */
+/* Botones flecha */
 .carousel-btn {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  background: rgba(15, 61, 145, 0.75);
+  background: rgba(0, 0, 0, 0.4);
   border: none;
+  color: #fff;
+  font-size: 2rem;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  color: #fff;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
   z-index: 2;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease;
 }
 
 .carousel-btn:hover {
-  background: rgba(15, 61, 145, 1);
-  transform: translateY(-50%) scale(1.05);
-}
-
-.carousel-btn svg {
-  width: 22px;
-  height: 22px;
-  fill: #fff;
+  background: rgba(27, 60, 120, 0.85);
 }
 
 .carousel-btn.prev {
-  left: 14px;
+  left: 15px;
 }
-
 .carousel-btn.next {
-  right: 14px;
+  right: 15px;
 }
 
-/* ======== Dots inferiores ======== */
+/* Dots */
 .carousel-dots {
   position: absolute;
   bottom: 14px;
@@ -108,45 +85,33 @@
   transform: translateX(-50%);
   display: flex;
   gap: 8px;
-  z-index: 3;
 }
 
 .dot {
   width: 10px;
   height: 10px;
-  border-radius: 999px;
+  border-radius: 50%;
   background: rgba(255, 255, 255, 0.6);
   border: none;
   cursor: pointer;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.dot:hover {
-  background: rgba(255, 255, 255, 0.9);
-  transform: scale(1.2);
+  transition: all 0.3s ease;
 }
 
 .dot.active {
-  background: #57b460;
+  background: #1b56a4;
   width: 20px;
   border-radius: 999px;
 }
 
-/* ======== Responsivo ======== */
+/* Responsive */
 @media (max-width: 768px) {
   .slide img {
     height: 260px;
   }
 
-  .carousel-caption {
-    padding: 0.8rem 1rem;
-  }
-
-  .carousel-caption h3 {
-    font-size: 1.1rem;
-  }
-
-  .carousel-caption p {
-    font-size: 0.9rem;
+  .carousel-btn {
+    font-size: 1.6rem;
+    width: 34px;
+    height: 34px;
   }
 }
