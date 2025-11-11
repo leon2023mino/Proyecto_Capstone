@@ -23,7 +23,10 @@ export default function RegistroForm({ esAdmin = false }: Props) {
 
   const { errors, sending, registrarUsuario, setErrors } = useRegistroUser();
   const navigate = useNavigate();
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
 
+  // --- Validaciones ---
   const validarRut = (rutInput: string): boolean => {
     if (!rutInput) return false;
     const rut = rutInput.replace(/\./g, "").replace(/\s+/g, "").toUpperCase();
@@ -65,9 +68,9 @@ export default function RegistroForm({ esAdmin = false }: Props) {
     return errs;
   };
 
+  // --- Envío del formulario ---
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
     const validationErrors = validarFormulario();
     if (validationErrors.length > 0) {
       setErrors(validationErrors);
@@ -77,12 +80,13 @@ export default function RegistroForm({ esAdmin = false }: Props) {
     const direccionCompleta = `${form.calle} ${form.numero}, ${form.comuna}`;
     const ok = await registrarUsuario(
       { ...form, direccion: direccionCompleta },
-      !esAdmin // 👈 si es admin → false (crear cuenta directa); si es usuario → true (solo solicitud)
+      !esAdmin
     );
 
     if (ok) navigate(esAdmin ? "/admin/usuarios" : "/");
   };
 
+  // --- Manejo de cambios ---
   const onChange =
     (field: string) =>
     (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -105,9 +109,28 @@ export default function RegistroForm({ esAdmin = false }: Props) {
       if (errors.length) setErrors([]);
     };
 
+  const calcStrength = (pass: string): number => {
+    let s = 0;
+    if (pass.length >= 8) s++;
+    if (/[A-Z]/.test(pass)) s++;
+    if (/[a-z]/.test(pass)) s++;
+    if (/\d/.test(pass)) s++;
+    if (/[^A-Za-z0-9]/.test(pass)) s++;
+    return s;
+  };
+
+  // --- Render ---
   return (
     <div className="registro-card">
-      <h2>{esAdmin ? "Registrar Usuario (Admin)" : "Registro de Vecino"}</h2>
+      <div className="registro-header">
+        <h2>{esAdmin ? "Registrar Usuario" : "Registro de Vecino"}</h2>
+        <p>
+          {esAdmin
+            ? "Completa los datos para crear una cuenta interna."
+            : "Únete a Mi Barrio Digital y participa en tu comunidad."}
+        </p>
+      </div>
+
       {errors.length > 0 && (
         <div className="registro-alert">
           <ul>
@@ -119,61 +142,125 @@ export default function RegistroForm({ esAdmin = false }: Props) {
       )}
 
       <form onSubmit={handleSubmit} className="registro-form">
+        {/* Nombre y RUT */}
         <div className="grid-2">
-          <div>
+          <div className="form-group">
             <label>Nombre completo</label>
-            <input value={form.nombre} onChange={onChange("nombre")} required />
+            <input
+              placeholder="Ej: María López"
+              value={form.nombre}
+              onChange={onChange("nombre")}
+              required
+            />
           </div>
-          <div>
+          <div className="form-group">
             <label>RUT</label>
-            <input value={form.rut} onChange={onChange("rut")} required />
+            <input
+              placeholder="Ej: 12345678-9"
+              value={form.rut}
+              onChange={onChange("rut")}
+              required
+            />
           </div>
         </div>
 
-        <label>Correo</label>
-        <input type="email" value={form.email} onChange={onChange("email")} />
-
-        <div className="grid-3">
+        {/* Email */}
+        <div className="form-group">
+          <label>Correo electrónico</label>
           <input
-            placeholder="Calle"
+            type="email"
+            placeholder="tucorreo@ejemplo.com"
+            value={form.email}
+            onChange={onChange("email")}
+          />
+        </div>
+
+        {/* Dirección */}
+        <div className="form-group">
+          <label>Calle</label>
+          <input
+            placeholder="Nombre de calle"
             value={form.calle}
             onChange={onChange("calle")}
           />
-          <input
-            placeholder="Número"
-            value={form.numero}
-            onChange={onChange("numero")}
-          />
-          <input
-            placeholder="Comuna"
-            value={form.comuna}
-            onChange={onChange("comuna")}
-          />
         </div>
 
+        <div className="grid-2">
+          <div className="form-group">
+            <label>Número</label>
+            <input
+              placeholder="Ej: 123"
+              value={form.numero}
+              onChange={onChange("numero")}
+            />
+          </div>
+          <div className="form-group">
+            <label>Comuna</label>
+            <input
+              placeholder="Ej: Ñuñoa"
+              value={form.comuna}
+              onChange={onChange("comuna")}
+            />
+          </div>
+        </div>
+
+        {/* Solo para admin */}
         {esAdmin && (
           <>
             <div className="grid-2">
-              <input
-                type="password"
-                placeholder="Contraseña"
-                value={form.password}
-                onChange={onChange("password")}
-              />
-              <input
-                type="password"
-                placeholder="Confirmar contraseña"
-                value={form.confirm}
-                onChange={onChange("confirm")}
-              />
+              <div className="form-group password-field">
+                <label>Contraseña</label>
+                <input
+                  type={showPass ? "text" : "password"}
+                  value={form.password}
+                  placeholder="Mínimo 8 caracteres"
+                  onChange={onChange("password")}
+                />
+                <button
+                  type="button"
+                  className="toggle-pass"
+                  onClick={() => setShowPass(!showPass)}
+                >
+                  {showPass ? "🙈" : "👁️"}
+                </button>
+                <div className={`strength`}>
+                  <div className={`bar s-${calcStrength(form.password)}`} />
+                  <span className="strength-label">
+                    {["Débil", "Débil", "Media", "Buena", "Fuerte"][
+                      Math.min(calcStrength(form.password), 4)
+                    ]}
+                  </span>
+                </div>
+              </div>
+
+              <div className="form-group password-field">
+                <label>Confirmar contraseña</label>
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  value={form.confirm}
+                  onChange={onChange("confirm")}
+                />
+                <button
+                  type="button"
+                  className="toggle-pass"
+                  onClick={() => setShowConfirm(!showConfirm)}
+                >
+                  {showConfirm ? "🙈" : "👁️"}
+                </button>
+              </div>
             </div>
-            <select value={form.role} onChange={onChange("role")}>
-              <option value="vecino">Vecino</option>
-              <option value="admin">Administrador</option>
-            </select>
+
+            <div className="form-group">
+              <label>Rol</label>
+              <select value={form.role} onChange={onChange("role")}>
+                <option value="vecino">Vecino</option>
+                <option value="admin">Administrador</option>
+              </select>
+            </div>
           </>
         )}
 
+        {/* Aceptar términos */}
         <label className="terms">
           <input
             type="checkbox"
@@ -183,7 +270,8 @@ export default function RegistroForm({ esAdmin = false }: Props) {
           Acepto los <a href="#">términos y condiciones</a>.
         </label>
 
-        <button type="submit" disabled={sending}>
+        {/* Botón */}
+        <button type="submit" className="btn-submit" disabled={sending}>
           {sending
             ? "Procesando..."
             : esAdmin
@@ -191,6 +279,15 @@ export default function RegistroForm({ esAdmin = false }: Props) {
             : "Enviar Solicitud"}
         </button>
       </form>
+
+      {!esAdmin && (
+        <div className="registro-footer">
+          ¿Ya tienes cuenta?{" "}
+          <a href="/login" className="link-strong">
+            Inicia sesión aquí
+          </a>
+        </div>
+      )}
     </div>
   );
 }

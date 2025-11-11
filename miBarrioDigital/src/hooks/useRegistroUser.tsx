@@ -14,10 +14,11 @@ import {
   collection,
   doc,
   setDoc,
+  updateDoc,
   serverTimestamp,
+  increment,
 } from "firebase/firestore";
 import { auth, db, app, firebaseConfig } from "../firebase/config";
-import { getFunctions, httpsCallable } from "firebase/functions";
 import { getApps, initializeApp, deleteApp } from "firebase/app";
 
 type RegistroForm = {
@@ -37,8 +38,6 @@ export function useRegistroUser() {
 
   /**
    * ✅ Registrar usuario (admin o solicitud)
-   * @param form Datos del formulario
-   * @param mantenerSesion Si el usuario debe quedar logueado tras registro (solo vecinos directos)
    */
   const registrarUsuario = async (
     form: RegistroForm,
@@ -96,7 +95,7 @@ export function useRegistroUser() {
   };
 
   /**
-   * 📄 Crear solicitud pendiente (vecino)
+   * 📄 Crear solicitud pendiente (registro)
    */
   const crearSolicitud = async (form: RegistroForm) => {
     await addDoc(collection(db, "requests"), {
@@ -114,11 +113,8 @@ export function useRegistroUser() {
   };
 
   /**
-   * 👨‍💼 Aprobar solicitud sin cerrar sesión actual
+   * 👨‍💼 Aprobar solicitud (registro o actividad)
    */
-
-  const functions = getFunctions(app);
-
   const aprobarSolicitud = async (
     solicitudId: string,
     datos: any,
@@ -127,30 +123,55 @@ export function useRegistroUser() {
     let secondaryApp: any = null;
 
     try {
-      // 🧹 1️⃣ Eliminar app previa si quedó activa
+      // 🧩 NUEVO — detectar tipo de solicitud
+      const tipo = datos?.tipo || "registro";
+
+      // 🔹 Si es una actividad → inscribir al usuario y restar cupo
+      if (tipo === "actividad" && datos?.actividadId) {
+        const refActividad = doc(db, "actividades", datos.actividadId);
+
+        // 1️⃣ Agregar usuario a subcolección "inscritos"
+        await addDoc(collection(refActividad, "inscritos"), {
+          usuarioId: datos.usuarioId,
+          nombre: datos.datos?.nombre || "Usuario sin nombre",
+          email: datos.datos?.email || "",
+          fechaInscripcion: new Date(),
+        });
+
+        // 2️⃣ Restar cupo disponible
+        await updateDoc(refActividad, {
+          cupoDisponible: increment(-1),
+        });
+
+        // 3️⃣ Marcar la solicitud como aprobada
+        await updateDoc(doc(db, "requests", solicitudId), {
+          estado: "aprobada",
+          revisadoPor: adminId || null,
+          revisadoEn: serverTimestamp(),
+        });
+
+        alert("✅ Solicitud de actividad aprobada e inscrita correctamente.");
+        return;
+      }
+
+      // 🔹 Si es de registro (flujo anterior)...
       const existing = getApps().find((a) => a.name === "SecondaryApp");
       if (existing) await deleteApp(existing);
 
-      // ⚙️ 2️⃣ Crear app secundaria
       secondaryApp = initializeApp(firebaseConfig, "SecondaryApp");
       const secondaryAuth = getAuth(secondaryApp);
-
-      // 🚫 3️⃣ Forzar persistencia solo en memoria (NO en localStorage)
       await setPersistence(secondaryAuth, inMemoryPersistence);
 
-      // 🔑 4️⃣ Generar contraseña temporal
       const tempPassword = Math.random().toString(36).slice(-8) + "Aa1!";
 
       console.log("Creando usuario aislado:", datos.email);
 
-      // 🧠 5️⃣ Crear usuario SIN afectar la sesión actual del admin
       const cred = await createUserWithEmailAndPassword(
         secondaryAuth,
         datos.email,
         tempPassword
       );
 
-      // 🗄️ 6️⃣ Guardar en Firestore
       await setDoc(doc(db, "users", cred.user.uid), {
         displayName: datos.nombre,
         email: datos.email,
@@ -161,10 +182,8 @@ export function useRegistroUser() {
         createdAt: serverTimestamp(),
       });
 
-      // 📧 7️⃣ Enviar correo para que cree su contraseña real
       await sendPasswordResetEmail(secondaryAuth, datos.email);
 
-      // 🧾 8️⃣ Actualizar solicitud
       await setDoc(
         doc(db, "requests", solicitudId),
         {
@@ -175,16 +194,14 @@ export function useRegistroUser() {
         { merge: true }
       );
 
-      // 🚪 9️⃣ Cerrar sesión del auth secundario y eliminar app
       await signOut(secondaryAuth);
       await deleteApp(secondaryApp);
 
-      // ✅ Confirmar que el admin sigue logueado
       const mainAuth = getAuth();
       console.log("🔒 Admin sigue activo:", mainAuth.currentUser?.email);
 
       alert(
-        `✅ Solicitud aprobada.\nSe creó la cuenta de ${datos.nombre} y se envió un correo a ${datos.email} para establecer su contraseña.`
+        `✅ Solicitud de registro aprobada.\nSe creó la cuenta de ${datos.nombre} y se envió un correo a ${datos.email} para establecer su contraseña.`
       );
     } catch (error: any) {
       console.error("❌ Error al aprobar solicitud:", error);

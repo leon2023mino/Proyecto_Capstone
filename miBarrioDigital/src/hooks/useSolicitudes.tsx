@@ -18,6 +18,7 @@ import {
 import { db, auth } from "../firebase/config";
 
 export type Solicitud = {
+  [x: string]: string;
   id?: string;
   tipo: string;
   estado: string;

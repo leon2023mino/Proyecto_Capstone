@@ -1,19 +1,20 @@
+import "../../styles/ActividadesUser.css";
 import { useEffect, useState } from "react";
 import {
   collection,
   onSnapshot,
   orderBy,
   query,
-  updateDoc,
   doc,
-  increment,
-  addDoc,
+  setDoc,
+  where,
+  getDocs,
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
-import "../../styles/ActividadesUser.css";
 import { useAuth } from "../../context/AuthContext";
 
-type Actividad = {
+// 🔹 Tipo de actividad
+export type Actividad = {
   id: string;
   titulo: string;
   descripcion: string;
@@ -22,143 +23,251 @@ type Actividad = {
   lugar: string;
   responsable?: string;
   imagen?: string;
-  estado: string;
+  estado: "Activo" | "Inactivo" | string;
   cupoTotal: number;
   cupoDisponible: number;
 };
+
+type EstadoSolicitud = "pendiente" | "aprobada" | "rechazada" | null;
+
+const SOLICITUDES_COLLECTION = "requests";
 
 export default function ActividadesUser() {
   const { user } = useAuth();
   const [actividades, setActividades] = useState<Actividad[]>([]);
   const [loading, setLoading] = useState(true);
-  const [inscribiendo, setInscribiendo] = useState<string | null>(null);
+  const [enviando, setEnviando] = useState<string | null>(null);
+  const [estadoSolicitudes, setEstadoSolicitudes] = useState<
+    Record<string, EstadoSolicitud>
+  >({});
 
-  // 🔹 Cargar actividades activas en tiempo real
+  // 🔹 Cargar actividades activas
   useEffect(() => {
     const q = query(collection(db, "actividades"), orderBy("fecha", "asc"));
-
     const unsub = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map((doc) => ({
-        ...(doc.data() as Actividad),
-        id: doc.id, // ✅ id al final para evitar el warning de TypeScript
+      const docs = snapshot.docs.map((d) => ({
+        ...(d.data() as Actividad),
+        id: d.id,
       }));
-
-      // Filtrar solo las actividades activas
       setActividades(docs.filter((a) => a.estado === "Activo"));
       setLoading(false);
     });
-
     return () => unsub();
   }, []);
 
-  // 🔹 Inscribirse en una actividad
-  const inscribirse = async (id: string) => {
+  // 🔹 Cargar estado de solicitudes del usuario
+  useEffect(() => {
+    if (!user) return;
+    const cargarSolicitudes = async () => {
+      const q = query(
+        collection(db, SOLICITUDES_COLLECTION),
+        where("usuarioId", "==", user.uid),
+        where("tipo", "==", "actividad")
+      );
+      const snapshot = await getDocs(q);
+      const estados: Record<string, EstadoSolicitud> = {};
+      snapshot.forEach((doc) => {
+        const data = doc.data();
+        if (data.actividadId) estados[data.actividadId] = data.estado;
+      });
+      setEstadoSolicitudes(estados);
+    };
+    cargarSolicitudes();
+  }, [user]);
+
+  // 🔹 Enviar solicitud
+  const solicitarCupo = async (actividad: Actividad) => {
     if (!user) {
-      alert("Debes iniciar sesión para inscribirte.");
+      alert("Debes iniciar sesión para solicitar cupo en una actividad.");
       return;
     }
-
-    const actividad = actividades.find((a) => a.id === id);
-    if (!actividad) return;
 
     if (actividad.cupoDisponible <= 0) {
       alert("⚠️ No quedan cupos disponibles para esta actividad.");
       return;
     }
 
-    const confirmar = confirm(`¿Deseas inscribirte en "${actividad.titulo}"?`);
+    const estadoActual = estadoSolicitudes[actividad.id];
+    if (estadoActual === "pendiente") {
+      alert("⚠️ Ya tienes una solicitud pendiente para esta actividad.");
+      return;
+    }
+    if (estadoActual === "aprobada") {
+      alert("✅ Ya estás inscrito en esta actividad.");
+      return;
+    }
+
+    const confirmar = confirm(
+      `¿Deseas enviar una solicitud para "${actividad.titulo}"?`
+    );
     if (!confirmar) return;
 
     try {
-      setInscribiendo(id);
-      const ref = doc(db, "actividades", id);
+      setEnviando(actividad.id);
+      const solicitudId = `${actividad.id}_${user.uid}`;
+      const ref = doc(db, SOLICITUDES_COLLECTION, solicitudId);
 
-      // 🔽 Decrementar cupo disponible
-      await updateDoc(ref, {
-        cupoDisponible: increment(-1),
-      });
+      await setDoc(
+        ref,
+        {
+          tipo: "actividad",
+          estado: "pendiente",
+          createdAt: new Date(),
+          actividadId: actividad.id,
+          tituloActividad: actividad.titulo,
+          usuarioId: user.uid,
+          datos: {
+            nombre: user.displayName || "Usuario sin nombre",
+            email: user.email || "",
+          },
+        },
+        { merge: true }
+      );
 
-      // 🔹 Registrar al usuario en la subcolección "inscritos"
-      await addDoc(collection(db, "actividades", id, "inscritos"), {
-        uid: user.uid,
-        email: user.email,
-        nombre: user.displayName || "Usuario sin nombre",
-        fechaInscripcion: new Date(),
-      });
+      setEstadoSolicitudes((prev) => ({
+        ...prev,
+        [actividad.id]: "pendiente",
+      }));
 
-      alert("✅ Te has inscrito correctamente en la actividad.");
+      alert("✅ Solicitud enviada. Un administrador debe aprobarla.");
     } catch (error) {
-      console.error("Error al inscribirse:", error);
-      alert("❌ Ocurrió un error al intentar inscribirte.");
+      console.error("Error al crear la solicitud:", error);
+      alert("❌ Ocurrió un error al enviar la solicitud.");
     } finally {
-      setInscribiendo(null);
+      setEnviando(null);
     }
   };
 
-  if (loading) return <p className="loading">Cargando actividades...</p>;
+  // 🔹 Clase visual para el estado
+  const estadoClass = (estado: string | null) =>
+    estado
+      ? `estado-chip ${
+          estado === "pendiente"
+            ? "chip-pendiente"
+            : estado === "aprobada"
+            ? "chip-aprobada"
+            : "chip-rechazada"
+        }`
+      : "";
+
+  // 🔹 Render
+  if (loading)
+    return <p style={{ textAlign: "center" }}>Cargando actividades...</p>;
 
   return (
     <div className="actividades-page">
-      <header className="actividades-header">
-        <h2 className="actividades-title">Actividades Vecinales</h2>
-        <p className="actividades-subtitle">
-          Participa en las actividades de tu comunidad. Revisa los cupos
-          disponibles y únete.
-        </p>
-      </header>
+      <div className="actividades-header">
+        <div>
+          <h2 className="actividades-title">Actividades Vecinales</h2>
+          <p className="actividades-subtitle">
+            Participa en las actividades de tu comunidad. Envía tu solicitud y
+            espera la aprobación del administrador.
+          </p>
+        </div>
+
+        <div className="actividades-toolbar">
+          <input
+            className="input-search"
+            type="search"
+            placeholder="Buscar actividad..."
+          />
+          <select className="select-filter" defaultValue="">
+            <option value="">Todas</option>
+            <option value="pendiente">Pendientes</option>
+            <option value="aprobada">Aprobadas</option>
+            <option value="rechazada">Rechazadas</option>
+          </select>
+        </div>
+      </div>
 
       {actividades.length === 0 ? (
-        <p>No hay actividades disponibles en este momento.</p>
+        <p style={{ textAlign: "center", marginTop: "1rem" }}>
+          No hay actividades registradas.
+        </p>
       ) : (
-        <div className="actividades-grid">
-          {actividades.map((a) => (
-            <article key={a.id} className="actividad-card">
-              {a.imagen && (
-                <img src={a.imagen} alt={a.titulo} className="actividad-img" />
-              )}
+        <div className="actividades-lista">
+          {actividades.map((a) => {
+            const estado = estadoSolicitudes[a.id] || null;
 
-              <div className="actividad-content">
-                <h3 className="actividad-titulo">{a.titulo}</h3>
-                <p className="actividad-desc">{a.descripcion}</p>
+            return (
+              <article key={a.id} className="actividad-card">
+                {/* Imagen */}
+                {a.imagen ? (
+                  <img
+                    className="actividad-thumb"
+                    src={a.imagen}
+                    alt={a.titulo}
+                  />
+                ) : (
+                  <div className="actividad-thumb sin-imagen">Sin imagen</div>
+                )}
 
-                <div className="actividad-info">
-                  <p>
-                    <b>📅 Fecha:</b> {a.fecha}
-                  </p>
-                  <p>
-                    <b>🕓 Hora:</b> {a.hora}
-                  </p>
-                  <p>
-                    <b>📍 Lugar:</b> {a.lugar}
-                  </p>
-                  {a.responsable && (
-                    <p>
-                      <b>👤 Responsable:</b> {a.responsable}
-                    </p>
+                {/* Contenido */}
+                <div className="actividad-body">
+                  <h3>{a.titulo}</h3>
+                  {estado && (
+                    <span className={estadoClass(estado)}>
+                      {estado === "pendiente"
+                        ? "🕓 Pendiente"
+                        : estado === "aprobada"
+                        ? "✅ Aprobada"
+                        : "❌ Rechazada"}
+                    </span>
                   )}
-                  <p>
-                    <b>🎟️ Cupos disponibles:</b> {a.cupoDisponible}
-                  </p>
-                </div>
+                  <p className="actividad-desc">{a.descripcion}</p>
 
-                <div className="actividad-actions">
-                  <button
-                    onClick={() => inscribirse(a.id)}
-                    disabled={a.cupoDisponible <= 0 || inscribiendo === a.id}
-                    className={`btn-inscribirse ${
-                      a.cupoDisponible <= 0 ? "btn-disabled" : ""
-                    }`}
-                  >
-                    {inscribiendo === a.id
-                      ? "Inscribiendo..."
-                      : a.cupoDisponible <= 0
-                      ? "Sin cupos"
-                      : "Inscribirme"}
-                  </button>
+                  <div className="actividad-info">
+                    <p>
+                      <b>📅 Fecha:</b> {a.fecha}
+                    </p>
+                    <p>
+                      <b>🕓 Hora:</b> {a.hora}
+                    </p>
+                    <p>
+                      <b>📍 Lugar:</b> {a.lugar}
+                    </p>
+                    {a.responsable && (
+                      <p>
+                        <b>👤 Responsable:</b> {a.responsable}
+                      </p>
+                    )}
+                    <p>
+                      <b>🎟️ Cupos disponibles:</b> {a.cupoDisponible}
+                    </p>
+                  </div>
+
+                  <div className="actividad-actions">
+                    <button
+                      onClick={() => solicitarCupo(a)}
+                      disabled={
+                        a.cupoDisponible <= 0 ||
+                        enviando === a.id ||
+                        estado === "pendiente" ||
+                        estado === "aprobada"
+                      }
+                      className={`btn-ver-mas ${
+                        a.cupoDisponible <= 0 ||
+                        estado === "pendiente" ||
+                        estado === "aprobada"
+                          ? "btn-disabled"
+                          : ""
+                      }`}
+                    >
+                      {enviando === a.id
+                        ? "Enviando..."
+                        : estado === "pendiente"
+                        ? "Pendiente"
+                        : estado === "aprobada"
+                        ? "Inscrito"
+                        : a.cupoDisponible <= 0
+                        ? "Sin cupos"
+                        : "Solicitar cupo"}
+                    </button>
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       )}
     </div>

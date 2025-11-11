@@ -1,16 +1,11 @@
-/* ================================
-   ESTILOS - ACTIVIDADES (USUARIO)
-   ================================ */
-
-/* Colores base */
 :root {
-  --azul-principal: #0f3d91;
+  --azul-principal: #1b56a4;
   --verde-acento: #57b460;
   --gris-texto: #333;
   --gris-muted: #6b7280;
   --borde: #e5e7eb;
-  --sombra: 0 4px 16px rgba(0, 0, 0, 0.06);
-  --fondo-card: #fff;
+  --fondo: #ffffff;
+  --sombra: 0 4px 12px rgba(0, 0, 0, 0.06);
 }
 
 /* ===== Página general ===== */
@@ -23,8 +18,12 @@
 
 /* ===== Header ===== */
 .actividades-header {
-  text-align: center;
-  margin-bottom: 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .actividades-title {
@@ -39,21 +38,44 @@
   font-size: 1rem;
 }
 
-/* ===== Grid principal ===== */
-.actividades-grid {
+/* ===== Toolbar ===== */
+.actividades-toolbar {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.input-search,
+.select-filter {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--borde);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+.input-search {
+  width: 200px;
+}
+
+.select-filter {
+  background: var(--fondo);
+}
+
+/* ===== Lista de tarjetas ===== */
+.actividades-lista {
   display: grid;
   gap: 1.5rem;
 }
 
 @media (min-width: 768px) {
-  .actividades-grid {
+  .actividades-lista {
     grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
   }
 }
 
 /* ===== Tarjeta ===== */
 .actividad-card {
-  background: var(--fondo-card);
+  background: var(--fondo);
   border: 1px solid var(--borde);
   border-radius: 12px;
   box-shadow: var(--sombra);
@@ -64,29 +86,39 @@
 }
 
 .actividad-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
 }
 
 /* Imagen */
-.actividad-img {
+.actividad-thumb {
   width: 100%;
-  height: 200px;
+  height: 180px;
   object-fit: cover;
-  border-bottom: 1px solid var(--borde);
+  background: #f5f5f5;
+}
+
+.sin-imagen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-size: 0.9rem;
 }
 
 /* Contenido */
-.actividad-content {
+.actividad-body {
   padding: 1rem 1.25rem;
-  flex-grow: 1;
 }
 
-.actividad-titulo {
+.actividad-body h3 {
   color: var(--azul-principal);
   font-size: 1.25rem;
   font-weight: 700;
-  margin: 0 0 0.5rem;
+  margin-bottom: 0.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .actividad-desc {
@@ -96,77 +128,61 @@
   line-height: 1.4;
 }
 
-/* Información */
-.actividad-info {
-  display: grid;
-  gap: 0.3rem;
+/* ===== Estado visual ===== */
+.estado-chip {
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.25rem 0.6rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+}
+
+.chip-pendiente {
+  background: #fff3cd;
+  color: #856404;
+  border-color: #ffeeba;
+}
+
+.chip-aprobada {
+  background: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.chip-rechazada {
+  background: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}
+
+/* ===== Info ===== */
+.actividad-info p {
   font-size: 0.9rem;
-  color: var(--gris-texto);
-  margin-bottom: 1rem;
+  margin-bottom: 0.25rem;
 }
 
 .actividad-info b {
   color: var(--azul-principal);
 }
 
-/* ===== Botones ===== */
-.actividad-actions {
-  margin-top: auto;
-  display: flex;
-  justify-content: center;
-  padding-top: 0.5rem;
-}
-
-.btn-inscribirse {
+/* ===== Botón ===== */
+.btn-ver-mas {
   background: var(--azul-principal);
-  color: #fff;
+  color: white;
   border: none;
-  padding: 0.7rem 1.2rem;
-  border-radius: 999px;
-  font-weight: 700;
+  border-radius: 8px;
+  padding: 0.6rem 1.2rem;
+  font-weight: 600;
   cursor: pointer;
-  font-size: 0.95rem;
-  transition: background 0.2s ease, transform 0.2s ease;
+  transition: background 0.2s ease;
 }
 
-.btn-inscribirse:hover {
+.btn-ver-mas:hover {
   background: #103a7a;
-  transform: scale(1.03);
 }
 
-.btn-disabled,
-.btn-inscribirse:disabled {
-  background: #ccc;
+.btn-disabled {
+  background: #ccc !important;
   color: #666;
   cursor: not-allowed;
-  transform: none;
-}
-
-/* ===== Loading ===== */
-.loading {
-  text-align: center;
-  color: var(--gris-muted);
-  font-size: 1.1rem;
-  margin-top: 2rem;
-}
-
-/* ===== Mensaje cuando no hay actividades ===== */
-.actividades-page p {
-  text-align: center;
-  color: var(--gris-muted);
-  font-size: 1rem;
-}
-
-/* ===== Responsivo ===== */
-@media (max-width: 640px) {
-  .actividad-desc {
-    font-size: 0.9rem;
-  }
-  .actividad-info {
-    font-size: 0.85rem;
-  }
-  .btn-inscribirse {
-    padding: 0.6rem 1rem;
-    font-size: 0.9rem;
-  }
 }
