@@ -7,18 +7,10 @@ import {
   updateDoc,
   doc,
   serverTimestamp,
-  getDoc,
-  setDoc,
 } from "firebase/firestore";
-import {
-  createUserWithEmailAndPassword,
-  updateProfile,
-  sendPasswordResetEmail,
-} from "firebase/auth";
-import { db, auth } from "../firebase/config";
+import { db } from "../firebase/config";
 
 export type Solicitud = {
-  [x: string]: string;
   id?: string;
   tipo: string;
   estado: string;
@@ -26,38 +18,55 @@ export type Solicitud = {
   datos?: any;
   revisadoPor?: string | null;
   revisadoEn?: any;
+  actividadId?: string;
+  tituloActividad?: string;
 };
 
 export function useSolicitudes(tipo?: string, estado?: string) {
   const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   // 🧩 Cargar solicitudes
   useEffect(() => {
-    let q = query(collection(db, "requests"));
+    try {
+      let q = query(collection(db, "requests"));
 
-    if (tipo && estado) {
-      q = query(
-        collection(db, "requests"),
-        where("tipo", "==", tipo),
-        where("estado", "==", estado)
+      if (tipo && estado) {
+        q = query(
+          collection(db, "requests"),
+          where("tipo", "==", tipo),
+          where("estado", "==", estado)
+        );
+      } else if (tipo) {
+        q = query(collection(db, "requests"), where("tipo", "==", tipo));
+      } else if (estado) {
+        q = query(collection(db, "requests"), where("estado", "==", estado));
+      }
+
+      const unsub = onSnapshot(
+        q,
+        (snapshot) => {
+          const docs = snapshot.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          })) as Solicitud[];
+          setSolicitudes(docs);
+          setLoading(false);
+        },
+        (err) => {
+          console.error("Error al obtener solicitudes:", err);
+          setError("Error al cargar las solicitudes.");
+          setLoading(false);
+        }
       );
-    } else if (tipo) {
-      q = query(collection(db, "requests"), where("tipo", "==", tipo));
-    } else if (estado) {
-      q = query(collection(db, "requests"), where("estado", "==", estado));
-    }
 
-    const unsub = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      })) as Solicitud[];
-      setSolicitudes(docs);
+      return () => unsub();
+    } catch (err) {
+      console.error(err);
+      setError("Error al cargar las solicitudes.");
       setLoading(false);
-    });
-
-    return () => unsub();
+    }
   }, [tipo, estado]);
 
   // ❌ Rechazar solicitud
@@ -76,5 +85,5 @@ export function useSolicitudes(tipo?: string, estado?: string) {
     }
   };
 
-  return { solicitudes, loading, rechazarSolicitud };
+  return { solicitudes, loading, error, rechazarSolicitud };
 }
