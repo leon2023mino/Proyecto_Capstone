@@ -6,76 +6,74 @@ import {
   onSnapshot,
   updateDoc,
   doc,
-  orderBy,
-  getDocs,
+  serverTimestamp,
+  getDoc,
+  setDoc,
 } from "firebase/firestore";
-import { db } from "../firebase/config";
-import { type Solicitud, type TipoSolicitud } from "../types/Solicitud";
+import {
+  createUserWithEmailAndPassword,
+  updateProfile,
+  sendPasswordResetEmail,
+} from "firebase/auth";
+import { db, auth } from "../firebase/config";
 
-export function useSolicitudes(
-  tipo?: TipoSolicitud, // opcional: filtrar por tipo
-  estado?: "pendiente" | "aprobada" | "rechazada" // opcional: filtrar por estado
-) {
+export type Solicitud = {
+  id?: string;
+  tipo: string;
+  estado: string;
+  createdAt?: any;
+  datos?: any;
+  revisadoPor?: string | null;
+  revisadoEn?: any;
+};
+
+export function useSolicitudes(tipo?: string, estado?: string) {
   const [solicitudes, setSolicitudes] = useState<Solicitud[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
 
+  // 🧩 Cargar solicitudes
   useEffect(() => {
-    const col = collection(db, "requests");
-    let q = query(col, orderBy("createdAt", "desc"));
+    let q = query(collection(db, "requests"));
 
-    // Agregar filtros si están definidos
-    if (tipo) q = query(col, where("tipo", "==", tipo), orderBy("createdAt", "desc"));
-    if (estado) q = query(col, where("estado", "==", estado), orderBy("createdAt", "desc"));
+    if (tipo && estado) {
+      q = query(
+        collection(db, "requests"),
+        where("tipo", "==", tipo),
+        where("estado", "==", estado)
+      );
+    } else if (tipo) {
+      q = query(collection(db, "requests"), where("tipo", "==", tipo));
+    } else if (estado) {
+      q = query(collection(db, "requests"), where("estado", "==", estado));
+    }
 
-    const unsub = onSnapshot(
-      q,
-      (snapshot) => {
-        const docs = snapshot.docs.map((d) => ({
-          id: d.id,
-          ...d.data(),
-        })) as Solicitud[];
-        setSolicitudes(docs);
-        setLoading(false);
-      },
-      (err) => {
-        console.error("Error al obtener solicitudes:", err);
-        setError("Error al cargar solicitudes.");
-        setLoading(false);
-      }
-    );
+    const unsub = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      })) as Solicitud[];
+      setSolicitudes(docs);
+      setLoading(false);
+    });
 
     return () => unsub();
   }, [tipo, estado]);
 
-  // 🔹 Aprobar una solicitud
-  const aprobarSolicitud = async (id: string, revisadoPor?: string) => {
-    try {
-      const ref = doc(db, "requests", id);
-      await updateDoc(ref, {
-        estado: "aprobada",
-        revisadoPor: revisadoPor || null,
-      });
-    } catch (error) {
-      console.error("Error al aprobar solicitud:", error);
-      throw new Error("No se pudo aprobar la solicitud.");
-    }
-  };
-
-  // 🔹 Rechazar una solicitud
-  const rechazarSolicitud = async (id: string, revisadoPor?: string) => {
+  // ❌ Rechazar solicitud
+  const rechazarSolicitud = async (id: string, adminId?: string) => {
     try {
       const ref = doc(db, "requests", id);
       await updateDoc(ref, {
         estado: "rechazada",
-        revisadoPor: revisadoPor || null,
+        revisadoPor: adminId || null,
+        revisadoEn: serverTimestamp(),
       });
-    } catch (error) {
-      console.error("Error al rechazar solicitud:", error);
-      throw new Error("No se pudo rechazar la solicitud.");
+      alert("❌ Solicitud rechazada.");
+    } catch (err) {
+      console.error(err);
+      alert("❌ Error al rechazar la solicitud.");
     }
   };
 
-  return { solicitudes, loading, error, aprobarSolicitud, rechazarSolicitud };
+  return { solicitudes, loading, rechazarSolicitud };
 }
- 
