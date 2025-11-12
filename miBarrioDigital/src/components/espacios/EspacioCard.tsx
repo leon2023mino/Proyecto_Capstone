@@ -2,7 +2,7 @@ import { doc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { type Espacio } from "../../hooks/useEspacios";
 import "../../styles/AdministrarEspacios.css";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 
 type EspacioCardProps = {
   espacio: Espacio;
@@ -10,6 +10,9 @@ type EspacioCardProps = {
 };
 
 export function EspacioCard({ espacio, role }: EspacioCardProps) {
+  const navigate = useNavigate();
+
+  // 🔹 Cambiar estado (solo admin)
   const toggleActivo = async () => {
     const nuevoEstado = !espacio.activo;
     const confirmar = window.confirm(
@@ -27,6 +30,11 @@ export function EspacioCard({ espacio, role }: EspacioCardProps) {
       console.error("Error al actualizar el estado:", error);
       alert("❌ Error al cambiar el estado.");
     }
+  };
+
+  // 🔹 Navegar al detalle del espacio
+  const irAlEspacio = () => {
+    navigate(`/VerEspacio/${espacio.id}`);
   };
 
   return (
@@ -56,7 +64,9 @@ export function EspacioCard({ espacio, role }: EspacioCardProps) {
             </button>
           ) : (
             <span
-              className={`estado-label ${espacio.activo ? "activo" : "inactivo"}`}
+              className={`estado-label ${
+                espacio.activo ? "activo" : "inactivo"
+              }`}
             >
               {espacio.activo ? "Activo" : "Inactivo"}
             </span>
@@ -73,12 +83,34 @@ export function EspacioCard({ espacio, role }: EspacioCardProps) {
           <strong>Ubicación:</strong> {espacio.ubicacion}
         </p>
 
-        {/* 🔹 Botón de editar solo visible para admins */}
-        {role === "admin" && (
-         <NavLink to={`/admin/EditarEspacio/${espacio.id}`} className="btn-editar-espacio">
-            ✏️ Editar espacio
-          </NavLink>
-        )}
+        {/* 🔹 Botones inferiores */}
+        <div className="espacio-footer">
+          {/* Solo admins pueden editar */}
+          {role === "admin" && (
+            <NavLink
+              to={`/admin/EditarEspacio/${espacio.id}`}
+              className="btn-editar-espacio"
+            >
+              ✏️ Editar espacio
+            </NavLink>
+          )}
+
+          {/* 🔹 Solo vecinos o usuarios normales pueden ver el espacio */}
+          {(role === "vecino" || role === "usuario" || !role) && (
+            <button
+              onClick={irAlEspacio}
+              className="btn-ver-espacio"
+              disabled={!espacio.activo}
+              title={
+                espacio.activo
+                  ? "Ver más detalles del espacio"
+                  : "Espacio inactivo temporalmente"
+              }
+            >
+              🏡 Ver espacio
+            </button>
+          )}
+        </div>
       </div>
     </div>
   );

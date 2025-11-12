@@ -9,7 +9,7 @@ import Registro from "./pages/user/Registro.tsx";
 import Certificados from "./pages/user/Certificados.tsx";
 import Contacto from "./pages/user/Contacto.tsx";
 import Noticias from "./pages/user/Noticias.tsx";
-import HacerReservas from "./pages/user/HacerReservas.tsx";
+import VerEspacio from "./pages/user/VerEspacio.tsx";
 import EspaciosUser from "./pages/user/EspaciosUser.tsx";
 import AppLayout from "./layout/AppLayout.tsx";
 import Proyectos from "./pages/user/Proyectos.tsx";
@@ -52,7 +52,7 @@ const router = createBrowserRouter([
       { path: "/registro", element: <Registro /> },
       { path: "/certificados", element: <Certificados /> },
       { path: "/EspaciosUser", element: <EspaciosUser /> },
-      { path: "/HacerReservas", element: <HacerReservas /> },
+      { path: "/VerEspacio/:id", element: <VerEspacio /> },
       { path: "/noticias", element: <Noticias /> },
       { path: "/contacto", element: <Contacto /> },
       { path: "/Proyectos", element: <Proyectos /> },
@@ -76,7 +76,10 @@ const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { path: "Dashboards", element: <Dashboard /> },
-          { path: "AdministrarActividades", element: <AdministrarActividades /> },
+          {
+            path: "AdministrarActividades",
+            element: <AdministrarActividades />,
+          },
           { path: "VerActividadAdmin/:id", element: <VerActividadAdmin /> },
           { path: "CrearActividad", element: <CrearActividad /> },
 
@@ -94,7 +97,10 @@ const router = createBrowserRouter([
 
           { path: "RegistroUserAdmin", element: <RegistroUserAdmin /> },
           { path: "ListaSolicitudes", element: <ListaSolicitudes /> },
-          { path: "AdministrarSolicitudes", element: <AdministrarSolicitudes /> },
+          {
+            path: "AdministrarSolicitudes",
+            element: <AdministrarSolicitudes />,
+          },
           { path: "AdminSolicitudes", element: <AdminSolicitudes /> },
         ],
       },

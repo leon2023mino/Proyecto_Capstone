@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { EspacioCard } from "../../components/espacios/EspacioCard";
 import { useEspacios } from "../../hooks/useEspacios";
 import { useUserRole } from "../../hooks/useUserRole";
@@ -23,11 +24,6 @@ export default function EspaciosUser() {
           />
         ))}
       </div>
-       <NavLink to="/AdministrarEspacios">
-        <button className="admin-button">Administrar Espacios</button></NavLink>
     </div>
-   
-
-    
   );
 }
