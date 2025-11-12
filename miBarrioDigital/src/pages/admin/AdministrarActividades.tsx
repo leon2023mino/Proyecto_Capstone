@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
-import { collection, onSnapshot, orderBy, query, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 import "../../styles/AdminProyectos.css"; // puedes crear AdminActividades.css si prefieres
 
@@ -57,16 +64,15 @@ export default function AdministrarActividades() {
     if (!fecha) return "Sin fecha";
     try {
       const d =
-        typeof fecha.toDate === "function"
-          ? fecha.toDate()
-          : new Date(fecha);
+        typeof fecha.toDate === "function" ? fecha.toDate() : new Date(fecha);
       return d.toLocaleString();
     } catch {
       return String(fecha);
     }
   }
 
-  if (loading) return <p style={{ textAlign: "center" }}>Cargando actividades...</p>;
+  if (loading)
+    return <p style={{ textAlign: "center" }}>Cargando actividades...</p>;
 
   return (
     <div className="section" style={{ maxWidth: 900, margin: "2rem auto" }}>
@@ -134,7 +140,7 @@ export default function AdministrarActividades() {
                   gap: ".5rem",
                 }}
               >
-                <NavLink to={`/VerActividadAdmin/${a.id}`}>
+                <NavLink to={`../VerActividadAdmin/${a.id}`}>
                   <button
                     style={{
                       background: "var(--brand-blue, #0f3d91)",

@@ -18,7 +18,7 @@ import {
   serverTimestamp,
   increment,
 } from "firebase/firestore";
-import { auth, db, app, firebaseConfig } from "../firebase/config";
+import { auth, db, firebaseConfig } from "../firebase/config";
 import { getApps, initializeApp, deleteApp } from "firebase/app";
 
 type RegistroForm = {

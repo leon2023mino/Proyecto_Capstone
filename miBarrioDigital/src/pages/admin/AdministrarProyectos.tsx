@@ -1,6 +1,13 @@
 import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
-import { collection, onSnapshot, orderBy, query, deleteDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  deleteDoc,
+  doc,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 import "../../styles/AdminProyectos.css";
 
@@ -21,21 +28,23 @@ export default function AdministrarProyectos() {
 
   // 🔹 Cargar proyectos desde Firestore en tiempo real
   useEffect(() => {
-  const q = query(collection(db, "proyectos"), orderBy("createdAt", "desc"));
-  const unsub = onSnapshot(q, (snapshot) => {
-    const docs = snapshot.docs.map((doc) => ({
-      ...(doc.data() as Proyecto),
-      id: doc.id, // ✅ se mueve al final para evitar conflicto
-    }));
-    setItems(docs);
-    setLoading(false);
-  });
-  return () => unsub();
-}, []);
+    const q = query(collection(db, "proyectos"), orderBy("createdAt", "desc"));
+    const unsub = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map((doc) => ({
+        ...(doc.data() as Proyecto),
+        id: doc.id, // ✅ se mueve al final para evitar conflicto
+      }));
+      setItems(docs);
+      setLoading(false);
+    });
+    return () => unsub();
+  }, []);
 
   // 🗑️ Eliminar proyecto
   async function borrarProyecto(id: string, titulo: string) {
-    const confirmacion = window.confirm(`¿Seguro que deseas eliminar el proyecto "${titulo}"?`);
+    const confirmacion = window.confirm(
+      `¿Seguro que deseas eliminar el proyecto "${titulo}"?`
+    );
     if (!confirmacion) return;
 
     try {
@@ -67,7 +76,8 @@ export default function AdministrarProyectos() {
     }
   }
 
-  if (loading) return <p style={{ textAlign: "center" }}>Cargando proyectos...</p>;
+  if (loading)
+    return <p style={{ textAlign: "center" }}>Cargando proyectos...</p>;
 
   return (
     <div className="section" style={{ maxWidth: 900, margin: "2rem auto" }}>
@@ -106,7 +116,9 @@ export default function AdministrarProyectos() {
               />
             )}
             <div style={{ padding: "1rem 1.25rem" }}>
-              <h3 style={{ margin: 0, color: "var(--brand-blue)" }}>{p.titulo}</h3>
+              <h3 style={{ margin: 0, color: "var(--brand-blue)" }}>
+                {p.titulo}
+              </h3>
               <p style={{ margin: ".5rem 0 0", color: "var(--text)" }}>
                 {p.descripcion}
               </p>
@@ -133,7 +145,7 @@ export default function AdministrarProyectos() {
                 }}
               >
                 {/* 👁️ Ver proyecto */}
-                <NavLink to={`/VerProyectoAdmin/${p.id}`}>
+                <NavLink to={`../VerProyectoAdmin/${p.id}`}>
                   <button
                     style={{
                       background: "var(--brand-blue)",

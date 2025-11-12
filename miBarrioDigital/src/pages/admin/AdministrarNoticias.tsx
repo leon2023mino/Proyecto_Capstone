@@ -146,7 +146,7 @@ export default function AdministrarNoticias() {
                 }}
               >
                 {/* 👁️ Botón Ver Noticia (ruta admin) */}
-               <NavLink to={`/VerNoticiaAdmin/${n.id}`}>
+                <NavLink to={`../VerNoticiaAdmin/${n.id}`}>
                   <button
                     style={{
                       background: "var(--brand-blue)",

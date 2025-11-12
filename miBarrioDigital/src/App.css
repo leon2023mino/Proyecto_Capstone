@@ -1,6 +1,7 @@
 /* ===============================
    VARIABLES GLOBALES
 =============================== */
+
 :root {
   --brand-blue: #1b56a4;
   --brand-blue-dark: #103a7a;
@@ -23,7 +24,9 @@
   box-sizing: border-box;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   font-family: "Inter", "Segoe UI", Arial, sans-serif;
   background: var(--bg);
@@ -89,7 +92,8 @@ html, body, #root {
 }
 
 /* BOTÓN LOGIN / REGISTRO */
-.btn-login, .btn-registro {
+.btn-login,
+.btn-registro {
   background: var(--accent-yellow);
   color: #fff;
   font-weight: 700;
@@ -201,7 +205,6 @@ html, body, #root {
   font-weight: 500;
   font-size: 0.95rem;
 }
-
 
 /* ===============================
    RESPONSIVE

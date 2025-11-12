@@ -8,7 +8,7 @@ import Certificados from "./pages/user/Certificados.tsx";
 import Contacto from "./pages/user/Contacto.tsx";
 import Noticias from "./pages/user/Noticias.tsx";
 import HacerReservas from "./pages/user/HacerReservas.tsx";
-import EspaciosUser from "./pages/user/EspaciosUser.tsx"; 
+import EspaciosUser from "./pages/user/EspaciosUser.tsx";
 import AppLayout from "./layout/AppLayout.tsx";
 import Proyectos from "./pages/user/Proyectos.tsx";
 import Home from "./pages/user/Home.tsx";
@@ -36,10 +36,12 @@ import CrearActividad from "./pages/admin/CrearActividad.tsx";
 import ActividadesUser from "./pages/user/ActividadesUser.tsx";
 import VerActividadAdmin from "./pages/admin/VerActividadAdmin.tsx";
 import AdministrarActividades from "./pages/admin/AdministrarActividades.tsx";
-
+import Dashboard from "./pages/admin/Dashboards.tsx";
+import { AdminLayout } from "./components/AdminLayout.tsx";
 
 const router = createBrowserRouter([
   {
+    //Paginas publias y parara vecinos
     path: "/",
     element: <AppLayout />, // tu página Home
     children: [
@@ -53,28 +55,36 @@ const router = createBrowserRouter([
       { path: "/Proyectos", element: <Proyectos /> },
       { path: "/Login", element: <Login /> },
       { path: "/ProyectosVer/:id", element: <ProyectosVer /> },
-      { path: "/CrearProyecto", element: <CrearProyecto /> },
-      { path: "/AdministrarProyectos", element: <AdministrarProyectos /> },
-      { path: "/VerProyectoAdmin/:id", element: <VerProyectoAdmin /> },
-      { path: "/AdministrarSolicitudes", element: <AdministrarSolicitudes /> },
       { path: "/NoticiasVer/:id", element: <NoticiasVer /> },
-      { path: "/AdministrarNoticias", element: <AdministrarNoticias /> },
-      { path: "/VerNoticiaAdmin/:id", element: <VerNoticiaAdmin /> },
-      { path: "/CrearNoticia", element: <CrearNoticia /> },
-      { path: "/VerNoticiasAdmin", element: <VerNoticiaAdmin /> },
-      { path: "/RegistroUserAdmin", element: <RegistroUserAdmin /> },
-      { path: "/ListaSolicitudes", element: <ListaSolicitudes /> },
       { path: "/CambiarContraseña", element: <CambiarContraseña /> },
       { path: "/MiPerfil", element: <MiPerfil /> },
       { path: "/ElegirTipoCertificado", element: <ElegirTipoCertificado /> },
       { path: "/ObetenerCertificado", element: <ExportCertificado /> },
-      { path: "/CrearEspacio", element: <CrearEspacio /> },
-      { path : "/AdministrarEspacios", element: <AdministrarEspacios /> },
-      { path : "/AdminSolicitudes", element: <AdminSolicitudes /> },
-      { path: "/CrearActividad", element: <CrearActividad /> },
-      { path: "/Actividades", element: <ActividadesUser /> },
-      { path: "/AdministrarActividades", element: <AdministrarActividades /> },
-{ path: "/VerActividadAdmin/:id", element: <VerActividadAdmin /> },
+      { path: "Actividades", element: <ActividadesUser /> },
+    ],
+  },
+  //Pagias solo de admin
+  {
+    path: "/admin",
+    element: <AdminLayout />,
+    children: [
+      { path: "AdministrarActividades", element: <AdministrarActividades /> },
+      { path: "VerActividadAdmin/:id", element: <VerActividadAdmin /> },
+      { path: "Dashboards", element: <Dashboard /> },
+      { path: "CrearProyecto", element: <CrearProyecto /> },
+      { path: "AdministrarProyectos", element: <AdministrarProyectos /> },
+      { path: "VerProyectoAdmin/:id", element: <VerProyectoAdmin /> },
+      { path: "AdministrarSolicitudes", element: <AdministrarSolicitudes /> },
+      { path: "AdministrarNoticias", element: <AdministrarNoticias /> },
+      { path: "VerNoticiaAdmin/:id", element: <VerNoticiaAdmin /> },
+      { path: "CrearNoticia", element: <CrearNoticia /> },
+      { path: "VerNoticiasAdmin", element: <VerNoticiaAdmin /> },
+      { path: "RegistroUserAdmin", element: <RegistroUserAdmin /> },
+      { path: "ListaSolicitudes", element: <ListaSolicitudes /> },
+      { path: "CrearEspacio", element: <CrearEspacio /> },
+      { path: "AdministrarEspacios", element: <AdministrarEspacios /> },
+      { path: "AdminSolicitudes", element: <AdminSolicitudes /> },
+      { path: "CrearActividad", element: <CrearActividad /> },
     ],
   },
 ]);

@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from "../../firebase/config";
+import { doc, getDoc } from "firebase/firestore";
+import { auth, db } from "../../firebase/config";
 import "../../styles/Login.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [msg, setMsg] = useState<string | null>(null);
-  const [msgType, setMsgType] = useState<"error" | "info" | "success" | null>(null);
+  const [msgType, setMsgType] = useState<"error" | "info" | "success" | null>(
+    null
+  );
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -19,10 +22,31 @@ export default function Login() {
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email.trim(), password);
+      // 🔹 1. Inicia sesión
+      const userCredential = await signInWithEmailAndPassword(
+        auth,
+        email.trim(),
+        password
+      );
+
+      const user = userCredential.user;
+
+      // 🔹 2. Busca su rol en Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const role = userDoc.exists() ? userDoc.data().role : "vecino"; // default
+
+      // 🔹 3. Mensaje visual
       setMsg("✅ Inicio de sesión exitoso. Redirigiendo...");
       setMsgType("success");
-      setTimeout(() => navigate("/"), 1500);
+
+      // 🔹 4. Redirección según rol
+      setTimeout(() => {
+        if (role === "admin") {
+          navigate("/admin/dashboards");
+        } else {
+          navigate("/");
+        }
+      }, 1500);
     } catch (err: any) {
       const code = err?.code || "";
       let message = "❌ No se pudo iniciar sesión.";
@@ -30,16 +54,19 @@ export default function Login() {
 
       switch (code) {
         case "auth/invalid-email":
-          message = "⚠️ El formato del correo no es válido. Revisa tu dirección de email.";
+          message =
+            "⚠️ El formato del correo no es válido. Revisa tu dirección de email.";
           break;
         case "auth/user-not-found":
-          message = "🚫 No existe una cuenta registrada con este correo electrónico.";
+          message =
+            "🚫 No existe una cuenta registrada con este correo electrónico.";
           break;
         case "auth/wrong-password":
           message = "🔐 Contraseña incorrecta. Intenta nuevamente.";
           break;
         case "auth/too-many-requests":
-          message = "⏳ Has intentado demasiadas veces. Espera unos minutos e inténtalo otra vez.";
+          message =
+            "⏳ Has intentado demasiadas veces. Espera unos minutos e inténtalo otra vez.";
           break;
         default:
           message = "❌ Ocurrió un error inesperado al iniciar sesión.";
@@ -57,7 +84,9 @@ export default function Login() {
       <div className="login-card">
         <div className="login-header">
           <h2>Iniciar Sesión</h2>
-          <p>Bienvenido a <strong>Mi Barrio Digital</strong></p>
+          <p>
+            Bienvenido a <strong>Mi Barrio Digital</strong>
+          </p>
         </div>
 
         <form className="login-form" onSubmit={handleSubmit}>
