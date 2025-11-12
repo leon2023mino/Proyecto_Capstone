@@ -9,7 +9,7 @@ export default function AdminSolicitudes() {
   >("todas");
 
   // 🔹 Hook que carga las solicitudes
-  const { solicitudes, loading, error } = useSolicitudes(
+  const { solicitudes, loading } = useSolicitudes(
     undefined,
     filtroEstado === "todas" ? undefined : filtroEstado
   );
@@ -26,7 +26,6 @@ export default function AdminSolicitudes() {
   };
 
   if (loading) return <p>Cargando solicitudes...</p>;
-  if (error) return <p style={{ color: "red" }}>{error}</p>;
 
   return (
     <div
@@ -52,28 +51,41 @@ export default function AdminSolicitudes() {
         <ul style={{ listStyle: "none", padding: 0 }}>
           {solicitudes.map((s) => {
             const esActividad = s.tipo === "actividad";
+            const esCertificado = s.tipo === "certificado";
+            const esRegistro = s.tipo === "registro";
 
             return (
               <li
                 key={s.id}
                 style={{
-                  background: esActividad ? "#eaf7ff" : "#f4f4f4",
-                  borderLeft: esActividad ? "5px solid #1b56a4" : "5px solid #57b460",
+                  background: esActividad
+                    ? "#eaf7ff" // azul claro
+                    : esCertificado
+                    ? "#fff7e5" // amarillo claro
+                    : "#f4f4f4", // gris
+                  borderLeft: esActividad
+                    ? "5px solid #1b56a4"
+                    : esCertificado
+                    ? "5px solid #c78300"
+                    : "5px solid #57b460",
                   marginBottom: "1rem",
                   padding: "1rem",
                   borderRadius: "8px",
+                  boxShadow: "0 2px 5px rgba(0,0,0,0.08)",
                 }}
               >
-                {/* Título principal */}
+                {/* 🔹 Encabezado dinámico */}
                 <strong>
                   {esActividad
                     ? `Solicitud de cupo en: ${s.tituloActividad || "Actividad desconocida"}`
-                    : s.datos?.nombre || "Sin nombre"}
+                    : esCertificado
+                    ? `Solicitud de certificado de residencia — ${s.datos?.nombre || "Usuario"}`
+                    : `Solicitud de registro — ${s.datos?.nombre || "Usuario"}`}
                 </strong>{" "}
                 — <em>{s.tipo}</em>
                 <br />
 
-                {/* Información específica */}
+                {/* 🔹 Información específica */}
                 {esActividad ? (
                   <>
                     <small>👤 Solicitante: {s.datos?.nombre}</small>
@@ -83,18 +95,31 @@ export default function AdminSolicitudes() {
                     <small>🗓️ Actividad ID: {s.actividadId}</small>
                     <br />
                   </>
+                ) : esCertificado ? (
+                  <>
+                    <small>👤 Vecino: {s.datos?.nombre}</small>
+                    <br />
+                    <small>📧 {s.datos?.email}</small>
+                    <br />
+                    <small>🏠 Dirección: {s.datos?.direccion}</small>
+                    <br />
+                    <small>🏙️ Comuna: {s.datos?.comuna}</small>
+                    <br />
+                    <small>🪪 RUT: {s.datos?.rut}</small>
+                    <br />
+                  </>
                 ) : (
                   <>
-                    <small>Correo: {s.datos?.email}</small>
+                    <small>📧 Correo: {s.datos?.email}</small>
                     <br />
-                    <small>Dirección: {s.datos?.direccion}</small>
+                    <small>🏠 Dirección: {s.datos?.direccion}</small>
                     <br />
-                    <small>RUT: {s.datos?.rut}</small>
+                    <small>🪪 RUT: {s.datos?.rut}</small>
                     <br />
                   </>
                 )}
 
-                {/* Estado */}
+                {/* 🔹 Estado */}
                 <small>
                   Estado:{" "}
                   <span
@@ -112,7 +137,7 @@ export default function AdminSolicitudes() {
                   </span>
                 </small>
 
-                {/* Botones */}
+                {/* 🔹 Botones */}
                 {s.estado === "pendiente" && (
                   <div style={{ marginTop: "0.6rem" }}>
                     <button

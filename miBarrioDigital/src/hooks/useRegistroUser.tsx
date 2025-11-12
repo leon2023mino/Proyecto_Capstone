@@ -53,7 +53,7 @@ export function useRegistroUser() {
           throw new Error("Falta la contraseña del nuevo usuario.");
         await crearCuentaDirecta(form);
       } else if (form.role === "vecino" && mantenerSesion) {
-        // 🧩 Caso vecino común → solo crea solicitud
+        // 🧩 Caso vecino común → crea solicitud de registro
         await crearSolicitud(form);
       } else if (form.role === "admin") {
         // 👨‍💼 Caso admin creando otro admin
@@ -113,7 +113,7 @@ export function useRegistroUser() {
   };
 
   /**
-   * 👨‍💼 Aprobar solicitud (registro o actividad)
+   * 👨‍💼 Aprobar solicitud (registro | actividad | certificado)
    */
   const aprobarSolicitud = async (
     solicitudId: string,
@@ -123,14 +123,13 @@ export function useRegistroUser() {
     let secondaryApp: any = null;
 
     try {
-      // 🧩 NUEVO — detectar tipo de solicitud
       const tipo = datos?.tipo || "registro";
 
-      // 🔹 Si es una actividad → inscribir al usuario y restar cupo
+      // 🔹 Aprobación de ACTIVIDAD
       if (tipo === "actividad" && datos?.actividadId) {
         const refActividad = doc(db, "actividades", datos.actividadId);
 
-        // 1️⃣ Agregar usuario a subcolección "inscritos"
+        // 1️⃣ Registrar inscripción del usuario
         await addDoc(collection(refActividad, "inscritos"), {
           usuarioId: datos.usuarioId,
           nombre: datos.datos?.nombre || "Usuario sin nombre",
@@ -143,7 +142,7 @@ export function useRegistroUser() {
           cupoDisponible: increment(-1),
         });
 
-        // 3️⃣ Marcar la solicitud como aprobada
+        // 3️⃣ Marcar solicitud como aprobada
         await updateDoc(doc(db, "requests", solicitudId), {
           estado: "aprobada",
           revisadoPor: adminId || null,
@@ -154,7 +153,19 @@ export function useRegistroUser() {
         return;
       }
 
-      // 🔹 Si es de registro (flujo anterior)...
+      // 🔹 Aprobación de CERTIFICADO
+      if (tipo === "certificado") {
+        await updateDoc(doc(db, "requests", solicitudId), {
+          estado: "aprobada",
+          revisadoPor: adminId || null,
+          revisadoEn: serverTimestamp(),
+        });
+
+        alert("📄 Certificado aprobado. El vecino podrá descargarlo ahora.");
+        return;
+      }
+
+      // 🔹 Aprobación de REGISTRO (flujo normal)
       const existing = getApps().find((a) => a.name === "SecondaryApp");
       if (existing) await deleteApp(existing);
 

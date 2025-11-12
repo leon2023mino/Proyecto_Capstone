@@ -1,50 +1,124 @@
+// src/pages/certificados/ObtenerCertificado.tsx
 import { useEffect, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
 import { useAuth } from "../../context/AuthContext";
-import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
+import {
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+  setDoc,
+  serverTimestamp,
+} from "firebase/firestore";
 
 export default function ExportCertificado() {
   const { user, loading } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [generando, setGenerando] = useState(false);
+  const [estadoSolicitud, setEstadoSolicitud] = useState<
+    "pendiente" | "aprobada" | "rechazada" | null
+  >(null);
   const printRef = useRef<HTMLDivElement | null>(null);
 
+  // 🔹 Cargar datos del usuario
   useEffect(() => {
     if (!user) {
       setProfile(null);
       return;
     }
+
     const fetchProfile = async () => {
       try {
         const snap = await getDoc(doc(db, "users", user.uid));
+        const data = snap.exists() ? snap.data() : {};
+
+        // Separar dirección y comuna
+        let direccionLimpia = data?.direccion || "";
+        let comunaExtraida = data?.comuna || "";
+        if (direccionLimpia.includes(",")) {
+          const partes = direccionLimpia.split(",");
+          direccionLimpia = partes[0].trim();
+          comunaExtraida = partes[1]?.trim() || comunaExtraida;
+        }
+
         setProfile({
-          nombre: user.displayName ?? snap.data()?.nombre ?? "",
-          email: user.email ?? snap.data()?.email ?? "",
-          rut: snap.data()?.rut ?? "",
-          direccion: snap.data()?.direccion ?? "",
-          comuna: snap.data()?.comuna ?? "",
-          fechaResidencia: snap.data()?.fechaResidencia ?? "",
-          ...snap.data(),
+          nombre:
+            data?.nombre ||
+            data?.displayName ||
+            user.displayName ||
+            "Usuario sin nombre",
+          email: data?.email || user.email || "",
+          rut: data?.rut || "",
+          direccion: direccionLimpia,
+          comuna: comunaExtraida,
         });
       } catch (err) {
         console.error("Error cargando perfil:", err);
-        setProfile({ nombre: user.displayName ?? "", email: user.email ?? "" });
       }
     };
+
     fetchProfile();
   }, [user]);
 
-  const formatDate = (d: Date) =>
-    d.toLocaleDateString("es-CL", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+  // 🔹 Verificar solicitud existente del certificado
+  useEffect(() => {
+    if (!user) return;
 
+    const verificarSolicitud = async () => {
+      const q = query(
+        collection(db, "requests"),
+        where("usuarioId", "==", user.uid),
+        where("tipo", "==", "certificado")
+      );
+      const snap = await getDocs(q);
+
+      if (snap.empty) {
+        setEstadoSolicitud(null);
+      } else {
+        const docData = snap.docs[0].data();
+        setEstadoSolicitud(docData.estado);
+      }
+    };
+
+    verificarSolicitud();
+  }, [user]);
+
+  // 🔹 Crear solicitud
+  const solicitarCertificado = async () => {
+    if (!user || !profile) return;
+
+    try {
+      const ref = doc(db, "requests", `${user.uid}_certificado`);
+      await setDoc(ref, {
+        tipo: "certificado",
+        usuarioId: user.uid,
+        estado: "pendiente",
+        createdAt: serverTimestamp(),
+        datos: {
+          nombre: profile.nombre,
+          rut: profile.rut,
+          email: profile.email,
+          direccion: profile.direccion,
+          comuna: profile.comuna,
+        },
+      });
+
+      setEstadoSolicitud("pendiente");
+      alert("✅ Solicitud enviada. Espera aprobación del administrador.");
+    } catch (err) {
+      console.error("Error creando solicitud:", err);
+      alert("❌ No se pudo enviar la solicitud.");
+    }
+  };
+
+  // 🔹 Exportar PDF (solo si aprobada)
   const handleExportPdf = async () => {
-    if (!user || !printRef.current) return;
+    if (!user || !printRef.current || estadoSolicitud !== "aprobada") return;
+
     setGenerando(true);
     try {
       const canvas = await html2canvas(printRef.current, { scale: 2 });
@@ -63,28 +137,42 @@ export default function ExportCertificado() {
     }
   };
 
-  if (loading) return null;
+  // 🔹 Fecha formateada
+  const formatDate = (d: Date) =>
+    d.toLocaleDateString("es-CL", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+  if (loading) return <p style={{ textAlign: "center" }}>Cargando...</p>;
 
   return (
     <div style={{ maxWidth: 980, margin: "2rem auto", padding: "1rem" }}>
-      {/* Vista previa (visible) */}
+      {/* 🔹 Vista previa del certificado */}
       <div
         ref={printRef}
-        aria-label="Vista previa del certificado"
         style={{
           background: "#fff",
-          padding: 28,
+          padding: 40,
           borderRadius: 10,
-          boxShadow: "0 8px 20px rgba(0,0,0,0.08)",
+          boxShadow: "0 8px 25px rgba(0,0,0,0.08)",
           color: "#111",
           fontFamily: "Helvetica, Arial, sans-serif",
-          lineHeight: 1.45,
+          lineHeight: 1.6,
           marginBottom: 16,
         }}
       >
-        <div style={{ textAlign: "center", marginBottom: 18 }}>
-          <h2 style={{ margin: 0 }}>CERTIFICADO DE RESIDENCIA</h2>
-          <small style={{ color: "#555" }}>Mi Barrio Digital</small>
+        <div style={{ textAlign: "center", marginBottom: 20 }}>
+          <img
+            src="/logopngpes.png"
+            alt="Mi Barrio Digital"
+            style={{ height: 90, marginBottom: 10 }}
+          />
+          <h2 style={{ margin: 0, color: "#1b56a4" }}>
+            CERTIFICADO DE RESIDENCIA
+          </h2>
+          <small style={{ color: "#555" }}>Emitido por Mi Barrio Digital</small>
         </div>
 
         <p style={{ textAlign: "justify", marginTop: 20 }}>
@@ -92,11 +180,11 @@ export default function ExportCertificado() {
         </p>
 
         <p style={{ textAlign: "justify" }}>
-          Certifico que <strong>{profile?.nombre ?? "—"}</strong>, RUT:{" "}
-          <strong>{profile?.rut ?? "—"}</strong>, domiciliado(a) en{" "}
-          <strong>{profile?.address ?? "—"}</strong>, comuna de{" "}
-          <strong>{profile?.comuna ?? "—"}</strong>, se encuentra habitando en
-          el domicilio indicado y reside habitualmente en el mismo.
+          Certifico que <strong>{profile?.nombre || "—"}</strong>, RUT:{" "}
+          <strong>{profile?.rut || "—"}</strong>, domiciliado(a) en{" "}
+          <strong>{profile?.direccion || "—"}</strong>, comuna de{" "}
+          <strong>{profile?.comuna || "—"}</strong>, se encuentra habitando en el
+          domicilio indicado y reside habitualmente en el mismo.
         </p>
 
         <p style={{ textAlign: "justify" }}>
@@ -104,77 +192,97 @@ export default function ExportCertificado() {
           fines que estime convenientes.
         </p>
 
-        <p style={{ marginTop: 24 }}>
-          Lugar: <strong>{profile?.comuna ?? "—"}</strong> — Fecha:{" "}
+        <p style={{ marginTop: 30 }}>
+          Lugar: <strong>{profile?.comuna || "—"}</strong> — Fecha:{" "}
           <strong>{formatDate(new Date())}</strong>
         </p>
 
-        <div style={{ marginTop: 40 }}>
+        <div style={{ marginTop: 60, textAlign: "center" }}>
           <p>Atentamente,</p>
-          <p style={{ marginTop: 48 }}>
-            <strong>Mi Barrio Digital</strong>
+          <p style={{ marginTop: 45, fontWeight: 700, fontSize: "1.05rem" }}>
+            Mi Barrio Digital
           </p>
-          <p style={{ color: "#666", fontSize: 12 }}>
+          <p style={{ color: "#666", fontSize: 12, marginTop: 4 }}>
             Este documento fue generado electrónicamente y no requiere firma
             física.
           </p>
         </div>
       </div>
 
-      {/* Botones de acción */}
-      <div style={{ display: "flex", gap: 12, alignItems: "center" }}>
-        <button
-          onClick={handleExportPdf}
-          disabled={!user || generando}
-          className="btn"
-          title={
-            user
-              ? "Descargar certificado de residencia"
-              : "Debes iniciar sesión"
-          }
-          style={{
-            padding: ".6rem 1rem",
-            background: "var(--brand-blue, #0b6d44)",
-            color: "#fff",
-            border: "none",
-            borderRadius: 8,
-            cursor: "pointer",
-            fontWeight: 600,
-          }}
-        >
-          {generando
-            ? "Generando..."
-            : user
-            ? "Descargar Certificado"
-            : "Inicia sesión para descargar"}
-        </button>
+      {/* 🔹 Botones */}
+      <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
+        {estadoSolicitud === null && (
+          <button
+            onClick={solicitarCertificado}
+            style={{
+              padding: ".7rem 1.3rem",
+              background: "#1b56a4",
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              cursor: "pointer",
+              fontWeight: 600,
+              fontSize: "0.95rem",
+            }}
+          >
+            Solicitar Certificado
+          </button>
+        )}
 
-        <button
-          onClick={() => {
-            // Abrir vista previa en nueva ventana imprenta-libre como alternativa
-            if (!printRef.current) return;
-            const html = printRef.current.outerHTML;
-            const newWin = window.open("", "_blank", "noopener,noreferrer");
-            if (!newWin) return;
-            newWin.document.write(
-              `<html><head><title>Preview</title></head><body>${html}</body></html>`
-            );
-            newWin.document.close();
-          }}
-          className="btn"
-          style={{
-            padding: ".6rem 1rem",
-            background: "#f3f3f3",
-            color: "#111",
-            border: "1px solid #e6e6e6",
-            borderRadius: 8,
-            cursor: "pointer",
-            fontWeight: 600,
-          }}
-          title="Abrir vista previa en nueva ventana"
-        >
-          Abrir vista previa
-        </button>
+        {estadoSolicitud === "pendiente" && (
+          <button
+            disabled
+            style={{
+              padding: ".7rem 1.3rem",
+              background: "#c78300",
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              cursor: "not-allowed",
+              fontWeight: 600,
+              fontSize: "0.95rem",
+            }}
+          >
+            🕓 Solicitud pendiente
+          </button>
+        )}
+
+        {estadoSolicitud === "rechazada" && (
+          <button
+            onClick={solicitarCertificado}
+            style={{
+              padding: ".7rem 1.3rem",
+              background: "#c73f3f",
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              fontWeight: 600,
+              fontSize: "0.95rem",
+              cursor: "pointer",
+            }}
+          >
+            ❌ Rechazada — reenviar solicitud
+          </button>
+        )}
+
+        {estadoSolicitud === "aprobada" && (
+          <button
+            onClick={handleExportPdf}
+            disabled={generando}
+            style={{
+              padding: ".7rem 1.3rem",
+              background: "#57b460",
+              color: "#fff",
+              border: "none",
+              borderRadius: 8,
+              cursor: "pointer",
+              fontWeight: 600,
+              fontSize: "0.95rem",
+            }}
+          >
+            {generando ? "Generando..." : "⬇️ Descargar Certificado"}
+          </button>
+        )}
       </div>
     </div>
   );
