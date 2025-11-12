@@ -1,7 +1,7 @@
-// src/pages/certificados/ObtenerCertificado.tsx
 import { useEffect, useRef, useState } from "react";
 import html2canvas from "html2canvas";
 import jsPDF from "jspdf";
+import emailjs from "@emailjs/browser";
 import { useAuth } from "../../context/AuthContext";
 import { db } from "../../firebase/config";
 import {
@@ -14,17 +14,19 @@ import {
   setDoc,
   serverTimestamp,
 } from "firebase/firestore";
+import { getStorage, ref, uploadString, getDownloadURL } from "firebase/storage";
 
 export default function ExportCertificado() {
   const { user, loading } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [generando, setGenerando] = useState(false);
+  const [enviandoCorreo, setEnviandoCorreo] = useState(false);
   const [estadoSolicitud, setEstadoSolicitud] = useState<
     "pendiente" | "aprobada" | "rechazada" | null
   >(null);
   const printRef = useRef<HTMLDivElement | null>(null);
 
-  // 🔹 Cargar datos del usuario
+  // 🔹 Cargar perfil del usuario
   useEffect(() => {
     if (!user) {
       setProfile(null);
@@ -64,7 +66,7 @@ export default function ExportCertificado() {
     fetchProfile();
   }, [user]);
 
-  // 🔹 Verificar solicitud existente del certificado
+  // 🔹 Verificar solicitud existente
   useEffect(() => {
     if (!user) return;
 
@@ -89,7 +91,10 @@ export default function ExportCertificado() {
 
   // 🔹 Crear solicitud
   const solicitarCertificado = async () => {
-    if (!user || !profile) return;
+    if (!user || !profile) {
+      alert("Debes iniciar sesión para solicitar el certificado.");
+      return;
+    }
 
     try {
       const ref = doc(db, "requests", `${user.uid}_certificado`);
@@ -115,10 +120,76 @@ export default function ExportCertificado() {
     }
   };
 
-  // 🔹 Exportar PDF (solo si aprobada)
-  const handleExportPdf = async () => {
-    if (!user || !printRef.current || estadoSolicitud !== "aprobada") return;
+  // 🔹 Generar PDF y subirlo a Firebase Storage
+  const generarYSubirPDF = async (): Promise<string | null> => {
+    if (!user || !printRef.current) return null;
 
+    try {
+      setGenerando(true);
+
+      const canvas = await html2canvas(printRef.current, { scale: 2 });
+      const imgData = canvas.toDataURL("image/png");
+      const pdf = new jsPDF({ unit: "mm", format: "a4" });
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const imgProps = (pdf as any).getImageProperties(imgData);
+      const imgWidthMM = pageWidth - 20;
+      const imgHeightMM = (imgProps.height * imgWidthMM) / imgProps.width;
+      pdf.addImage(imgData, "PNG", 10, 10, imgWidthMM, imgHeightMM);
+
+      const pdfBase64 = pdf.output("datauristring");
+
+      // 🔹 Subir a Firebase Storage
+      const storage = getStorage();
+      const pdfRef = ref(storage, `certificados/${user.uid}/certificado.pdf`);
+      await uploadString(pdfRef, pdfBase64, "data_url");
+      const url = await getDownloadURL(pdfRef);
+
+      return url;
+    } catch (err) {
+      console.error("Error generando/subiendo PDF:", err);
+      return null;
+    } finally {
+      setGenerando(false);
+    }
+  };
+
+  // 🔹 Enviar correo con link de descarga
+  const enviarPorCorreo = async () => {
+    if (!user || !profile?.email) {
+      alert("Debes iniciar sesión o no se encontró correo del usuario.");
+      return;
+    }
+
+    setEnviandoCorreo(true);
+    try {
+      const pdfURL = await generarYSubirPDF();
+      if (!pdfURL) throw new Error("No se pudo generar el PDF.");
+
+      await emailjs.send(
+        "service_zb7okuy", // ID de tu servicio
+        "template_omb49ft", // ID de tu template
+        {
+          to_name: profile.nombre,
+          to_email: profile.email,
+          message:
+            "Tu certificado de residencia ya está disponible. Puedes descargarlo usando el enlace siguiente:",
+          download_link: pdfURL,
+        },
+        "l9YawRC9IuAKvTD_9" // tu public key
+      );
+
+      alert(`📨 Certificado enviado exitosamente a ${profile.email}`);
+    } catch (err) {
+      console.error("Error enviando correo:", err);
+      alert("❌ No se pudo enviar el correo.");
+    } finally {
+      setEnviandoCorreo(false);
+    }
+  };
+
+  // 🔹 Descargar localmente (opcional)
+  const handleExportPdf = async () => {
+    if (!user || !printRef.current) return;
     setGenerando(true);
     try {
       const canvas = await html2canvas(printRef.current, { scale: 2 });
@@ -149,7 +220,7 @@ export default function ExportCertificado() {
 
   return (
     <div style={{ maxWidth: 980, margin: "2rem auto", padding: "1rem" }}>
-      {/* 🔹 Vista previa del certificado */}
+      {/* Vista previa del certificado */}
       <div
         ref={printRef}
         style={{
@@ -175,9 +246,7 @@ export default function ExportCertificado() {
           <small style={{ color: "#555" }}>Emitido por Mi Barrio Digital</small>
         </div>
 
-        <p style={{ textAlign: "justify", marginTop: 20 }}>
-          A quien corresponda:
-        </p>
+        <p style={{ textAlign: "justify", marginTop: 20 }}>A quien corresponda:</p>
 
         <p style={{ textAlign: "justify" }}>
           Certifico que <strong>{profile?.nombre || "—"}</strong>, RUT:{" "}
@@ -209,7 +278,7 @@ export default function ExportCertificado() {
         </div>
       </div>
 
-      {/* 🔹 Botones */}
+      {/* Botones */}
       <div style={{ display: "flex", gap: 12, justifyContent: "center" }}>
         {estadoSolicitud === null && (
           <button
@@ -222,7 +291,6 @@ export default function ExportCertificado() {
               borderRadius: 8,
               cursor: "pointer",
               fontWeight: 600,
-              fontSize: "0.95rem",
             }}
           >
             Solicitar Certificado
@@ -240,7 +308,6 @@ export default function ExportCertificado() {
               borderRadius: 8,
               cursor: "not-allowed",
               fontWeight: 600,
-              fontSize: "0.95rem",
             }}
           >
             🕓 Solicitud pendiente
@@ -257,7 +324,6 @@ export default function ExportCertificado() {
               border: "none",
               borderRadius: 8,
               fontWeight: 600,
-              fontSize: "0.95rem",
               cursor: "pointer",
             }}
           >
@@ -266,22 +332,39 @@ export default function ExportCertificado() {
         )}
 
         {estadoSolicitud === "aprobada" && (
-          <button
-            onClick={handleExportPdf}
-            disabled={generando}
-            style={{
-              padding: ".7rem 1.3rem",
-              background: "#57b460",
-              color: "#fff",
-              border: "none",
-              borderRadius: 8,
-              cursor: "pointer",
-              fontWeight: 600,
-              fontSize: "0.95rem",
-            }}
-          >
-            {generando ? "Generando..." : "⬇️ Descargar Certificado"}
-          </button>
+          <>
+            <button
+              onClick={handleExportPdf}
+              disabled={generando}
+              style={{
+                padding: ".7rem 1.3rem",
+                background: "#57b460",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              {generando ? "Generando..." : "⬇️ Descargar Certificado"}
+            </button>
+
+            <button
+              onClick={enviarPorCorreo}
+              disabled={enviandoCorreo}
+              style={{
+                padding: ".7rem 1.3rem",
+                background: "#1b56a4",
+                color: "#fff",
+                border: "none",
+                borderRadius: 8,
+                cursor: "pointer",
+                fontWeight: 600,
+              }}
+            >
+              {enviandoCorreo ? "Enviando..." : "📧 Enviar por correo"}
+            </button>
+          </>
         )}
       </div>
     </div>
