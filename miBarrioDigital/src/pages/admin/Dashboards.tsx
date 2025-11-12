@@ -1,14 +1,24 @@
-import { AdminLayout } from "@/components/AdminLayout";
+import { Calendar, Home, FileText, Inbox } from "lucide-react";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "../../components/ui/card";
-import { Calendar, Home, FileText, Inbox } from "lucide-react";
+} from "@/components/ui/card";
+import { useDashboardData } from "@/hooks/useDashboardData";
 
-const Dashboard = () => {
+export default function Dashboard() {
+  const { stats, actividadesRecientes, solicitudesRecientes, loading } =
+    useDashboardData();
+
+  if (loading)
+    return (
+      <p className="text-center text-muted-foreground mt-10">
+        Cargando datos...
+      </p>
+    );
+
   return (
     <div className="space-y-6">
       <div>
@@ -18,62 +28,35 @@ const Dashboard = () => {
         </p>
       </div>
 
+      {/* ====== TARJETAS RESUMEN ====== */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Actividades Activas
-            </CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">12</div>
-            <p className="text-xs text-muted-foreground">
-              +2 desde el mes pasado
-            </p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Espacios Disponibles
-            </CardTitle>
-            <Home className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">8</div>
-            <p className="text-xs text-muted-foreground">De 10 totales</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Noticias Publicadas
-            </CardTitle>
-            <FileText className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">24</div>
-            <p className="text-xs text-muted-foreground">Este mes</p>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Solicitudes Pendientes
-            </CardTitle>
-            <Inbox className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">7</div>
-            <p className="text-xs text-muted-foreground">Requieren atención</p>
-          </CardContent>
-        </Card>
+        <StatCard
+          title="Actividades Activas"
+          icon={<Calendar className="h-4 w-4 text-muted-foreground" />}
+          value={stats.actividades}
+          subtitle="Registradas en total"
+        />
+        <StatCard
+          title="Espacios Disponibles"
+          icon={<Home className="h-4 w-4 text-muted-foreground" />}
+          value={stats.espacios}
+          subtitle="Totales en la comunidad"
+        />
+        <StatCard
+          title="Noticias Publicadas"
+          icon={<FileText className="h-4 w-4 text-muted-foreground" />}
+          value={stats.noticias}
+          subtitle="Publicadas en total"
+        />
+        <StatCard
+          title="Solicitudes Pendientes"
+          icon={<Inbox className="h-4 w-4 text-muted-foreground" />}
+          value={stats.solicitudesPendientes}
+          subtitle="A la espera de aprobación"
+        />
       </div>
 
+      {/* ====== LISTAS RECIENTES ====== */}
       <div className="grid gap-4 md:grid-cols-2">
         <Card>
           <CardHeader>
@@ -81,80 +64,96 @@ const Dashboard = () => {
             <CardDescription>Últimas actividades programadas</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Yoga Matutino</p>
-                <p className="text-sm text-muted-foreground">
-                  15/02/2024 - 08:00
-                </p>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                15/20 inscritos
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Taller de Cocina</p>
-                <p className="text-sm text-muted-foreground">
-                  18/02/2024 - 15:00
-                </p>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                12/12 inscritos
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Cine Familiar</p>
-                <p className="text-sm text-muted-foreground">
-                  20/02/2024 - 19:00
-                </p>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                32/50 inscritos
-              </div>
-            </div>
+            {actividadesRecientes.length > 0 ? (
+              actividadesRecientes.map((act) => (
+                <div key={act.id} className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{act.nombre || "Sin título"}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {act.fechaInicio
+                        ? new Date(
+                            act.fechaInicio.seconds * 1000
+                          ).toLocaleDateString()
+                        : "Fecha no definida"}
+                    </p>
+                  </div>
+                  <div className="text-sm text-muted-foreground">
+                    {act.inscritos
+                      ? `${act.inscritos.length} inscritos`
+                      : "Sin datos"}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No hay actividades recientes.
+              </p>
+            )}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
             <CardTitle>Solicitudes Recientes</CardTitle>
-            <CardDescription>Últimas solicitudes de residentes</CardDescription>
+            <CardDescription>Últimas solicitudes registradas</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Reserva Salón</p>
-                <p className="text-sm text-muted-foreground">Juan Pérez</p>
-              </div>
-              <div className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                Pendiente
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Permiso Mudanza</p>
-                <p className="text-sm text-muted-foreground">María González</p>
-              </div>
-              <div className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                Pendiente
-              </div>
-            </div>
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="font-medium">Acceso Visitas</p>
-                <p className="text-sm text-muted-foreground">Carlos Ruiz</p>
-              </div>
-              <div className="text-xs bg-secondary text-secondary-foreground px-2 py-1 rounded">
-                Pendiente
-              </div>
-            </div>
+            {solicitudesRecientes.length > 0 ? (
+              solicitudesRecientes.map((s) => (
+                <div key={s.id} className="flex items-center justify-between">
+                  <div>
+                    <p className="font-medium">{s.tipo || "Solicitud"}</p>
+                    <p className="text-sm text-muted-foreground">
+                      {s.nombre || "Sin nombre"}
+                    </p>
+                  </div>
+                  <div
+                    className={`text-xs px-2 py-1 rounded ${
+                      s.estado === "pendiente"
+                        ? "bg-yellow-100 text-yellow-800"
+                        : s.estado === "aprobada"
+                        ? "bg-green-100 text-green-800"
+                        : "bg-red-100 text-red-800"
+                    }`}
+                  >
+                    {s.estado || "Desconocido"}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <p className="text-sm text-muted-foreground">
+                No hay solicitudes recientes.
+              </p>
+            )}
           </CardContent>
         </Card>
       </div>
     </div>
   );
-};
+}
 
-export default Dashboard;
+/* Componente reutilizable para tarjetas */
+function StatCard({
+  title,
+  value,
+  subtitle,
+  icon,
+}: {
+  title: string;
+  value: number;
+  subtitle: string;
+  icon: React.ReactNode;
+}) {
+  return (
+    <Card>
+      <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+        <CardTitle className="text-sm font-medium">{title}</CardTitle>
+        {icon}
+      </CardHeader>
+      <CardContent>
+        <div className="text-2xl font-bold">{value}</div>
+        <p className="text-xs text-muted-foreground">{subtitle}</p>
+      </CardContent>
+    </Card>
+  );
+}
