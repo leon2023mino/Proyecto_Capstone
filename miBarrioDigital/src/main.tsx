@@ -33,6 +33,7 @@ import ElegirTipoCertificado from "./pages/user/ElegirTipoCertificado.tsx";
 import ExportCertificado from "./pages/user/ObetenerCertificado.tsx";
 import CrearEspacio from "./pages/admin/CrearEspacio.tsx";
 import AdministrarEspacios from "./pages/admin/AdministrarEspacios.tsx";
+import EditarEspacio from "./pages/admin/EditarEspacio.tsx"; // 👈 nuevo import
 import AdminSolicitudes from "./pages/admin/AdminSolicitudes.tsx";
 import CrearActividad from "./pages/admin/CrearActividad.tsx";
 import ActividadesUser from "./pages/user/ActividadesUser.tsx";
@@ -43,9 +44,9 @@ import { AdminLayout } from "./components/AdminLayout.tsx";
 
 const router = createBrowserRouter([
   {
-    //Paginas publias y parara vecinos
+    // 🔹 Páginas públicas y de vecinos
     path: "/",
-    element: <AppLayout />, // tu página Home
+    element: <AppLayout />,
     children: [
       { index: true, element: <Home /> },
       { path: "/registro", element: <Registro /> },
@@ -62,10 +63,11 @@ const router = createBrowserRouter([
       { path: "/MiPerfil", element: <MiPerfil /> },
       { path: "/ElegirTipoCertificado", element: <ElegirTipoCertificado /> },
       { path: "/ObetenerCertificado", element: <ExportCertificado /> },
-      { path: "Actividades", element: <ActividadesUser /> },
+      { path: "/Actividades", element: <ActividadesUser /> },
     ],
   },
-  //Pagias solo de admin
+
+  // 🔒 Páginas solo para administradores
   {
     path: "/admin",
     element: <ProtectedRoute />,
@@ -73,29 +75,27 @@ const router = createBrowserRouter([
       {
         element: <AdminLayout />,
         children: [
-          {
-            path: "AdministrarActividades",
-            element: <AdministrarActividades />,
-          },
-          { path: "VerActividadAdmin/:id", element: <VerActividadAdmin /> },
           { path: "Dashboards", element: <Dashboard /> },
+          { path: "AdministrarActividades", element: <AdministrarActividades /> },
+          { path: "VerActividadAdmin/:id", element: <VerActividadAdmin /> },
+          { path: "CrearActividad", element: <CrearActividad /> },
+
           { path: "CrearProyecto", element: <CrearProyecto /> },
           { path: "AdministrarProyectos", element: <AdministrarProyectos /> },
           { path: "VerProyectoAdmin/:id", element: <VerProyectoAdmin /> },
-          {
-            path: "AdministrarSolicitudes",
-            element: <AdministrarSolicitudes />,
-          },
+
           { path: "AdministrarNoticias", element: <AdministrarNoticias /> },
           { path: "VerNoticiaAdmin/:id", element: <VerNoticiaAdmin /> },
           { path: "CrearNoticia", element: <CrearNoticia /> },
-          { path: "VerNoticiasAdmin", element: <VerNoticiaAdmin /> },
+
+          { path: "AdministrarEspacios", element: <AdministrarEspacios /> },
+          { path: "CrearEspacio", element: <CrearEspacio /> },
+          { path: "EditarEspacio/:id", element: <EditarEspacio /> }, // 👈 nueva ruta de edición
+
           { path: "RegistroUserAdmin", element: <RegistroUserAdmin /> },
           { path: "ListaSolicitudes", element: <ListaSolicitudes /> },
-          { path: "CrearEspacio", element: <CrearEspacio /> },
-          { path: "AdministrarEspacios", element: <AdministrarEspacios /> },
+          { path: "AdministrarSolicitudes", element: <AdministrarSolicitudes /> },
           { path: "AdminSolicitudes", element: <AdminSolicitudes /> },
-          { path: "CrearActividad", element: <CrearActividad /> },
         ],
       },
     ],

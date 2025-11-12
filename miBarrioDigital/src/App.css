@@ -1,22 +1,23 @@
 /* ===============================
-   VARIABLES GLOBALES
+   VARIABLES GLOBALES AZUL OSCURO
+   (Compatibles con Tailwind y Shadcn)
 =============================== */
 
 :root {
-  --brand-blue: #1b56a4;
-  --brand-blue-dark: #103a7a;
-  --accent-yellow: #70aeff;
-  --text-color: #000000;
+  --brand-blue: #1b56a4;       /* azul principal */
+  --brand-blue-dark: #103a7a;  /* azul más oscuro */
+  --accent-blue: #70aeff;      /* acento claro */
+  --text-color: #0f172a;       /* gris azulado profundo */
+  --text-light: #f5f7fa;
   --bg: #ffffff;
   --surface: #ffffff;
-  --border: #dfe5ee;
+  --border: #e5e7eb;
   --radius: 12px;
-  --shadow: 0 12px 28px rgba(0, 0, 0, 0.15);
-  --text-light: #f5f7fa;
+  --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
 /* ===============================
-   RESET Y BASE
+   BASE Y RESET
 =============================== */
 * {
   margin: 0;
@@ -51,10 +52,8 @@ body,
   color: #fff;
   background: url("/plaza.jpg") center/cover no-repeat;
   box-shadow: var(--shadow);
-  z-index: 1;
 }
 
-/* Capa oscura encima de la imagen */
 .header-top::before {
   content: "";
   position: absolute;
@@ -63,19 +62,18 @@ body,
   z-index: 0;
 }
 
-/* Asegura que el contenido quede sobre la capa */
 .header-top > * {
   position: relative;
   z-index: 1;
 }
 
-/* IZQUIERDA: LOGO */
+/* === LOGO === */
 .logo img {
   height: 90px;
   object-fit: contain;
 }
 
-/* DERECHA: CONTACTO + LOGIN */
+/* === CONTACTO / LOGIN === */
 .header-contact {
   display: flex;
   flex-direction: column;
@@ -91,84 +89,100 @@ body,
   gap: 1rem;
 }
 
-/* BOTÓN LOGIN / REGISTRO */
+/* === BOTONES LOGIN / REGISTRO === */
 .btn-login,
 .btn-registro {
-  background: var(--accent-yellow);
+  background: var(--brand-blue);
   color: #fff;
   font-weight: 700;
   padding: 0.65rem 1.2rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 999px;
   cursor: pointer;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
   transition: background 0.25s ease, transform 0.1s ease;
 }
+
 .btn-login:hover,
 .btn-registro:hover {
   background: var(--brand-blue-dark);
   transform: translateY(-1px);
 }
 
-/* ICONO USUARIO */
+/* === ÍCONO DE USUARIO === */
 .user-icon-btn {
-  background: rgba(255, 255, 255, 0.15);
+  background: none;
   border: none;
   border-radius: 50%;
-  color: #fff;
-  width: 42px;
-  height: 42px;
-  cursor: pointer;
-  font-size: 1.2rem;
-  transition: background 0.2s ease;
-}
-.user-icon-btn:hover {
-  background: rgba(255, 255, 255, 0.3);
+  color: var(--brand-blue);
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
 }
 
-/* MENÚ DESPLEGABLE */
+.user-icon-btn:hover {
+  background: #e6efff;
+  color: var(--brand-blue-dark);
+  transform: scale(1.07);
+}
+
+.user-icon-btn svg {
+  width: 22px;
+  height: 22px;
+  stroke-width: 2.3;
+}
+
+/* === MENÚ DESPLEGABLE (Usuario) === */
 .user-dropdown {
   position: absolute;
+  top: 130%;
   right: 0;
-  top: calc(100% + 8px);
-  background: var(--surface);
+  background: #fff;
   border: 1px solid var(--border);
   border-radius: 10px;
-  box-shadow: var(--shadow);
-  padding: 0.5rem;
-  min-width: 190px;
-  z-index: 100;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  width: 200px;
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  padding: 0.4rem 0;
+  animation: fadeIn 0.15s ease-out;
 }
 
-.dropdown-link {
-  display: block;
-  color: #111;
-  text-decoration: none;
-  padding: 8px 10px;
-  border-radius: 6px;
-  transition: background 0.15s ease;
+.dropdown-link,
+.dropdown-logout {
+  background: none;
+  border: none;
+  text-align: left;
+  cursor: pointer;
+  color: #333;
+  font-size: 0.9rem;
+  padding: 0.5rem 1rem;
+  transition: background 0.2s, color 0.2s;
 }
-.dropdown-link:hover {
-  background: #eef3fa;
+
+.dropdown-link:hover,
+.dropdown-logout:hover {
+  background-color: #f3f7ff;
+  color: var(--brand-blue);
 }
 
 .dropdown-logout {
-  width: 100%;
-  background: transparent;
-  border: none;
-  color: crimson;
+  color: #c92a3b;
   font-weight: 600;
-  padding: 8px 10px;
-  border-radius: 6px;
-  cursor: pointer;
-  transition: background 0.15s ease;
 }
-.dropdown-logout:hover {
-  background: #fceaea;
+
+.dropdown-sep {
+  border: none;
+  border-top: 1px solid #e5e7eb;
+  margin: 0.4rem 0;
 }
 
 /* ===============================
-   NAVEGACIÓN INFERIOR
+   NAV INFERIOR
 =============================== */
 .header-bottom {
   display: flex;
@@ -187,9 +201,10 @@ body,
   letter-spacing: 0.3px;
   transition: color 0.2s ease, text-decoration 0.2s ease;
 }
+
 .nav-link:hover,
 .nav-link.active {
-  color: var(--accent-yellow);
+  color: var(--accent-blue);
   text-decoration: underline 2px;
   text-underline-offset: 4px;
 }
@@ -215,85 +230,34 @@ body,
     gap: 0.75rem;
     text-align: center;
   }
+
   .header-contact {
     text-align: center;
   }
+
   .logo img {
     height: 70px;
   }
-  .slide img {
-    height: 250px;
+
+  .header-bottom {
+    padding: 0.65rem;
+  }
+
+  .nav-link {
+    margin: 0.5rem;
   }
 }
-/* === Ícono de usuario (botón circular moderno) === */
-.user-icon-btn {
-  background: none;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  color: #1b56a4; /* azul institucional */
-  transition: all 0.2s ease-in-out;
-}
 
-/* Hover visual */
-.user-icon-btn:hover {
-  background-color: #e6efff;
-  color: #103a7a; /* tono más oscuro al pasar el mouse */
-  transform: scale(1.07);
-}
-
-/* Ícono SVG dentro del botón */
-.user-icon-btn svg {
-  width: 22px;
-  height: 22px;
-  stroke-width: 2.3;
-}
-
-/* Menú desplegable */
-.user-dropdown {
-  position: absolute;
-  top: 130%;
-  right: 0;
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
-  width: 200px;
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  padding: 0.4rem 0;
-  animation: fadeIn 0.15s ease-out;
-}
-
-/* Separador */
-.dropdown-sep {
-  border: none;
-  border-top: 1px solid #e5e7eb;
-  margin: 0.4rem 0;
-}
-
-/* Links y botón de logout */
-.dropdown-link,
-.dropdown-logout {
-  background: none;
-  border: none;
-  text-align: left;
-  cursor: pointer;
-  color: #333;
-  font-size: 0.9rem;
-  padding: 0.5rem 1rem;
-  transition: background 0.2s, color 0.2s;
-}
-
-.dropdown-link:hover,
-.dropdown-logout:hover {
-  background-color: #f3f7ff;
-  color: #1b56a4;
+/* ===============================
+   ANIMACIONES
+=============================== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }

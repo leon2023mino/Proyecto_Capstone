@@ -2,8 +2,9 @@ import { EspacioCard } from "../../components/espacios/EspacioCard";
 import { useEspacios } from "../../hooks/useEspacios";
 import { useUserRole } from "../../hooks/useUserRole";
 import "../../styles/AdministrarEspacios.css";
+import { NavLink } from "react-router-dom";
 
-export default function EspaciosUser() {
+export default function AdministrarEspacios() {
   const { espacios, loading } = useEspacios();
   const { role, loading: roleLoading } = useUserRole();
 
@@ -11,7 +12,16 @@ export default function EspaciosUser() {
 
   return (
     <div className="espacios-page">
-      <h2>Espacios Disponibles</h2>
+      <div className="espacios-header">
+        <h2>Espacios Disponibles</h2>
+
+        {/* 🔹 Botón visible solo para admins */}
+        {role === "admin" && (
+          <NavLink to="/admin/CrearEspacio" className="btn-agregar-espacio">
+            + Agregar Espacio
+          </NavLink>
+        )}
+      </div>
 
       <div className="espacios-grid">
         {espacios.map((espacio) => (

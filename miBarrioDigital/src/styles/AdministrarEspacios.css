@@ -62,4 +62,118 @@
 .estado-btn.inactivo {
   background-color: #999;
 }
+/* --- Tarjetas con imagen tipo "proyecto" --- */
+.espacio-card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.espacio-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.espacio-thumb {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background: #dfe3e6;
+  display: block;
+}
+
+.espacio-thumb.sin-imagen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #555;
+  font-size: 0.9rem;
+}
+
+.espacio-body {
+  padding: 1rem;
+}
+
+.espacio-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.estado-btn,
+.estado-label {
+  font-size: 0.85rem;
+  font-weight: 600;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+}
+
+.estado-btn.activo,
+.estado-label.activo {
+  background: #57b460;
+  color: white;
+}
+
+.estado-btn.inactivo,
+.estado-label.inactivo {
+  background: #c73f3f;
+  color: white;
+}
+.btn-editar-espacio {
+  display: inline-block;
+  margin-top: 10px;
+  background-color: #1b56a4;
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-editar-espacio:hover {
+  background-color: #174783;
+}
+/* ======== Estilos para Crear / Editar Espacios ======== */
+.crear-espacio-page {
+  max-width: 700px;
+  margin: 2rem auto;
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.crear-espacio-page h2 {
+  text-align: center;
+  color: #1b56a4;
+  margin-bottom: 1.5rem;
+}
+
+.crear-espacio-form label {
+  display: block;
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.crear-espacio-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 1rem;
+  margin-top: 5px;
+}
+
+.crear-espacio-form button {
+  transition: all 0.2s ease-in-out;
+}
+
+.crear-espacio-form button:hover {
+  opacity: 0.9;
+}
 

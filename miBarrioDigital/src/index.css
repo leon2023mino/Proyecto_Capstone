@@ -2,88 +2,91 @@
 @tailwind components;
 @tailwind utilities;
 
-/* ====== Tema Loveable/Shadcn (New York) con verde Mi Barrio Digital ====== */
+/* ====== Tema Azul Mi Barrio Digital (basado en Shadcn / New York) ====== */
 @layer base {
   :root {
+    /* 🎨 Azul institucional */
+    --brand-blue: 223 72% 38%; /* #1b56a4 */
+    --brand-blue-dark: 220 75% 28%; /* #103a7a */
+    --accent-yellow: 210 100% 72%; /* #70aeff */
+
+    /* ===== Tonos base ===== */
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 222 10% 10%;
 
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 222 10% 10%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 222 10% 10%;
 
-    /* 💚 Verde Mi Barrio Digital */
-    --primary: 142 70% 42%;
+    /* 💙 Color principal */
+    --primary: 223 72% 38%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    --secondary: 220 15% 95%;
+    --secondary-foreground: 220 10% 15%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 220 15% 95%;
+    --muted-foreground: 220 8% 45%;
 
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
+    --accent: 220 15% 95%;
+    --accent-foreground: 220 10% 20%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 142 70% 42%;
+    --border: 220 10% 88%;
+    --input: 220 10% 88%;
+    --ring: 223 72% 38%;
 
     --radius: 0.5rem;
 
-    /* Sidebar */
+    /* ===== Sidebar ===== */
     --sidebar-background: 0 0% 98%;
-    --sidebar-foreground: 240 5.3% 26.1%;
-    --sidebar-primary: 142 70% 42%;
+    --sidebar-foreground: 222 10% 15%;
+    --sidebar-primary: 223 72% 38%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 4.8% 95.9%;
-    --sidebar-accent-foreground: 240 5.9% 10%;
-    --sidebar-border: 220 13% 91%;
-    --sidebar-ring: 217.2 32.6% 17.5%;
+    --sidebar-accent: 223 100% 96%;
+    --sidebar-accent-foreground: 222 10% 15%;
+    --sidebar-border: 220 10% 88%;
+    --sidebar-ring: 223 72% 38%;
   }
 
   .dark {
-    --background: 240 10% 3.9%;
+    --background: 222 15% 10%;
     --foreground: 0 0% 98%;
 
-    --card: 240 10% 3.9%;
+    --card: 222 15% 10%;
     --card-foreground: 0 0% 98%;
 
-    --popover: 240 10% 3.9%;
+    --popover: 222 15% 10%;
     --popover-foreground: 0 0% 98%;
 
-    --primary: 142 70% 42%;
+    --primary: 223 72% 38%;
     --primary-foreground: 0 0% 100%;
 
-    --secondary: 240 3.7% 15.9%;
+    --secondary: 222 10% 20%;
     --secondary-foreground: 0 0% 98%;
 
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: 222 10% 20%;
+    --muted-foreground: 222 10% 65%;
 
-    --accent: 240 3.7% 15.9%;
+    --accent: 222 10% 20%;
     --accent-foreground: 0 0% 98%;
 
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 85.7% 97.3%;
+    --border: 222 10% 20%;
+    --input: 222 10% 20%;
+    --ring: 223 72% 38%;
 
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 142 70% 42%;
-
-    --sidebar-background: 240 5.9% 10%;
-    --sidebar-foreground: 240 4.8% 95.9%;
-    --sidebar-primary: 142 70% 42%;
+    --sidebar-background: 222 10% 15%;
+    --sidebar-foreground: 0 0% 95%;
+    --sidebar-primary: 223 72% 38%;
     --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent: 223 30% 20%;
     --sidebar-accent-foreground: 0 0% 98%;
-    --sidebar-border: 240 3.7% 15.9%;
-    --sidebar-ring: 142 70% 42%;
+    --sidebar-border: 222 10% 20%;
+    --sidebar-ring: 223 72% 38%;
   }
 
   * {
@@ -98,12 +101,7 @@
       "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   }
 
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  h1, h2, h3, h4, h5, h6 {
     @apply font-semibold text-foreground;
   }
 

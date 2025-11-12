@@ -1,3 +1,4 @@
+// src/components/AdminSidebar.tsx
 import {
   Calendar,
   FileText,
@@ -5,8 +6,10 @@ import {
   Inbox,
   User,
   LogOut,
-  Construction,
-  ConstructionIcon,
+  Building2,
+  Newspaper,
+  ClipboardList,
+  FolderKanban,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
@@ -24,20 +27,42 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
+/** Menú principal con íconos */
 const menuItems = [
+  {
+    title: "Dashboard",
+    url: "/admin/dashboards",
+    icon: FolderKanban,
+  },
   {
     title: "Actividades",
     url: "/admin/administraractividades",
     icon: Calendar,
   },
-  { title: "Espacios Comunes", url: "/admin/administrarespacios", icon: Home },
-  { title: "Noticias", url: "/admin/administrarNoticias", icon: FileText },
-  { title: "Solicitudes", url: "/admin/adminsolicitudes", icon: Inbox },
-  { title: "Usuarios", url: "/admin/adminsolicitudes", icon: User },
+  {
+    title: "Espacios Comunes",
+    url: "/admin/administrarespacios",
+    icon: Building2,
+  },
+  {
+    title: "Noticias",
+    url: "/admin/administrarnoticias",
+    icon: Newspaper,
+  },
+  {
+    title: "Solicitudes",
+    url: "/admin/adminsolicitudes",
+    icon: ClipboardList,
+  },
+  {
+    title: "Usuarios",
+    url: "/admin/registouseradmin",
+    icon: User,
+  },
   {
     title: "Proyectos",
     url: "/admin/administrarproyectos",
-    icon: ConstructionIcon,
+    icon: FolderKanban,
   },
 ];
 
@@ -55,16 +80,20 @@ export function AdminSidebar() {
   };
 
   return (
-    <Sidebar collapsible="icon" className="border-r">
+    <Sidebar
+      collapsible="icon"
+      className="border-r border-[hsl(var(--sidebar-border))] bg-[hsl(var(--sidebar-background))]"
+    >
       <SidebarContent className="flex flex-col justify-between h-full">
-        {/* 🔹 Menú principal */}
+        {/* 🔹 MENÚ PRINCIPAL */}
         <div>
           <SidebarGroup>
             <NavLink to={"/admin/dashboards"}>
-              <SidebarGroupLabel className="text-sidebar-foreground/70 px-4 py-3 text-xs font-semibold uppercase">
+              <SidebarGroupLabel className="text-[#0f3d91] font-bold text-sm px-4 py-3 uppercase tracking-wider">
                 Panel Admin
               </SidebarGroupLabel>
             </NavLink>
+
             <SidebarGroupContent>
               <SidebarMenu>
                 {menuItems.map((item) => (
@@ -72,8 +101,14 @@ export function AdminSidebar() {
                     <SidebarMenuButton asChild>
                       <NavLink
                         to={item.url}
-                        className="hover:bg-sidebar-accent"
-                        activeClassName="bg-sidebar-accent text-sidebar-primary font-medium"
+                        className={({ isActive }) =>
+                          [
+                            "flex items-center gap-3 px-3 py-2 rounded-md text-sm transition-all duration-150",
+                            isActive
+                              ? "bg-[#0f3d91]/10 text-[#0f3d91] font-semibold"
+                              : "text-[hsl(var(--sidebar-foreground))] hover:bg-[#0f3d91]/10 hover:text-[#0f3d91]",
+                          ].join(" ")
+                        }
                       >
                         <item.icon className="h-4 w-4" />
                         {open && <span>{item.title}</span>}
@@ -86,11 +121,11 @@ export function AdminSidebar() {
           </SidebarGroup>
         </div>
 
-        {/* 🔹 Zona inferior: perfil y logout */}
-        <div className="p-3 border-t border-sidebar-border space-y-2">
+        {/* 🔹 PERFIL / LOGOUT */}
+        <div className="p-3 border-t border-[hsl(var(--sidebar-border))] space-y-2">
           <button
             onClick={() => navigate("/MiPerfil")}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium hover:bg-sidebar-accent text-sidebar-foreground transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium hover:bg-[#0f3d91]/10 text-[hsl(var(--sidebar-foreground))] transition-colors"
           >
             <User className="h-4 w-4" />
             {open && <span>Editar Perfil</span>}
@@ -98,7 +133,7 @@ export function AdminSidebar() {
 
           <button
             onClick={handleLogout}
-            className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-red-600 hover:bg-red-100 transition-colors"
+            className="w-full flex items-center gap-2 px-3 py-2 rounded-md text-sm font-medium text-[#c92a3b] hover:bg-[#c92a3b]/10 transition-colors"
           >
             <LogOut className="h-4 w-4" />
             {open && <span>Cerrar Sesión</span>}
@@ -108,3 +143,5 @@ export function AdminSidebar() {
     </Sidebar>
   );
 }
+
+export default AdminSidebar;
