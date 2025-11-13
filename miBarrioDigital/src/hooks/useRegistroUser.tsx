@@ -18,9 +18,13 @@ import {
   serverTimestamp,
   increment,
 } from "firebase/firestore";
+
 import { auth, db, firebaseConfig } from "../firebase/config";
 import { getApps, initializeApp, deleteApp } from "firebase/app";
 
+// ------------------------------
+// Tipos
+// ------------------------------
 type RegistroForm = {
   nombre: string;
   rut: string;
@@ -32,13 +36,21 @@ type RegistroForm = {
   role: "vecino" | "admin";
 };
 
+type DatosSolicitud = {
+  nombre: string;
+  rut: string;
+  email: string;
+  direccion: string;
+  role: "vecino" | "admin";
+};
+
 export function useRegistroUser() {
   const [errors, setErrors] = useState<string[]>([]);
   const [sending, setSending] = useState(false);
 
-  /**
-   * ✅ Registrar usuario (admin o solicitud)
-   */
+  // ------------------------------------------------
+  // 🟦 Registrar usuario (3 casos)
+  // ------------------------------------------------
   const registrarUsuario = async (
     form: RegistroForm,
     mantenerSesion = true
@@ -48,19 +60,16 @@ export function useRegistroUser() {
 
     try {
       if (form.role === "vecino" && !mantenerSesion) {
-        // 🧠 Caso admin creando un vecino directo (NO solicitud)
-        if (!form.password)
-          throw new Error("Falta la contraseña del nuevo usuario.");
+        // 🧠 Admin creando vecino directamente
         await crearCuentaDirecta(form);
       } else if (form.role === "vecino" && mantenerSesion) {
-        // 🧩 Caso vecino común → crea solicitud de registro
+        // 🧩 Vecino → crea solicitud de registro
         await crearSolicitud(form);
       } else if (form.role === "admin") {
-        // 👨‍💼 Caso admin creando otro admin
-        if (!form.password)
-          throw new Error("Falta la contraseña del nuevo administrador.");
+        // 👨‍💼 Admin creando otro admin
         await crearCuentaDirecta(form);
       }
+
       return true;
     } catch (err: any) {
       console.error("❌ Error registrarUsuario:", err);
@@ -71,10 +80,13 @@ export function useRegistroUser() {
     }
   };
 
-  /**
-   * 🧩 Crear cuenta directamente en Firebase Auth + Firestore
-   */
+  // ------------------------------------------------
+  // 🔵 Crear cuenta directamente
+  // ------------------------------------------------
   const crearCuentaDirecta = async (form: RegistroForm) => {
+    if (!form.password)
+      throw new Error("Debe ingresar una contraseña para el usuario.");
+
     const cred = await createUserWithEmailAndPassword(
       auth,
       form.email,
@@ -94,9 +106,9 @@ export function useRegistroUser() {
     await sendEmailVerification(cred.user);
   };
 
-  /**
-   * 📄 Crear solicitud pendiente (registro)
-   */
+  // ------------------------------------------------
+  // 🟧 Crear solicitud
+  // ------------------------------------------------
   const crearSolicitud = async (form: RegistroForm) => {
     await addDoc(collection(db, "requests"), {
       tipo: "registro",
@@ -112,48 +124,50 @@ export function useRegistroUser() {
     });
   };
 
-  /**
-   * 👨‍💼 Aprobar solicitud (registro | actividad | certificado)
-   */
+  // ------------------------------------------------
+  // 🟩 Aprobar solicitud (MEGA ACTUALIZADO)
+  // ------------------------------------------------
   const aprobarSolicitud = async (
     solicitudId: string,
-    datos: any,
+    solicitudCompleta: any,
     adminId?: string
   ) => {
     let secondaryApp: any = null;
 
     try {
-      const tipo = datos?.tipo || "registro";
+      const tipo = solicitudCompleta?.tipo || "registro";
 
-      // 🔹 Aprobación de ACTIVIDAD
-      if (tipo === "actividad" && datos?.actividadId) {
-        const refActividad = doc(db, "actividades", datos.actividadId);
+      // ---------------------------------------------
+      // 🟣 1) Aprobar SOLICITUD DE ACTIVIDAD
+      // ---------------------------------------------
+      if (tipo === "actividad") {
+        const refActividad = doc(
+          db,
+          "actividades",
+          solicitudCompleta.actividadId
+        );
 
-        // 1️⃣ Registrar inscripción del usuario
         await addDoc(collection(refActividad, "inscritos"), {
-          usuarioId: datos.usuarioId,
-          nombre: datos.datos?.nombre || "Usuario sin nombre",
-          email: datos.datos?.email || "",
+          usuarioId: solicitudCompleta.usuarioId,
+          nombre: solicitudCompleta.datos?.nombre || "",
+          email: solicitudCompleta.datos?.email || "",
           fechaInscripcion: new Date(),
         });
 
-        // 2️⃣ Restar cupo disponible
-        await updateDoc(refActividad, {
-          cupoDisponible: increment(-1),
-        });
-
-        // 3️⃣ Marcar solicitud como aprobada
+        await updateDoc(refActividad, { cupoDisponible: increment(-1) });
         await updateDoc(doc(db, "requests", solicitudId), {
           estado: "aprobada",
           revisadoPor: adminId || null,
           revisadoEn: serverTimestamp(),
         });
 
-        alert("✅ Solicitud de actividad aprobada e inscrita correctamente.");
+        alert("✅ Solicitud de actividad aprobada.");
         return;
       }
 
-      // 🔹 Aprobación de CERTIFICADO
+      // ---------------------------------------------
+      // 🟡 2) Aprobar CERTIFICADO
+      // ---------------------------------------------
       if (tipo === "certificado") {
         await updateDoc(doc(db, "requests", solicitudId), {
           estado: "aprobada",
@@ -161,94 +175,81 @@ export function useRegistroUser() {
           revisadoEn: serverTimestamp(),
         });
 
-        alert("📄 Certificado aprobado. El vecino podrá descargarlo ahora.");
+        alert("📄 Certificado aprobado correctamente.");
         return;
       }
 
-      // 🔹 Aprobación de REGISTRO (flujo normal)
+      // ---------------------------------------------
+      // 🟢 3) Aprobar REGISTRO (CORREGIDO AQUÍ)
+      // ---------------------------------------------
+      const d: DatosSolicitud = solicitudCompleta?.datos;
+
+      if (!d || !d.email) {
+        throw new Error("La solicitud no contiene un email válido.");
+      }
+
+      const { email, nombre, rut, direccion, role } = d;
+
+      // Cerrar apps secundarias previas
       const existing = getApps().find((a) => a.name === "SecondaryApp");
       if (existing) await deleteApp(existing);
 
+      // Crear app secundaria
       secondaryApp = initializeApp(firebaseConfig, "SecondaryApp");
       const secondaryAuth = getAuth(secondaryApp);
       await setPersistence(secondaryAuth, inMemoryPersistence);
 
-      const tempPassword = Math.random().toString(36).slice(-8) + "Aa1!";
-
-      console.log("Creando usuario aislado:", datos.email);
+      const tempPass = Math.random().toString(36).slice(-8) + "Aa1!";
 
       const cred = await createUserWithEmailAndPassword(
         secondaryAuth,
-        datos.email,
-        tempPassword
+        email,
+        tempPass
       );
 
       await setDoc(doc(db, "users", cred.user.uid), {
-        displayName: datos.nombre,
-        email: datos.email,
-        rut: datos.rut,
-        direccion: datos.direccion,
-        role: datos.role,
+        displayName: nombre,
+        email,
+        rut,
+        direccion,
+        role: role || "vecino",
         membershipStatus: "activo",
         createdAt: serverTimestamp(),
       });
 
-      await sendPasswordResetEmail(secondaryAuth, datos.email);
+      await sendPasswordResetEmail(secondaryAuth, email);
 
-      await setDoc(
-        doc(db, "requests", solicitudId),
-        {
-          estado: "aprobada",
-          revisadoPor: adminId || null,
-          revisadoEn: serverTimestamp(),
-        },
-        { merge: true }
-      );
+      await updateDoc(doc(db, "requests", solicitudId), {
+        estado: "aprobada",
+        revisadoPor: adminId || null,
+        revisadoEn: serverTimestamp(),
+      });
 
       await signOut(secondaryAuth);
       await deleteApp(secondaryApp);
 
-      const mainAuth = getAuth();
-      console.log("🔒 Admin sigue activo:", mainAuth.currentUser?.email);
-
-      alert(
-        `✅ Solicitud de registro aprobada.\nSe creó la cuenta de ${datos.nombre} y se envió un correo a ${datos.email} para establecer su contraseña.`
-      );
+      alert(`✅ Usuario ${nombre} creado y correo enviado a ${email}.`);
     } catch (error: any) {
-      console.error("❌ Error al aprobar solicitud:", error);
-      alert(
-        `Error al aprobar la solicitud:\n${
-          error.code || error.message || "Error desconocido."
-        }`
-      );
-    } finally {
-      if (secondaryApp) {
-        try {
-          await deleteApp(secondaryApp);
-        } catch {}
-      }
+      console.error("❌ Error aprobarSolicitud:", error);
+      alert(error.message || "Error al aprobar la solicitud.");
     }
   };
 
-  /**
-   * ❌ Rechazar solicitud
-   */
+  // ------------------------------------------------
+  // 🔴 Rechazar solicitud
+  // ------------------------------------------------
   const rechazarSolicitud = async (solicitudId: string, adminId?: string) => {
-    try {
-      await setDoc(
-        doc(db, "requests", solicitudId),
-        {
-          estado: "rechazada",
-          revisadoPor: adminId || null,
-          revisadoEn: serverTimestamp(),
-        },
-        { merge: true }
-      );
-      alert("❌ Solicitud rechazada correctamente.");
-    } catch (error) {
-      console.error("Error al rechazar solicitud:", error);
-      alert("No se pudo rechazar la solicitud.");
-    }
+    await setDoc(
+      doc(db, "requests", solicitudId),
+      {
+        estado: "rechazada",
+        revisadoPor: adminId || null,
+        revisadoEn: serverTimestamp(),
+      },
+      { merge: true }
+    );
+
+    alert("❌ Solicitud rechazada.");
   };
 
   return {

@@ -77,14 +77,17 @@ export default function AdminSolicitudes() {
                 {/* 🔹 Encabezado dinámico */}
                 <strong>
                   {esActividad
-                    ? `Solicitud de cupo en: ${s.tituloActividad || "Actividad desconocida"}`
+                    ? `Solicitud de cupo en: ${
+                        s.tituloActividad || "Actividad desconocida"
+                      }`
                     : esCertificado
-                    ? `Solicitud de certificado de residencia — ${s.datos?.nombre || "Usuario"}`
+                    ? `Solicitud de certificado de residencia — ${
+                        s.datos?.nombre || "Usuario"
+                      }`
                     : `Solicitud de registro — ${s.datos?.nombre || "Usuario"}`}
                 </strong>{" "}
                 — <em>{s.tipo}</em>
                 <br />
-
                 {/* 🔹 Información específica */}
                 {esActividad ? (
                   <>
@@ -118,7 +121,6 @@ export default function AdminSolicitudes() {
                     <br />
                   </>
                 )}
-
                 {/* 🔹 Estado */}
                 <small>
                   Estado:{" "}
@@ -136,7 +138,6 @@ export default function AdminSolicitudes() {
                     {s.estado}
                   </span>
                 </small>
-
                 {/* 🔹 Botones */}
                 {s.estado === "pendiente" && (
                   <div style={{ marginTop: "0.6rem" }}>

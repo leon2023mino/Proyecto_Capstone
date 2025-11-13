@@ -41,6 +41,7 @@ import VerActividadAdmin from "./pages/admin/VerActividadAdmin.tsx";
 import AdministrarActividades from "./pages/admin/AdministrarActividades.tsx";
 import Dashboard from "./pages/admin/Dashboards.tsx";
 import { AdminLayout } from "./components/AdminLayout.tsx";
+import EnviarCorreo from "./pages/admin/EnviarCorreo.tsx";
 
 const router = createBrowserRouter([
   {
@@ -102,6 +103,7 @@ const router = createBrowserRouter([
             element: <AdministrarSolicitudes />,
           },
           { path: "AdminSolicitudes", element: <AdminSolicitudes /> },
+          { path: "EnviarCorreo", element: <EnviarCorreo /> },
         ],
       },
     ],

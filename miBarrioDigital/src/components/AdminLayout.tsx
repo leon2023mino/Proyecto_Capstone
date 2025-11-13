@@ -11,6 +11,7 @@ import {
   CalendarDays,
   LogOut,
   FilePlus2,
+  AtSign,
 } from "lucide-react";
 
 import { useAuth } from "@/context/AuthContext";
@@ -97,7 +98,6 @@ export function AdminLayout({
             🔹 NAVEGACIÓN PRINCIPAL
         --------------------------------*/}
         <nav className="flex-1 overflow-y-auto px-3 py-4 space-y-2">
-
           {/* 🏠 Dashboard */}
           <NavLink to="/admin/Dashboards" className={navClasses}>
             <LayoutDashboard className="h-4 w-4" /> Dashboard
@@ -156,7 +156,10 @@ export function AdminLayout({
               Actividades
             </div>
             <div className="space-y-1">
-              <NavLink to="/admin/AdministrarActividades" className={navClasses}>
+              <NavLink
+                to="/admin/AdministrarActividades"
+                className={navClasses}
+              >
                 <CalendarDays className="h-4 w-4" /> Administrar Actividades
               </NavLink>
               <NavLink to="/admin/CrearActividad" className={navClasses}>
@@ -171,11 +174,24 @@ export function AdminLayout({
               Gestión
             </div>
             <div className="space-y-1">
-              <NavLink to="/admin/AdministrarSolicitudes" className={navClasses}>
+              <NavLink
+                to="/admin/AdministrarSolicitudes"
+                className={navClasses}
+              >
                 <ClipboardList className="h-4 w-4" /> Solicitudes
               </NavLink>
               <NavLink to="/admin/RegistroUserAdmin" className={navClasses}>
                 <Users className="h-4 w-4" /> Crear Usuario
+              </NavLink>
+            </div>
+          </div>
+          <div className="mt-2">
+            <div className="px-3 text-xs uppercase tracking-wider text-[hsl(var(--muted-foreground))] mb-1">
+              Avisos
+            </div>
+            <div className="space-y-1">
+              <NavLink to="/admin/EnviarCorreo" className={navClasses}>
+                <AtSign className="h-4 w-4" /> Enviar Correo
               </NavLink>
             </div>
           </div>

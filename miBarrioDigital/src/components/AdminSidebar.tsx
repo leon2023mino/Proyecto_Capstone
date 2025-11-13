@@ -10,6 +10,7 @@ import {
   Newspaper,
   ClipboardList,
   FolderKanban,
+  Mail,
 } from "lucide-react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { signOut } from "firebase/auth";
@@ -28,43 +29,6 @@ import {
 } from "@/components/ui/sidebar";
 
 /** Menú principal con íconos */
-const menuItems = [
-  {
-    title: "Dashboard",
-    url: "/admin/dashboards",
-    icon: FolderKanban,
-  },
-  {
-    title: "Actividades",
-    url: "/admin/administraractividades",
-    icon: Calendar,
-  },
-  {
-    title: "Espacios Comunes",
-    url: "/admin/administrarespacios",
-    icon: Building2,
-  },
-  {
-    title: "Noticias",
-    url: "/admin/administrarnoticias",
-    icon: Newspaper,
-  },
-  {
-    title: "Solicitudes",
-    url: "/admin/adminsolicitudes",
-    icon: ClipboardList,
-  },
-  {
-    title: "Usuarios",
-    url: "/admin/registouseradmin",
-    icon: User,
-  },
-  {
-    title: "Proyectos",
-    url: "/admin/administrarproyectos",
-    icon: FolderKanban,
-  },
-];
 
 export function AdminSidebar() {
   const { open } = useSidebar();
