@@ -58,6 +58,7 @@ export default function ActividadesUser() {
   // 🔹 Cargar estado de solicitudes del usuario
   useEffect(() => {
     if (!user) return;
+
     const cargarSolicitudes = async () => {
       const q = query(
         collection(db, SOLICITUDES_COLLECTION),
@@ -66,30 +67,33 @@ export default function ActividadesUser() {
       );
       const snapshot = await getDocs(q);
       const estados: Record<string, EstadoSolicitud> = {};
+
       snapshot.forEach((doc) => {
         const data = doc.data();
         if (data.actividadId) estados[data.actividadId] = data.estado;
       });
+
       setEstadoSolicitudes(estados);
     };
+
     cargarSolicitudes();
   }, [user]);
 
   // 🔹 Enviar solicitud
   const solicitarCupo = async (actividad: Actividad) => {
     if (!user) {
-      alert("Debes iniciar sesión para solicitar cupo en una actividad.");
+      alert("Debes iniciar sesión para solicitar cupo.");
       return;
     }
 
     if (actividad.cupoDisponible <= 0) {
-      alert("⚠️ No quedan cupos disponibles para esta actividad.");
+      alert("⚠️ No quedan cupos disponibles.");
       return;
     }
 
     const estadoActual = estadoSolicitudes[actividad.id];
     if (estadoActual === "pendiente") {
-      alert("⚠️ Ya tienes una solicitud pendiente para esta actividad.");
+      alert("⚠️ Ya tienes una solicitud pendiente.");
       return;
     }
     if (estadoActual === "aprobada") {
@@ -129,10 +133,10 @@ export default function ActividadesUser() {
         [actividad.id]: "pendiente",
       }));
 
-      alert("✅ Solicitud enviada. Un administrador debe aprobarla.");
+      alert("✅ Solicitud enviada. Espera la aprobación del administrador.");
     } catch (error) {
-      console.error("Error al crear la solicitud:", error);
-      alert("❌ Ocurrió un error al enviar la solicitud.");
+      console.error("Error al crear solicitud:", error);
+      alert("❌ Error al enviar la solicitud.");
     } finally {
       setEnviando(null);
     }
@@ -152,38 +156,19 @@ export default function ActividadesUser() {
 
   // 🔹 Render
   if (loading)
-    return <p style={{ textAlign: "center" }}>Cargando actividades...</p>;
+    return <p className="loading">Cargando actividades...</p>;
 
   return (
     <div className="actividades-page">
-      <div className="actividades-header">
-        <div>
-          <h2 className="actividades-title">Actividades Vecinales</h2>
-          <p className="actividades-subtitle">
-            Participa en las actividades de tu comunidad. Envía tu solicitud y
-            espera la aprobación del administrador.
-          </p>
-        </div>
-
-        <div className="actividades-toolbar">
-          <input
-            className="input-search"
-            type="search"
-            placeholder="Buscar actividad..."
-          />
-          <select className="select-filter" defaultValue="">
-            <option value="">Todas</option>
-            <option value="pendiente">Pendientes</option>
-            <option value="aprobada">Aprobadas</option>
-            <option value="rechazada">Rechazadas</option>
-          </select>
-        </div>
-      </div>
+      <header className="actividades-header">
+        <h2 className="actividades-title">Actividades Vecinales</h2>
+        <p className="actividades-subtitle">
+          Descubre las actividades disponibles y postula a las que te interesen.
+        </p>
+      </header>
 
       {actividades.length === 0 ? (
-        <p style={{ textAlign: "center", marginTop: "1rem" }}>
-          No hay actividades registradas.
-        </p>
+        <p className="no-data">No hay actividades registradas.</p>
       ) : (
         <div className="actividades-lista">
           {actividades.map((a) => {
@@ -205,6 +190,7 @@ export default function ActividadesUser() {
                 {/* Contenido */}
                 <div className="actividad-body">
                   <h3>{a.titulo}</h3>
+
                   {estado && (
                     <span className={estadoClass(estado)}>
                       {estado === "pendiente"
@@ -214,26 +200,17 @@ export default function ActividadesUser() {
                         : "❌ Rechazada"}
                     </span>
                   )}
+
                   <p className="actividad-desc">{a.descripcion}</p>
 
                   <div className="actividad-info">
-                    <p>
-                      <b>📅 Fecha:</b> {a.fecha}
-                    </p>
-                    <p>
-                      <b>🕓 Hora:</b> {a.hora}
-                    </p>
-                    <p>
-                      <b>📍 Lugar:</b> {a.lugar}
-                    </p>
+                    <p><b>📅 Fecha:</b> {a.fecha}</p>
+                    <p><b>🕓 Hora:</b> {a.hora}</p>
+                    <p><b>📍 Lugar:</b> {a.lugar}</p>
                     {a.responsable && (
-                      <p>
-                        <b>👤 Responsable:</b> {a.responsable}
-                      </p>
+                      <p><b>👤 Responsable:</b> {a.responsable}</p>
                     )}
-                    <p>
-                      <b>🎟️ Cupos disponibles:</b> {a.cupoDisponible}
-                    </p>
+                    <p><b>🎟️ Cupos disponibles:</b> {a.cupoDisponible}</p>
                   </div>
 
                   <div className="actividad-actions">
@@ -245,7 +222,7 @@ export default function ActividadesUser() {
                         estado === "pendiente" ||
                         estado === "aprobada"
                       }
-                      className={`btn-ver-mas ${
+                      className={`btn-solicitar ${
                         a.cupoDisponible <= 0 ||
                         estado === "pendiente" ||
                         estado === "aprobada"

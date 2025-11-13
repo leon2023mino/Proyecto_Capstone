@@ -9,6 +9,7 @@ import { type Noticia } from "../../types/typeNoticia";
 import { NavLink } from "react-router-dom";
 import { db } from "../../firebase/config";
 import { doc, deleteDoc } from "firebase/firestore";
+import "../../styles/AdministrarNoticias.css";
 
 export default function AdministrarNoticias() {
   const [items, setItems] = useState<Noticia[]>([]);

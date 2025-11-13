@@ -2,14 +2,15 @@ import { useEffect, useState } from "react";
 import "../../styles/Home.css";
 import Carousel from "../../components/Carousel";
 import type { Slide } from "../../components/Carousel";
-import { collection, onSnapshot, orderBy, query, limit } from "firebase/firestore";
+import {
+  collection,
+  onSnapshot,
+  orderBy,
+  query,
+  limit,
+} from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { NavLink } from "react-router-dom";
-
-// 📸 Imágenes estáticas del carrusel
-import slide1 from "../../assets/slide1.jpg";
-import slide2 from "../../assets/slide2.jpg";
-import slide3 from "../../assets/slide3.jpg";
 
 // 🔹 Tipos
 type Noticia = {
@@ -29,46 +30,93 @@ type Actividad = {
 };
 
 export default function Home() {
-  const slides: Slide[] = [
-    { src: slide1, title: "Feria de Emprendedores", text: "Sábado 21, Plaza Central" },
-    { src: slide2, title: "Operativo de Salud", text: "Vacunación y controles gratuitos" },
-    { src: slide3, title: "Campeonato Barrial", text: "Inscripciones abiertas" },
-  ];
-
+  const [slidesNoticias, setSlidesNoticias] = useState<Slide[]>([]);
   const [noticias, setNoticias] = useState<Noticia[]>([]);
   const [actividades, setActividades] = useState<Actividad[]>([]);
 
-  // 🔹 Cargar últimas noticias
- useEffect(() => {
-  const q = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(3));
-  const unsub = onSnapshot(q, (snapshot) => {
-    const docs = snapshot.docs.map((doc) => ({
-      ...(doc.data() as Noticia),
-      id: doc.id, // ✅ al final, sin error
-    }));
-    setNoticias(docs);
-  });
-  return () => unsub();
-}, []);
+  /* ----------------------------------------------
+   🔥 CARRUSEL: obtener últimas 5 noticias
+  ---------------------------------------------- */
+  useEffect(() => {
+    const q = query(
+      collection(db, "posts"),
+      orderBy("createdAt", "desc"),
+      limit(5)
+    );
 
-// 🔹 Cargar próximas actividades
-useEffect(() => {
-  const q = query(collection(db, "actividades"), orderBy("fecha", "asc"), limit(3));
-  const unsub = onSnapshot(q, (snapshot) => {
-    const docs = snapshot.docs.map((doc) => ({
-      ...(doc.data() as Actividad),
-      id: doc.id, // ✅ también al final
-    }));
-    setActividades(docs);
-  });
-  return () => unsub();
-}, []);
+    const unsub = onSnapshot(q, (snapshot) => {
+      const data = snapshot.docs
+        .map((doc) => doc.data() as Noticia)
+        .filter((n) => n.coverUrl) // Solo noticias con imagen
+        .map(
+          (n): Slide => ({
+            src: n.coverUrl!,
+            title: n.titulo,
+            text: n.contenido?.slice(0, 80) + "…",
+          })
+        );
+
+      setSlidesNoticias(data);
+    });
+
+    return () => unsub();
+  }, []);
+
+  /* ----------------------------------------------
+   📰 Últimas noticias (cards inferiores)
+  ---------------------------------------------- */
+  useEffect(() => {
+    const q = query(
+      collection(db, "posts"),
+      orderBy("createdAt", "desc"),
+      limit(3)
+    );
+
+    const unsub = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map((doc) => ({
+        ...(doc.data() as Noticia),
+        id: doc.id,
+      }));
+      setNoticias(docs);
+    });
+
+    return () => unsub();
+  }, []);
+
+  /* ----------------------------------------------
+   🎉 Actividades próximas
+  ---------------------------------------------- */
+  useEffect(() => {
+    const q = query(
+      collection(db, "actividades"),
+      orderBy("fecha", "asc"),
+      limit(3)
+    );
+
+    const unsub = onSnapshot(q, (snapshot) => {
+      const docs = snapshot.docs.map((doc) => ({
+        ...(doc.data() as Actividad),
+        id: doc.id,
+      }));
+      setActividades(docs);
+    });
+
+    return () => unsub();
+  }, []);
+
   return (
     <main className="home">
-      {/* 📰 Carrusel principal */}
+      {/* 📰 Carrusel principal ahora dinámico */}
       <section className="section block">
         <h2 className="section-title">Noticias y eventos</h2>
-        <Carousel slides={slides} interval={5000} />
+
+        {slidesNoticias.length > 0 ? (
+          <Carousel slides={slidesNoticias} interval={5000} />
+        ) : (
+          <p style={{ textAlign: "center", color: "#777" }}>
+            Cargando noticias…
+          </p>
+        )}
       </section>
 
       {/* ⚙️ Accesos rápidos */}

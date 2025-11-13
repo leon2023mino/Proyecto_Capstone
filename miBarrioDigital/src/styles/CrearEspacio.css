@@ -1,107 +1,167 @@
-.crear-espacio-page {
-  padding: 2rem;
-  max-width: 600px;
-  margin: 0 auto;
-  background: #f9fafb;
-  border-radius: 16px;
+/* =========================
+   CREAR ESPACIO (ADMIN)
+   Estilo limpio, azul institucional Mi Barrio Digital
+========================= */
+
+:root {
+  --surface: #ffffff;
+  --border: #e5e7eb;
+  --radius: 14px;
+  --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --text-color: #111827;
+  --text-muted: #6b7280;
+  --brand-blue: #0f3d91;
+  --brand-blue-light: #1b56a4;
+  --error: #c92a3b;
+  --success: #146c43;
 }
 
+/* ======= CONTENEDOR PRINCIPAL ======= */
+.crear-espacio-page {
+  max-width: 700px;
+  margin: 2rem auto;
+  padding: 2rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+/* ======= ENCABEZADO ======= */
+.crear-espacio-page h2 {
+  font-size: 1.7rem;
+  font-weight: 800;
+  color: var(--brand-blue);
+  margin-bottom: 0.25rem;
+}
+
+.crear-espacio-page p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  margin-bottom: 1.5rem;
+}
+
+/* ======= FORMULARIO ======= */
 .crear-espacio-form {
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
-  background: white;
-  padding: 1.8rem;
-  border-radius: 12px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
 }
 
-header {
-  margin-bottom: 1.5rem;
-}
-
-header h2 {
-  color: #2f5d31;
-  margin-bottom: 0.25rem;
-}
-
-header p {
-  color: #555;
-}
-
+/* ======= CAMPOS ======= */
 .form-field {
   display: flex;
   flex-direction: column;
+  gap: 0.4rem;
 }
 
-label {
-  font-weight: 500;
-  margin-bottom: 0.25rem;
+.form-field label {
+  font-weight: 700;
+  color: var(--text-color);
 }
 
-input,
-select {
-  padding: 0.6rem;
-  border-radius: 8px;
-  border: 1px solid #ccc;
+.form-field input,
+.form-field select {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.65rem 0.8rem;
   font-size: 0.95rem;
+  background: #fff;
+  color: var(--text-color);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
-input:focus,
-select:focus {
-  border-color: #57b460;
+.form-field input:focus,
+.form-field select:focus {
   outline: none;
-  box-shadow: 0 0 0 2px #57b46033;
+  border-color: rgba(15, 61, 145, 0.6);
+  box-shadow: 0 0 0 3px rgba(15, 61, 145, 0.12);
 }
 
+/* ======= VALIDACIÓN ======= */
 .form-field.error input,
 .form-field.error select {
-  border-color: #e63946;
+  border-color: var(--error);
   background: #ffe8e8;
 }
 
 .error-text {
-  color: #e63946;
+  color: var(--error);
   font-size: 0.8rem;
-  margin-top: 0.2rem;
+  margin-top: 0.25rem;
 }
 
+/* ======= CHECKBOX ======= */
 .form-check {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  color: var(--text-color);
 }
 
+/* ======= MENSAJE DE CONFIRMACIÓN ======= */
 .mensaje {
-  background: #e7f9ee;
-  color: #2f5d31;
-  border: 1px solid #57b460;
-  border-radius: 8px;
+  background: rgba(15, 61, 145, 0.08);
+  color: var(--brand-blue);
+  border: 1px solid rgba(15, 61, 145, 0.2);
+  border-radius: 10px;
   padding: 0.75rem;
   text-align: center;
-  font-weight: 500;
+  font-weight: 600;
 }
 
+/* ======= BOTONES ======= */
 .acciones {
-  text-align: right;
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  margin-top: 1rem;
 }
 
 button {
-  background: #57b460;
-  color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 999px;
   padding: 0.7rem 1.4rem;
-  font-weight: 600;
+  font-weight: 700;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: background 0.2s ease, transform 0.1s ease;
 }
 
-button:hover {
-  background: #479a52;
+/* Botón principal (Guardar) */
+button[type="submit"] {
+  background: var(--brand-blue);
+  color: #fff;
+  box-shadow: 0 4px 10px rgba(15, 61, 145, 0.25);
 }
 
+button[type="submit"]:hover {
+  background: var(--brand-blue-light);
+  transform: translateY(-2px);
+}
+
+/* Botón secundario (Volver) */
+button.btn-volver {
+  background: transparent;
+  border: 1px solid var(--border);
+  color: var(--text-color);
+}
+
+button.btn-volver:hover {
+  background: #f3f7ff;
+}
+
+/* Deshabilitado */
 button:disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  transform: none;
+}
+
+/* ======= IMAGEN DE VISTA PREVIA ======= */
+.preview-img {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  object-fit: cover;
+  margin-top: 0.5rem;
 }
