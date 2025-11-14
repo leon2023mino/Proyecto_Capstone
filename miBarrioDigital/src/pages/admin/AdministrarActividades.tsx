@@ -9,15 +9,18 @@ import {
   doc,
 } from "firebase/firestore";
 import { db } from "../../firebase/config";
-import "../../styles/AdminProyectos.css"; // puedes crear AdminActividades.css si prefieres
+import "../../styles/AdminActividades.css";
 
 type Actividad = {
   id: string;
   titulo: string;
   descripcion: string;
   fecha: any;
+  hora?: string;
   lugar?: string;
-  cupos?: number;
+  cupoTotal?: number;
+  cupoDisponible?: number;
+  imagen?: string;
   estado?: string;
   createdAt?: any;
 };
@@ -28,13 +31,13 @@ export default function AdministrarActividades() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const navigate = useNavigate();
 
-  // 🔹 Escucha en tiempo real de Firestore
+  // 🔹 Cargar actividades ordenadas por fecha ascendente
   useEffect(() => {
     const q = query(collection(db, "actividades"), orderBy("fecha", "asc"));
     const unsub = onSnapshot(q, (snapshot) => {
       const docs = snapshot.docs.map((doc) => ({
         ...(doc.data() as Actividad),
-        id: doc.id, // ✅ id siempre al final
+        id: doc.id,
       }));
       setActividades(docs);
       setLoading(false);
@@ -44,13 +47,15 @@ export default function AdministrarActividades() {
 
   // 🗑️ Eliminar actividad
   async function eliminarActividad(id: string, titulo: string) {
-    const confirmar = window.confirm(`¿Eliminar la actividad "${titulo}"?`);
+    const confirmar = window.confirm(
+      `¿Eliminar la actividad "${titulo}"? Esta acción no se puede deshacer.`
+    );
     if (!confirmar) return;
 
     try {
       setDeletingId(id);
       await deleteDoc(doc(db, "actividades", id));
-      alert("✅ Actividad eliminada correctamente.");
+      alert("🗑️ Actividad eliminada correctamente.");
     } catch (error) {
       console.error("Error al eliminar la actividad:", error);
       alert("❌ No se pudo eliminar la actividad.");
@@ -59,121 +64,109 @@ export default function AdministrarActividades() {
     }
   }
 
-  // 🕓 Formatear fecha
-  function formatFecha(fecha: any) {
+  const formatearFecha = (fecha: any) => {
     if (!fecha) return "Sin fecha";
     try {
       const d =
         typeof fecha.toDate === "function" ? fecha.toDate() : new Date(fecha);
-      return d.toLocaleString();
+      return d.toLocaleDateString("es-CL", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      });
     } catch {
       return String(fecha);
     }
-  }
+  };
 
   if (loading)
     return <p style={{ textAlign: "center" }}>Cargando actividades...</p>;
 
   return (
-    <div className="section" style={{ maxWidth: 900, margin: "2rem auto" }}>
-      <h2 style={{ marginBottom: ".5rem" }}>Administrar Actividades</h2>
-      <p style={{ color: "var(--text-muted)" }}>
-        Visualiza, elimina o crea nuevas actividades comunitarias.
-      </p>
+    <div className="admin-actividades-page">
+      {/* Header con estilo de Proyectos */}
+      <div className="admin-actividades-header">
+        <div>
+          <h2 className="admin-title">Administrar Actividades</h2>
+          <p className="admin-subtitle">
+            Crea, gestiona y elimina actividades comunitarias.
+          </p>
+        </div>
 
-      <div style={{ marginBottom: "1rem", textAlign: "right" }}>
         <button
-          className="button--secondary"
-          onClick={() => navigate("/CrearActividad")}
+          className="btn-admin-blue"
+      onClick={() => navigate("/admin/CrearActividad")}
+
         >
           + Nueva actividad
         </button>
       </div>
 
       {actividades.length === 0 ? (
-        <p>No hay actividades registradas.</p>
+        <p className="no-data">No hay actividades registradas.</p>
       ) : (
-        <ul
-          style={{
-            listStyle: "none",
-            padding: 0,
-            display: "grid",
-            gap: "1rem",
-          }}
-        >
+        <div className="admin-actividades-grid">
           {actividades.map((a) => (
-            <li
-              key={a.id}
-              style={{
-                border: "1px solid var(--border)",
-                borderRadius: "12px",
-                background: "var(--surface)",
-                boxShadow: "var(--shadow)",
-                overflow: "hidden",
-                padding: "1rem 1.25rem",
-              }}
-            >
-              <h3 style={{ margin: 0, color: "var(--brand-blue, #0f3d91)" }}>
-                {a.titulo}
-              </h3>
-              <p style={{ marginTop: ".4rem", color: "var(--text)" }}>
-                {a.descripcion}
-              </p>
-              <p
-                style={{
-                  marginTop: ".6rem",
-                  fontSize: ".9rem",
-                  color: "var(--text-muted)",
-                }}
-              >
-                📅 {formatFecha(a.fecha)} <br />
-                📍 {a.lugar || "Sin lugar definido"} <br />
-                🎟️ Cupos: {a.cupos ?? "N/A"}
-              </p>
+            <div key={a.id} className="actividad-card-admin">
+              {/* Imagen */}
+              {a.imagen ? (
+                <img className="actividad-thumb" src={a.imagen} alt={a.titulo} />
+              ) : (
+                <div className="actividad-thumb sin-imagen">Sin imagen</div>
+              )}
 
-              {/* 🔘 Botones */}
-              <div
-                style={{
-                  marginTop: ".8rem",
-                  display: "flex",
-                  flexWrap: "wrap",
-                  gap: ".5rem",
-                }}
-              >
-                <NavLink to={`../VerActividadAdmin/${a.id}`}>
+              {/* Contenido */}
+              <div className="actividad-body">
+                <h3>{a.titulo}</h3>
+
+                {a.estado && (
+                  <span className={`estado-chip estado-${a.estado.toLowerCase()}`}>
+                    {a.estado}
+                  </span>
+                )}
+
+                <p className="actividad-desc">{a.descripcion}</p>
+
+                <div className="actividad-info">
+                  <p>
+                    <b>📅 Fecha:</b> {formatearFecha(a.fecha)}
+                  </p>
+                  {a.hora && (
+                    <p>
+                      <b>🕓 Hora:</b> {a.hora}
+                    </p>
+                  )}
+                  <p>
+                    <b>📍 Lugar:</b> {a.lugar || "Sin lugar"}
+                  </p>
+                  {a.cupoTotal && (
+                    <p>
+                      <b>🎟️ Cupos:</b> {a.cupoDisponible} / {a.cupoTotal}
+                    </p>
+                  )}
+                </div>
+
+                {/* Botones */}
+                <div className="actividad-actions">
+                  <NavLink
+  to={`/admin/VerActividadAdmin/${a.id}`}
+  className="btn-admin-blue-outline"
+>
+  👁 Ver
+</NavLink>
+
                   <button
-                    style={{
-                      background: "var(--brand-blue, #0f3d91)",
-                      color: "#fff",
-                      border: "none",
-                      padding: ".5rem .9rem",
-                      borderRadius: "8px",
-                      cursor: "pointer",
-                    }}
+                    onClick={() => eliminarActividad(a.id, a.titulo)}
+                    className="btn-admin-red"
+                    disabled={deletingId === a.id}
                   >
-                    👁️ Ver
+                    {deletingId === a.id ? "Eliminando..." : "🗑 Eliminar"}
                   </button>
-                </NavLink>
-
-                <button
-                  onClick={() => eliminarActividad(a.id, a.titulo)}
-                  disabled={deletingId === a.id}
-                  style={{
-                    background: "#d93025",
-                    color: "#fff",
-                    border: "none",
-                    padding: ".5rem .9rem",
-                    borderRadius: "8px",
-                    cursor: deletingId === a.id ? "not-allowed" : "pointer",
-                    opacity: deletingId === a.id ? 0.7 : 1,
-                  }}
-                >
-                  🗑️ {deletingId === a.id ? "Eliminando..." : "Eliminar"}
-                </button>
+                </div>
               </div>
-            </li>
+            </div>
           ))}
-        </ul>
+        </div>
       )}
     </div>
   );

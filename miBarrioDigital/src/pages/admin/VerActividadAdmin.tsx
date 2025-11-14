@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import { useParams, NavLink, useNavigate } from "react-router-dom";
 import { doc, getDoc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
-import "../../styles/VerNoticiaAdmin.css";
+import "../../styles/AdminActividades.css"; // Usa el estilo azul institucional
 
 type Actividad = {
   id: string;
   titulo: string;
   descripcion: string;
   fecha?: any;
+  hora?: string;
   lugar?: string;
-  cupos?: number;
+  cupoTotal?: number;
+  cupoDisponible?: number;
+  imagen?: string;
   estado?: string;
   createdAt?: any;
 };
@@ -32,14 +35,14 @@ export default function VerActividadAdmin() {
   const [cupos, setCupos] = useState<number | string>("");
   const [estado, setEstado] = useState("Activo");
 
-  // 🔹 Convertir timestamp a formato input datetime-local
+  // Convertir timestamp a datetime-local
   const toInputDateTime = (v: any) => {
     if (!v) return "";
     const d = typeof v.toDate === "function" ? v.toDate() : new Date(v);
     return d.toISOString().slice(0, 16);
   };
 
-  // 🔹 Obtener datos de la actividad
+  // Obtener datos de la actividad
   useEffect(() => {
     const fetchActividad = async () => {
       if (!id) return;
@@ -53,7 +56,7 @@ export default function VerActividadAdmin() {
           setDescripcion(data.descripcion ?? "");
           setFecha(toInputDateTime(data.fecha));
           setLugar(data.lugar ?? "");
-          setCupos(data.cupos ?? "");
+          setCupos(data.cupoTotal ?? "");
           setEstado(data.estado ?? "Activo");
         } else {
           setMessage("No se encontró la actividad.");
@@ -68,23 +71,26 @@ export default function VerActividadAdmin() {
     fetchActividad();
   }, [id]);
 
-  // 🔹 Guardar cambios
+  // Guardar cambios
   const handleSave = async () => {
     if (!id) return;
     setSaving(true);
     setMessage(null);
+
     try {
       const ref = doc(db, "actividades", id);
       const updates = {
         titulo: titulo.trim(),
         descripcion: descripcion.trim(),
         lugar: lugar.trim(),
-        cupos: Number(cupos) || 0,
+        cupoTotal: Number(cupos) || 0,
         estado,
         fecha: fecha ? new Date(fecha) : null,
         updatedAt: new Date(),
       };
+
       await updateDoc(ref, updates);
+
       setMessage("✅ Cambios guardados correctamente.");
       setActividad((prev) => (prev ? { ...prev, ...updates } : prev));
     } catch (err) {
@@ -96,58 +102,80 @@ export default function VerActividadAdmin() {
     }
   };
 
-  // 🔹 Eliminar actividad
+  // Eliminar
   const handleDelete = async () => {
     if (!id) return;
-    const confirmDelete = window.confirm("¿Eliminar esta actividad?");
-    if (!confirmDelete) return;
+    const confirmar = window.confirm("¿Eliminar esta actividad?");
+    if (!confirmar) return;
+
     try {
       await deleteDoc(doc(db, "actividades", id));
-      alert("✅ Actividad eliminada correctamente.");
-      navigate("/AdministrarActividades");
-    } catch (error) {
-      console.error("Error al eliminar:", error);
-      alert("❌ No se pudo eliminar la actividad.");
+      alert("🗑 Actividad eliminada.");
+      navigate("/admin/AdministrarActividades");
+    } catch (err) {
+      console.error("Error eliminando:", err);
+      alert("❌ No se pudo eliminar.");
     }
   };
 
-  // 🕓 Estado de carga
-  if (loading) return <p style={{ textAlign: "center" }}>Cargando actividad...</p>;
+  if (loading)
+    return <p style={{ textAlign: "center" }}>Cargando actividad...</p>;
   if (!actividad)
     return <p style={{ textAlign: "center" }}>No se encontró la actividad.</p>;
 
   return (
-    <div className="ver-noticia-admin">
-      <div className="noticia-admin-content">
-        <h2>Editar actividad</h2>
+    <div className="admin-actividad-ver-page">
+      <div className="admin-ver-card">
+        <h2 className="admin-title">Editar Actividad</h2>
+        <p className="admin-subtitle">
+          Modifica la información registrada de esta actividad comunitaria.
+        </p>
 
-        {/* Campos */}
+        {/* Imagen */}
+        {actividad.imagen && (
+          <img className="admin-ver-thumb" src={actividad.imagen} alt={titulo} />
+        )}
+
+        {/* TITULO */}
         <div className="field">
           <label>Título</label>
-          <input value={titulo} onChange={(e) => setTitulo(e.target.value)} />
-        </div>
-
-        <div className="field">
-          <label>Descripción</label>
-          <textarea
-            value={descripcion}
-            onChange={(e) => setDescripcion(e.target.value)}
-            rows={5}
+          <input
+            className="input"
+            value={titulo}
+            onChange={(e) => setTitulo(e.target.value)}
           />
         </div>
 
+        {/* DESCRIPCIÓN */}
+        <div className="field">
+          <label>Descripción</label>
+          <textarea
+            className="textarea"
+            rows={5}
+            value={descripcion}
+            onChange={(e) => setDescripcion(e.target.value)}
+          />
+        </div>
+
+        {/* FECHA + ESTADO */}
         <div className="field-group">
           <div className="field">
-            <label>Fecha de realización</label>
+            <label>Fecha</label>
             <input
               type="datetime-local"
+              className="input"
               value={fecha}
               onChange={(e) => setFecha(e.target.value)}
             />
           </div>
+
           <div className="field">
             <label>Estado</label>
-            <select value={estado} onChange={(e) => setEstado(e.target.value)}>
+            <select
+              className="input"
+              value={estado}
+              onChange={(e) => setEstado(e.target.value)}
+            >
               <option value="Activo">Activo</option>
               <option value="Inactivo">Inactivo</option>
               <option value="Finalizado">Finalizado</option>
@@ -155,56 +183,51 @@ export default function VerActividadAdmin() {
           </div>
         </div>
 
+        {/* LUGAR + CUPOS */}
         <div className="field-group">
           <div className="field">
             <label>Lugar</label>
             <input
-              type="text"
+              className="input"
               value={lugar}
               onChange={(e) => setLugar(e.target.value)}
-              placeholder="Ej: Sede vecinal central"
             />
           </div>
+
           <div className="field">
             <label>Cupos</label>
             <input
+              className="input"
               type="number"
               value={cupos}
               onChange={(e) => setCupos(e.target.value)}
-              min={0}
             />
           </div>
         </div>
 
-        {/* Acciones */}
-        <div className="actions">
-          <div className="actions-left">
-            <button
-              className="btn-primary"
-              onClick={handleSave}
-              disabled={saving}
-            >
-              {saving ? "Guardando..." : "Guardar cambios"}
-            </button>
-            <NavLink to="/AdministrarActividades">
-              <button className="btn-secondary">← Volver</button>
-            </NavLink>
-          </div>
-
+        {/* ACCIONES */}
+        <div className="admin-ver-actions">
           <button
-            className="button--danger"
-            style={{ marginLeft: "auto" }}
-            onClick={handleDelete}
+            className="btn-admin-blue"
+            onClick={handleSave}
+            disabled={saving}
           >
-            Eliminar
+            {saving ? "Guardando..." : "Guardar cambios"}
+          </button>
+
+          <NavLink to="/admin/AdministrarActividades" className="btn-admin-blue-outline">
+            ← Volver
+          </NavLink>
+
+          <button className="btn-admin-red" onClick={handleDelete}>
+            🗑 Eliminar
           </button>
         </div>
 
+        {/* MENSAJE */}
         {message && (
           <div
-            className={`message ${
-              message.includes("Error") ? "error" : "success"
-            }`}
+            className={`message ${message.includes("Error") ? "error" : "success"}`}
           >
             {message}
           </div>
