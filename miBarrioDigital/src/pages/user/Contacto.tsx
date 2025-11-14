@@ -1,5 +1,6 @@
 import "../../styles/Contacto.css";
 import { useState } from "react";
+import { Mail, User, MessageSquare, Phone, MapPin } from "lucide-react";
 
 type FormData = {
   nombre: string;
@@ -17,27 +18,29 @@ export default function Contacto() {
   });
 
   const [sending, setSending] = useState(false);
-  const [message, setMessage] = useState<{ text: string; type: "success" | "error" | "" }>({
-    text: "",
-    type: "",
-  });
+  const [message, setMessage] = useState<{
+    text: string;
+    type: "success" | "error" | "";
+  }>({ text: "", type: "" });
 
-  /** Manejar cambios en los campos */
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  /** Manejar cambios */
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    if (message.text) setMessage({ text: "", type: "" }); // limpia mensaje previo
+    if (message.text) setMessage({ text: "", type: "" });
   };
 
-  /** Validación básica */
+  /** Validar */
   const validate = (): string => {
     if (!form.nombre || !form.email || !form.mensaje)
-      return "Por favor completa tu nombre, correo y mensaje.";
+      return "Completa tu nombre, correo y mensaje.";
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email))
       return "El correo no tiene un formato válido.";
     return "";
   };
 
-  /** Simular envío */
+  /** Enviar */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const error = validate();
@@ -48,18 +51,18 @@ export default function Contacto() {
 
     setSending(true);
     try {
-      // Aquí podrías integrar EmailJS, Firestore o API real
-      await new Promise((res) => setTimeout(res, 800));
-      console.log("📧 Mensaje enviado:", form);
+      // simula envío real (emailJS, firestore, backend, etc.)
+      await new Promise((res) => setTimeout(res, 900));
 
       setMessage({
-        text: "✅ ¡Tu mensaje fue enviado! Te responderemos pronto.",
+        text: "Mensaje enviado correctamente. Te responderemos pronto.",
         type: "success",
       });
+
       setForm({ nombre: "", email: "", asunto: "", mensaje: "" });
     } catch {
       setMessage({
-        text: "❌ Ocurrió un error al enviar tu mensaje. Intenta nuevamente.",
+        text: "Ocurrió un error al enviar el mensaje. Inténtalo más tarde.",
         type: "error",
       });
     } finally {
@@ -70,17 +73,17 @@ export default function Contacto() {
   return (
     <main className="contact-page">
       <div className="contact-grid">
-        {/* FORMULARIO PRINCIPAL */}
+        {/* FORMULARIO */}
         <section className="contact-card">
           <h2 className="contact-title">Contáctanos</h2>
           <p className="contact-subtitle">
-            Si tienes dudas, sugerencias o deseas comunicarte con la Junta de Vecinos,
-            completa el formulario o usa los medios de contacto directo.
+            Estamos aquí para ayudarte. Completa el formulario y nos comunicaremos
+            contigo a la brevedad.
           </p>
 
           {message.text && (
             <div
-              className={`contact-info-banner ${
+              className={`contact-banner ${
                 message.type === "success" ? "success" : "error"
               }`}
             >
@@ -90,70 +93,68 @@ export default function Contacto() {
 
           <form className="contact-form" onSubmit={handleSubmit} noValidate>
             <div className="field">
-              <label htmlFor="nombre">Nombre completo</label>
+              <label htmlFor="nombre">
+                <User className="icon" /> Nombre completo
+              </label>
               <input
                 id="nombre"
                 name="nombre"
                 type="text"
-                className="input"
                 placeholder="Ej: María Pérez"
                 value={form.nombre}
                 onChange={handleChange}
-                required
               />
             </div>
 
             <div className="field">
-              <label htmlFor="email">Correo electrónico</label>
+              <label htmlFor="email">
+                <Mail className="icon" /> Correo electrónico
+              </label>
               <input
                 id="email"
                 name="email"
                 type="email"
-                className="input"
                 placeholder="tucorreo@ejemplo.com"
                 value={form.email}
                 onChange={handleChange}
-                required
               />
             </div>
 
             <div className="field">
-              <label htmlFor="asunto">Asunto (opcional)</label>
+              <label htmlFor="asunto">
+                <MessageSquare className="icon" /> Asunto (opcional)
+              </label>
               <input
                 id="asunto"
                 name="asunto"
                 type="text"
-                className="input"
-                placeholder="Ej: Consulta por actividades"
+                placeholder="Consulta, sugerencia, reclamo..."
                 value={form.asunto}
                 onChange={handleChange}
               />
             </div>
 
             <div className="field">
-              <label htmlFor="mensaje">Mensaje</label>
+              <label htmlFor="mensaje">
+                <MessageSquare className="icon" /> Mensaje
+              </label>
               <textarea
                 id="mensaje"
                 name="mensaje"
-                className="textarea"
+                placeholder="Escribe aquí tu mensaje..."
                 rows={5}
-                placeholder="Escribe tu mensaje aquí..."
                 value={form.mensaje}
                 onChange={handleChange}
-                required
               />
-              <small className="helper">
-                Sé claro y proporciona detalles para poder ayudarte mejor.
-              </small>
             </div>
 
             <div className="actions">
-              <button type="submit" className="btn-primary" disabled={sending}>
+              <button type="submit" className="btn-blue" disabled={sending}>
                 {sending ? "Enviando..." : "Enviar mensaje"}
               </button>
               <button
                 type="button"
-                className="btn-ghost"
+                className="btn-blue-outline"
                 onClick={() =>
                   setForm({ nombre: "", email: "", asunto: "", mensaje: "" })
                 }
@@ -165,20 +166,21 @@ export default function Contacto() {
           </form>
         </section>
 
-        {/* INFORMACIÓN LATERAL */}
-        <aside className="sidebar-card">
+        {/* LATERAL */}
+        <aside className="contact-sidebar">
           <h3>Información de contacto</h3>
+
           <ul className="contact-list">
             <li>
-              <span className="contact-chip">Dirección</span>
-              <span>Calle Principal 123, Barrio Ejemplo</span>
+              <MapPin className="icon-sm" />
+              <span>Calle Principal 123, Barrio</span>
             </li>
             <li>
-              <span className="contact-chip">Teléfono</span>
+              <Phone className="icon-sm" />
               <a href="tel:+56912345678">+56 9 1234 5678</a>
             </li>
             <li>
-              <span className="contact-chip">Correo</span>
+              <Mail className="icon-sm" />
               <a href="mailto:contacto@mibarriodigital.cl">
                 contacto@mibarriodigital.cl
               </a>

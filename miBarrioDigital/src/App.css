@@ -261,3 +261,20 @@ body,
     transform: translateY(0);
   }
 }
+.user-icon-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #1b56a4; /* azul institucional */
+  color: #fff;
+  border: none;
+  cursor: pointer;
+  transition: background .2s ease;
+}
+
+.user-icon-btn:hover {
+  background: #174a8c;
+}

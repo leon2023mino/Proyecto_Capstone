@@ -332,22 +332,22 @@ export default function ExportCertificado() {
         )}
 
         {estadoSolicitud === "aprobada" && (
-          <>
-            <button
-              onClick={handleExportPdf}
-              disabled={generando}
-              style={{
-                padding: ".7rem 1.3rem",
-                background: "#57b460",
-                color: "#fff",
-                border: "none",
-                borderRadius: 8,
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-            >
-              {generando ? "Generando..." : "⬇️ Descargar Certificado"}
-            </button>
+  <>
+    <button
+      onClick={handleExportPdf}
+      disabled={generando}
+      style={{
+        padding: ".7rem 1.3rem",
+        background: "#1b56a4",   //  ⭐ CAMBIADO (antes verde #57b460)
+        color: "#fff",
+        border: "none",
+        borderRadius: 8,
+        cursor: "pointer",
+        fontWeight: 600,
+      }}
+    >
+      {generando ? "Generando..." : "⬇️ Descargar Certificado"}
+    </button>
 
             <button
               onClick={enviarPorCorreo}

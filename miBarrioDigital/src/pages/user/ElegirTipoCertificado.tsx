@@ -2,91 +2,29 @@ import { NavLink } from "react-router-dom";
 
 export default function ElegirTipoCertificado() {
   return (
-    <div
-      style={{
-        minHeight: "70vh",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "2rem",
-      }}
-    >
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 720,
-          background: "#ffffff",
-          borderRadius: 12,
-          boxShadow: "0 8px 24px rgba(0,0,0,0.08)",
-          padding: "2rem",
-          textAlign: "center",
-        }}
-      >
-        <h1
-          style={{
-            margin: 0,
-            marginBottom: "1rem",
-            color: "var(--brand-blue, #0b6d44)",
-          }}
-        >
+    <div className="min-h-[70vh] flex items-center justify-center p-6">
+      <div className="w-full max-w-xl bg-white rounded-xl shadow-lg p-8 text-center">
+        
+        {/* Título */}
+        <h1 className="text-2xl font-extrabold text-[#0f3d91] mb-2">
           Seleccionar certificado
         </h1>
-        <p
-          style={{
-            marginTop: 0,
-            marginBottom: "1.5rem",
-            color: "var(--text-muted, #666)",
-          }}
-        >
+
+        <p className="text-gray-600 mb-8">
           Elige el tipo de certificado que deseas obtener.
         </p>
 
-        <div
-          style={{
-            display: "flex",
-            gap: "1rem",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <NavLink to="/ObetenerCertificado" style={{ width: "100%" }}>
+        {/* Opción */}
+        <div className="flex flex-col items-center gap-4 w-full">
+          <NavLink to="/ObetenerCertificado" className="w-full">
             <button
-              className="btn"
-              style={{
-                width: "100%",
-                padding: ".8rem 1rem",
-                borderRadius: 8,
-                background: "var(--brand-blue, #0b6d44)",
-                color: "#fff",
-                border: "none",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-              aria-label="Ir a Obtener Certificado"
+              className="w-full bg-[#0f3d91] hover:bg-[#0d347c] text-white font-semibold py-3 rounded-lg transition"
             >
               Obtener certificado
             </button>
           </NavLink>
-
-          <NavLink to="/certificados" style={{ width: "100%" }}>
-            <button
-              className="btn"
-              style={{
-                width: "100%",
-                padding: ".8rem 1rem",
-                borderRadius: 8,
-                background: "#f3f3f3",
-                color: "#111",
-                border: "1px solid #e6e6e6",
-                cursor: "pointer",
-                fontWeight: 600,
-              }}
-              aria-label="Ver certificados"
-            >
-              Mis certificados
-            </button>
-          </NavLink>
         </div>
+
       </div>
     </div>
   );

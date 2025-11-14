@@ -5,7 +5,7 @@ import { useAuth } from "../context/AuthContext";
 import { signOut } from "firebase/auth";
 import { auth } from "../firebase/config";
 import { useEffect, useRef, useState } from "react";
-
+import { UserCircle } from "lucide-react";
 export function Header() {
   const { user, loading } = useAuth();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -49,13 +49,13 @@ export function Header() {
             <span>...</span>
           ) : user ? (
             <div ref={menuRef} className="user-menu">
-              <button
-                onClick={() => setMenuOpen((s) => !s)}
-                className="user-icon-btn"
-                title={user.email ?? user.displayName ?? "Cuenta"}
-              >
-                👤
-              </button>
+        <button
+  onClick={() => setMenuOpen((s) => !s)}
+  className="user-icon-btn"
+  title={user.email ?? user.displayName ?? "Cuenta"}
+>
+  <UserCircle className="h-6 w-6" />
+</button>
 
               {menuOpen && (
                 <div className="user-dropdown">

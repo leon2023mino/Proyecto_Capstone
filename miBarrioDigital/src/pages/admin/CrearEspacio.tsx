@@ -1,7 +1,9 @@
 import { useState } from "react";
-import { addDoc, collection } from "firebase/firestore";
-import { db } from "../../firebase/config";
+import { addDoc, collection, Timestamp } from "firebase/firestore";
+import { db, storage } from "../../firebase/config";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "../../styles/CrearEspacio.css";
+import { resizeImage } from "../../components/noticias/ResizeImage";
 
 type NuevoEspacio = {
   nombre: string;
@@ -9,6 +11,8 @@ type NuevoEspacio = {
   aforo: number | "";
   ubicacion: string;
   activo: boolean;
+  imagen: string;
+  createdAt: Timestamp;
 };
 
 export default function CrearEspacio() {
@@ -18,76 +22,92 @@ export default function CrearEspacio() {
     aforo: "",
     ubicacion: "",
     activo: true,
+    imagen: "",
+    createdAt: Timestamp.now(),
   });
 
+  const [imagenFile, setImagenFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
   const [errores, setErrores] = useState<Record<string, string>>({});
   const [enviando, setEnviando] = useState(false);
   const [mensaje, setMensaje] = useState<string | null>(null);
 
-  // ✅ Validaciones de formulario
-  const validarFormulario = () => {
-    const nuevosErrores: Record<string, string> = {};
-
-    if (!espacio.nombre.trim())
-      nuevosErrores.nombre = "El nombre es obligatorio.";
-    if (!espacio.tipo.trim())
-      nuevosErrores.tipo = "Selecciona un tipo de espacio.";
+  // 🔍 Validación básica
+  const validar = () => {
+    const e: Record<string, string> = {};
+    if (!espacio.nombre.trim()) e.nombre = "El nombre es obligatorio.";
+    if (!espacio.tipo.trim()) e.tipo = "Debes elegir un tipo.";
     if (espacio.aforo === "" || espacio.aforo <= 0)
-      nuevosErrores.aforo = "Ingresa un aforo válido (mayor a 0).";
-    if (!espacio.ubicacion.trim())
-      nuevosErrores.ubicacion = "La ubicación es obligatoria.";
-
-    setErrores(nuevosErrores);
-    return Object.keys(nuevosErrores).length === 0;
+      e.aforo = "El aforo debe ser mayor a 0.";
+    if (!espacio.ubicacion.trim()) e.ubicacion = "La ubicación es obligatoria.";
+    setErrores(e);
+    return Object.keys(e).length === 0;
   };
 
-  // ✅ Manejar cambios de campos
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const { name, value, type } = e.target;
-
-    // 🔹 Si es checkbox
-    if (type === "checkbox") {
-      const target = e.target as HTMLInputElement;
-      setEspacio((prev) => ({ ...prev, [name]: target.checked }));
-    } else {
-      setEspacio((prev) => ({
-        ...prev,
-        [name]: name === "aforo" ? Number(value) : value,
-      }));
-    }
-
-    // 🔹 Limpiar error cuando se corrige el campo
-    if (errores[name]) {
-      setErrores((prev) => ({ ...prev, [name]: "" }));
-    }
+  // 📤 Subida a Firebase Storage
+  const uploadImage = async (file: File, path: string) => {
+    const storageRef = ref(storage, path);
+    await uploadBytes(storageRef, file);
+    return await getDownloadURL(storageRef);
   };
 
-  // ✅ Enviar formulario
+  const handleImagen = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setImagenFile(file);
+    setPreview(URL.createObjectURL(file));
+  };
+
+  // 📌 Enviar formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setMensaje(null);
 
-    if (!validarFormulario()) return;
+    if (!validar()) return;
 
     setEnviando(true);
 
     try {
-      await addDoc(collection(db, "spaces"), espacio);
+      let imagenFinal = espacio.imagen.trim();
+
+      if (imagenFile) {
+        const resized = await resizeImage(imagenFile, 900, 600);
+        imagenFinal = await uploadImage(
+          resized,
+          `espacios/imagenes/${Date.now()}-${resized.name}`
+        );
+      }
+
+      const payload = {
+        nombre: espacio.nombre.trim(),
+        tipo: espacio.tipo.trim(),
+        aforo: Number(espacio.aforo),
+        ubicacion: espacio.ubicacion.trim(),
+        activo: espacio.activo,
+        imagen: imagenFinal,
+        createdAt: Timestamp.now(),
+      };
+
+      await addDoc(collection(db, "spaces"), payload);
+
       setMensaje("✅ Espacio creado correctamente.");
 
-      // 🔹 Reiniciar formulario
+      // Reset
       setEspacio({
         nombre: "",
         tipo: "",
         aforo: "",
         ubicacion: "",
         activo: true,
+        imagen: "",
+        createdAt: Timestamp.now(),
       });
+      setImagenFile(null);
+      setPreview(null);
+
     } catch (error) {
-      console.error("Error al crear espacio:", error);
-      setMensaje("❌ Hubo un error al crear el espacio.");
+      console.error("Error creando espacio:", error);
+      setMensaje("❌ Error al crear el espacio.");
     } finally {
       setEnviando(false);
     }
@@ -95,33 +115,35 @@ export default function CrearEspacio() {
 
   return (
     <div className="crear-espacio-page">
-      <header>
+      <header className="crear-espacio-header">
         <h2>Crear Nuevo Espacio</h2>
-        <p>Completa los campos para registrar un nuevo espacio comunitario.</p>
+        <p>Registra un espacio donde los vecinos podrán hacer reservas.</p>
       </header>
 
       <form onSubmit={handleSubmit} className="crear-espacio-form" noValidate>
-        {/* Nombre */}
+        {/* NOMBRE */}
         <div className={`form-field ${errores.nombre ? "error" : ""}`}>
-          <label htmlFor="nombre">Nombre del espacio *</label>
+          <label>Nombre del espacio *</label>
           <input
-            id="nombre"
             name="nombre"
             value={espacio.nombre}
-            onChange={handleChange}
+            onChange={(e) =>
+              setEspacio({ ...espacio, nombre: e.target.value })
+            }
             placeholder="Ej: Sala Multiuso"
           />
           {errores.nombre && <small className="error-text">{errores.nombre}</small>}
         </div>
 
-        {/* Tipo */}
+        {/* TIPO */}
         <div className={`form-field ${errores.tipo ? "error" : ""}`}>
-          <label htmlFor="tipo">Tipo de espacio *</label>
+          <label>Tipo *</label>
           <select
-            id="tipo"
             name="tipo"
             value={espacio.tipo}
-            onChange={handleChange}
+            onChange={(e) =>
+              setEspacio({ ...espacio, tipo: e.target.value })
+            }
           >
             <option value="">Selecciona tipo...</option>
             <option value="Sala">Sala</option>
@@ -132,29 +154,31 @@ export default function CrearEspacio() {
           {errores.tipo && <small className="error-text">{errores.tipo}</small>}
         </div>
 
-        {/* Aforo */}
+        {/* AFORO */}
         <div className={`form-field ${errores.aforo ? "error" : ""}`}>
-          <label htmlFor="aforo">Aforo máximo *</label>
+          <label>Aforo máximo *</label>
           <input
-            id="aforo"
-            name="aforo"
             type="number"
             min={1}
+            name="aforo"
             value={espacio.aforo}
-            onChange={handleChange}
+            onChange={(e) =>
+              setEspacio({ ...espacio, aforo: Number(e.target.value) })
+            }
             placeholder="Ej: 50"
           />
           {errores.aforo && <small className="error-text">{errores.aforo}</small>}
         </div>
 
-        {/* Ubicación */}
+        {/* UBICACIÓN */}
         <div className={`form-field ${errores.ubicacion ? "error" : ""}`}>
-          <label htmlFor="ubicacion">Ubicación *</label>
+          <label>Ubicación *</label>
           <input
-            id="ubicacion"
             name="ubicacion"
             value={espacio.ubicacion}
-            onChange={handleChange}
+            onChange={(e) =>
+              setEspacio({ ...espacio, ubicacion: e.target.value })
+            }
             placeholder="Ej: Calle Los Robles 123"
           />
           {errores.ubicacion && (
@@ -162,23 +186,37 @@ export default function CrearEspacio() {
           )}
         </div>
 
-        {/* Activo */}
+        {/* IMAGEN */}
+        <div className="form-field">
+          <label>Imagen del espacio (opcional)</label>
+          <input type="file" accept="image/*" onChange={handleImagen} />
+
+          {preview ? (
+            <img className="preview-img" src={preview} alt="Vista previa" />
+          ) : espacio.imagen ? (
+            <img className="preview-img" src={espacio.imagen} alt="Preview" />
+          ) : (
+            <div className="cover-placeholder">Sin imagen seleccionada</div>
+          )}
+        </div>
+
+        {/* ACTIVO */}
         <div className="form-check">
           <input
             type="checkbox"
             id="activo"
-            name="activo"
             checked={espacio.activo}
-            onChange={handleChange}
+            onChange={(e) =>
+              setEspacio({ ...espacio, activo: e.target.checked })
+            }
           />
           <label htmlFor="activo">Espacio activo</label>
         </div>
 
-        {/* Mensaje */}
         {mensaje && <div className="mensaje">{mensaje}</div>}
 
         <div className="acciones">
-          <button type="submit" disabled={enviando}>
+          <button type="submit" className="btn-admin-blue" disabled={enviando}>
             {enviando ? "Creando..." : "Crear Espacio"}
           </button>
         </div>

@@ -13,7 +13,6 @@ import {
 import { db } from "../../firebase/config";
 import { useAuth } from "../../context/AuthContext";
 
-// 🔹 Tipo de actividad
 export type Actividad = {
   id: string;
   titulo: string;
@@ -23,7 +22,7 @@ export type Actividad = {
   lugar: string;
   responsable?: string;
   imagen?: string;
-  estado: "Activo" | "Inactivo" | string;
+  estado: string;
   cupoTotal: number;
   cupoDisponible: number;
 };
@@ -41,206 +40,182 @@ export default function ActividadesUser() {
     Record<string, EstadoSolicitud>
   >({});
 
-  // 🔹 Cargar actividades activas
-  useEffect(() => {
-    const q = query(collection(db, "actividades"), orderBy("fecha", "asc"));
-    const unsub = onSnapshot(q, (snapshot) => {
-      const docs = snapshot.docs.map((d) => ({
-        ...(d.data() as Actividad),
-        id: d.id,
-      }));
-      setActividades(docs.filter((a) => a.estado === "Activo"));
-      setLoading(false);
+  // 🔹 Escucha actividades activas
+ useEffect(() => {
+  const q = query(collection(db, "actividades"), orderBy("fecha", "asc"));
+  const unsub = onSnapshot(q, (snapshot) => {
+    const docs = snapshot.docs.map((d) => {
+      const data = d.data() as Actividad;
+
+      return {
+        ...data,
+        id: d.id, // asegurado
+      };
     });
+
+    setActividades(docs.filter((a) => a.estado === "Activo"));
+    setLoading(false);
+  });
     return () => unsub();
   }, []);
 
-  // 🔹 Cargar estado de solicitudes del usuario
+  // 🔹 Estado de solicitudes del usuario
   useEffect(() => {
     if (!user) return;
 
-    const cargarSolicitudes = async () => {
+    const fetchSolicitudes = async () => {
       const q = query(
         collection(db, SOLICITUDES_COLLECTION),
         where("usuarioId", "==", user.uid),
         where("tipo", "==", "actividad")
       );
-      const snapshot = await getDocs(q);
+
+      const snap = await getDocs(q);
       const estados: Record<string, EstadoSolicitud> = {};
 
-      snapshot.forEach((doc) => {
-        const data = doc.data();
-        if (data.actividadId) estados[data.actividadId] = data.estado;
+      snap.forEach((d) => {
+        const data = d.data();
+        estados[data.actividadId] = data.estado;
       });
 
       setEstadoSolicitudes(estados);
     };
 
-    cargarSolicitudes();
+    fetchSolicitudes();
   }, [user]);
 
   // 🔹 Enviar solicitud
-  const solicitarCupo = async (actividad: Actividad) => {
-    if (!user) {
-      alert("Debes iniciar sesión para solicitar cupo.");
-      return;
-    }
+  const solicitarCupo = async (act: Actividad) => {
+    if (!user) return alert("Debes iniciar sesión.");
 
-    if (actividad.cupoDisponible <= 0) {
-      alert("⚠️ No quedan cupos disponibles.");
-      return;
-    }
+    const estadoActual = estadoSolicitudes[act.id];
 
-    const estadoActual = estadoSolicitudes[actividad.id];
-    if (estadoActual === "pendiente") {
-      alert("⚠️ Ya tienes una solicitud pendiente.");
-      return;
-    }
-    if (estadoActual === "aprobada") {
-      alert("✅ Ya estás inscrito en esta actividad.");
-      return;
-    }
+    if (estadoActual === "pendiente") return alert("Ya tienes solicitud pendiente.");
+    if (estadoActual === "aprobada") return alert("Ya estás inscrito.");
+    if (act.cupoDisponible <= 0) return alert("Sin cupos disponibles.");
 
-    const confirmar = confirm(
-      `¿Deseas enviar una solicitud para "${actividad.titulo}"?`
-    );
-    if (!confirmar) return;
+    if (!confirm(`¿Enviar solicitud para "${act.titulo}"?`)) return;
 
     try {
-      setEnviando(actividad.id);
-      const solicitudId = `${actividad.id}_${user.uid}`;
-      const ref = doc(db, SOLICITUDES_COLLECTION, solicitudId);
+      setEnviando(act.id);
 
-      await setDoc(
-        ref,
-        {
-          tipo: "actividad",
-          estado: "pendiente",
-          createdAt: new Date(),
-          actividadId: actividad.id,
-          tituloActividad: actividad.titulo,
-          usuarioId: user.uid,
-          datos: {
-            nombre: user.displayName || "Usuario sin nombre",
-            email: user.email || "",
-          },
+      const ref = doc(db, SOLICITUDES_COLLECTION, `${act.id}_${user.uid}`);
+      await setDoc(ref, {
+        tipo: "actividad",
+        actividadId: act.id,
+        usuarioId: user.uid,
+        tituloActividad: act.titulo,
+        estado: "pendiente",
+        createdAt: new Date(),
+        datos: {
+          nombre: user.displayName ?? "Usuario",
+          email: user.email ?? "",
         },
-        { merge: true }
-      );
+      });
 
       setEstadoSolicitudes((prev) => ({
         ...prev,
-        [actividad.id]: "pendiente",
+        [act.id]: "pendiente",
       }));
 
-      alert("✅ Solicitud enviada. Espera la aprobación del administrador.");
+      alert("Solicitud enviada.");
     } catch (error) {
-      console.error("Error al crear solicitud:", error);
-      alert("❌ Error al enviar la solicitud.");
+      alert("Error al enviar solicitud.");
+      console.error(error);
     } finally {
       setEnviando(null);
     }
   };
 
-  // 🔹 Clase visual para el estado
-  const estadoClass = (estado: string | null) =>
-    estado
-      ? `estado-chip ${
-          estado === "pendiente"
-            ? "chip-pendiente"
-            : estado === "aprobada"
-            ? "chip-aprobada"
-            : "chip-rechazada"
-        }`
+  // 🔹 Chip estado solicitud
+  const solicitudChip = (estado: EstadoSolicitud) =>
+    estado === "pendiente"
+      ? "chip-pendiente"
+      : estado === "aprobada"
+      ? "chip-aprobada"
+      : estado === "rechazada"
+      ? "chip-rechazada"
       : "";
 
-  // 🔹 Render
-  if (loading)
-    return <p className="loading">Cargando actividades...</p>;
+  if (loading) return <p style={{ textAlign: "center" }}>Cargando actividades...</p>;
 
   return (
-    <div className="actividades-page">
-      <header className="actividades-header">
-        <h2 className="actividades-title">Actividades Vecinales</h2>
-        <p className="actividades-subtitle">
-          Descubre las actividades disponibles y postula a las que te interesen.
-        </p>
-      </header>
+    <div className="proyectos-page">
+      {/* Header igual que Proyectos */}
+      <div className="proyectos-header">
+        <div>
+          <h2 className="proyectos-title">Actividades Comunitarias</h2>
+          <p className="proyectos-subtitle">
+            Postula a talleres, operativos y actividades del barrio.
+          </p>
+        </div>
+
+        {/* Vista usuario: sin búsqueda */}
+        <div></div>
+      </div>
 
       {actividades.length === 0 ? (
-        <p className="no-data">No hay actividades registradas.</p>
+        <p className="no-data">No hay actividades disponibles.</p>
       ) : (
-        <div className="actividades-lista">
+        <div className="proyectos-lista">
           {actividades.map((a) => {
-            const estado = estadoSolicitudes[a.id] || null;
+            const estadoSolicitud = estadoSolicitudes[a.id] ?? null;
 
             return (
-              <article key={a.id} className="actividad-card">
-                {/* Imagen */}
+              <article key={a.id} className="proyecto-card">
+                {/* Imagen superior */}
                 {a.imagen ? (
-                  <img
-                    className="actividad-thumb"
-                    src={a.imagen}
-                    alt={a.titulo}
-                  />
+                  <img className="proyecto-thumb" src={a.imagen} alt={a.titulo} />
                 ) : (
-                  <div className="actividad-thumb sin-imagen">Sin imagen</div>
+                  <div className="proyecto-thumb sin-imagen">Sin imagen</div>
                 )}
 
-                {/* Contenido */}
-                <div className="actividad-body">
+                <div className="proyecto-body">
                   <h3>{a.titulo}</h3>
 
-                  {estado && (
-                    <span className={estadoClass(estado)}>
-                      {estado === "pendiente"
-                        ? "🕓 Pendiente"
-                        : estado === "aprobada"
-                        ? "✅ Aprobada"
-                        : "❌ Rechazada"}
+                  {estadoSolicitud && (
+                    <span className={`estado ${solicitudChip(estadoSolicitud)}`}>
+                      {estadoSolicitud === "pendiente"
+                        ? "Pendiente"
+                        : estadoSolicitud === "aprobada"
+                        ? "Aprobada"
+                        : "Rechazada"}
                     </span>
                   )}
 
-                  <p className="actividad-desc">{a.descripcion}</p>
+                  <p className="proyecto-desc">{a.descripcion}</p>
 
-                  <div className="actividad-info">
-                    <p><b>📅 Fecha:</b> {a.fecha}</p>
-                    <p><b>🕓 Hora:</b> {a.hora}</p>
-                    <p><b>📍 Lugar:</b> {a.lugar}</p>
-                    {a.responsable && (
-                      <p><b>👤 Responsable:</b> {a.responsable}</p>
-                    )}
-                    <p><b>🎟️ Cupos disponibles:</b> {a.cupoDisponible}</p>
-                  </div>
+                  <small className="fecha-publicacion">
+                    📅 {a.fecha} — 🕓 {a.hora}
+                  </small>
 
-                  <div className="actividad-actions">
+                  <div className="proyecto-actions">
                     <button
                       onClick={() => solicitarCupo(a)}
                       disabled={
-                        a.cupoDisponible <= 0 ||
                         enviando === a.id ||
-                        estado === "pendiente" ||
-                        estado === "aprobada"
+                        estadoSolicitud === "pendiente" ||
+                        estadoSolicitud === "aprobada" ||
+                        a.cupoDisponible <= 0
                       }
-                      className={`btn-solicitar ${
-                        a.cupoDisponible <= 0 ||
-                        estado === "pendiente" ||
-                        estado === "aprobada"
-                          ? "btn-disabled"
-                          : ""
-                      }`}
+                      className="btn-ver-mas"
                     >
                       {enviando === a.id
                         ? "Enviando..."
-                        : estado === "pendiente"
+                        : estadoSolicitud === "pendiente"
                         ? "Pendiente"
-                        : estado === "aprobada"
+                        : estadoSolicitud === "aprobada"
                         ? "Inscrito"
                         : a.cupoDisponible <= 0
                         ? "Sin cupos"
-                        : "Solicitar cupo"}
+                        : "Solicitar"}
                     </button>
                   </div>
+                </div>
+
+                {/* Información extra abajo */}
+                <div className="proyecto-meta">
+                  <span className="meta-chip">Lugar: {a.lugar}</span>
                 </div>
               </article>
             );

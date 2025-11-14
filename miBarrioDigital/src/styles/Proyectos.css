@@ -207,3 +207,21 @@
   line-height: 1.6;
   margin-top: 0.75rem;
 }
+.chip-pendiente {
+  background: #fce8b2;
+  color: #8a6500;
+}
+
+.chip-aprobada {
+  background: #c9f7d5;
+  color: #0f783c;
+}
+
+.chip-rechazada {
+  background: #ffd6d6;
+  color: #9c1d1d;
+}
+.estado.estado-pendiente {
+  background: #e8eef7;
+  color: #a4791b;
+}

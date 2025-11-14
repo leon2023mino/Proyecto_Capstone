@@ -1,54 +1,52 @@
-/* =========================
-   CREAR ESPACIO (ADMIN)
-   Estilo limpio, azul institucional Mi Barrio Digital
-========================= */
+/* ==============================
+   CREAR ESPACIO — ESTILO MODERNO
+   ============================== */
 
-:root {
-  --surface: #ffffff;
-  --border: #e5e7eb;
-  --radius: 14px;
-  --shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-  --text-color: #111827;
-  --text-muted: #6b7280;
-  --brand-blue: #0f3d91;
-  --brand-blue-light: #1b56a4;
-  --error: #c92a3b;
-  --success: #146c43;
-}
-
-/* ======= CONTENEDOR PRINCIPAL ======= */
 .crear-espacio-page {
-  max-width: 700px;
+  max-width: 960px;
   margin: 2rem auto;
-  padding: 2rem 1.5rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
+  padding: 0 1rem;
 }
-
-/* ======= ENCABEZADO ======= */
-.crear-espacio-page h2 {
-  font-size: 1.7rem;
+.crear-espacio-header h2 {
+  font-size: 1.9rem;
   font-weight: 800;
-  color: var(--brand-blue);
-  margin-bottom: 0.25rem;
+  margin: 0;
+  color: #1d4ed8; /* 🔵 Azul Admin */
 }
 
-.crear-espacio-page p {
-  color: var(--text-muted);
+
+.crear-espacio-header h2 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  margin: 0;
+  color: #1e225c;
+}
+
+.crear-espacio-header p {
+  margin-top: 0.4rem;
+  color: #66746d;
   font-size: 0.95rem;
-  margin-bottom: 1.5rem;
 }
 
-/* ======= FORMULARIO ======= */
+/* FORMULARIO */
 .crear-espacio-form {
-  display: flex;
-  flex-direction: column;
-  gap: 1.2rem;
+  background: #ffffff;
+  border: 1px solid #e6ecf2;
+  border-radius: 14px;
+  padding: 1.8rem;
+  box-shadow: 0 10px 24px rgba(0,0,0,0.06);
+
+  display: grid;
+  gap: 1rem;
 }
 
-/* ======= CAMPOS ======= */
+@media (min-width: 720px) {
+  .crear-espacio-form {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* Campos */
 .form-field {
   display: flex;
   flex-direction: column;
@@ -57,111 +55,122 @@
 
 .form-field label {
   font-weight: 700;
-  color: var(--text-color);
+  color: #2e2e2e;
+  font-size: 0.95rem;
 }
 
 .form-field input,
 .form-field select {
-  border: 1px solid var(--border);
+  padding: 0.8rem 1rem;
+  border: 1px solid #dfe7e2;
   border-radius: 10px;
-  padding: 0.65rem 0.8rem;
-  font-size: 0.95rem;
   background: #fff;
-  color: var(--text-color);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  font-size: 1rem;
+  transition: border-color .2s ease, box-shadow .2s ease;
+  color: #2f2f2f;
 }
 
 .form-field input:focus,
 .form-field select:focus {
   outline: none;
-  border-color: rgba(15, 61, 145, 0.6);
-  box-shadow: 0 0 0 3px rgba(15, 61, 145, 0.12);
+  border-color: var(--brand, #57b460);
+  box-shadow: 0 0 0 4px rgba(87,180,96,.18);
 }
 
-/* ======= VALIDACIÓN ======= */
+.form-field input::placeholder {
+  color: #9aa8a0;
+}
+
+/* Errores */
 .form-field.error input,
 .form-field.error select {
-  border-color: var(--error);
-  background: #ffe8e8;
+  border-color: #e2a3a3;
+  background: #fff7f7;
 }
 
 .error-text {
-  color: var(--error);
-  font-size: 0.8rem;
-  margin-top: 0.25rem;
+  color: #b33a3a;
+  font-size: 0.85rem;
 }
 
-/* ======= CHECKBOX ======= */
+/* Checkbox */
 .form-check {
+  grid-column: span 2;
   display: flex;
   align-items: center;
-  gap: 0.5rem;
-  color: var(--text-color);
+  gap: 0.6rem;
+  margin-top: 0.5rem;
 }
 
-/* ======= MENSAJE DE CONFIRMACIÓN ======= */
-.mensaje {
-  background: rgba(15, 61, 145, 0.08);
-  color: var(--brand-blue);
-  border: 1px solid rgba(15, 61, 145, 0.2);
-  border-radius: 10px;
-  padding: 0.75rem;
-  text-align: center;
-  font-weight: 600;
+.form-check label {
+  font-size: 0.95rem;
+  color: #333;
 }
 
-/* ======= BOTONES ======= */
-.acciones {
-  display: flex;
-  justify-content: flex-end;
-  gap: 0.75rem;
-  margin-top: 1rem;
-}
-
-button {
-  border: none;
-  border-radius: 999px;
-  padding: 0.7rem 1.4rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: background 0.2s ease, transform 0.1s ease;
-}
-
-/* Botón principal (Guardar) */
-button[type="submit"] {
-  background: var(--brand-blue);
-  color: #fff;
-  box-shadow: 0 4px 10px rgba(15, 61, 145, 0.25);
-}
-
-button[type="submit"]:hover {
-  background: var(--brand-blue-light);
-  transform: translateY(-2px);
-}
-
-/* Botón secundario (Volver) */
-button.btn-volver {
-  background: transparent;
-  border: 1px solid var(--border);
-  color: var(--text-color);
-}
-
-button.btn-volver:hover {
-  background: #f3f7ff;
-}
-
-/* Deshabilitado */
-button:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  transform: none;
-}
-
-/* ======= IMAGEN DE VISTA PREVIA ======= */
+/* Imagen */
 .preview-img {
   width: 100%;
-  border-radius: 10px;
-  border: 1px solid var(--border);
-  object-fit: cover;
+  border-radius: 12px;
+  margin-top: 0.6rem;
+  border: 1px solid #e1e1e1;
+}
+
+.cover-placeholder {
+  width: 100%;
+  height: 180px;
+  background: #f5f7f5;
+  border-radius: 12px;
+  border: 1px dashed #bcd1c0;
+  display: grid;
+  place-items: center;
+  color: #6c7a74;
+  font-size: 0.9rem;
+  margin-top: 0.6rem;
+}
+
+/* Mensaje */
+.mensaje {
+  grid-column: span 2;
+  padding: 0.8rem 1rem;
+  border-radius: 8px;
+  background: #e8f5e9;
+  color: #2d6a2d;
+  border: 1px solid #b6dfbb;
   margin-top: 0.5rem;
+}
+
+/* Acciones */
+.acciones {
+  grid-column: span 2;
+  margin-top: 1rem;
+  display: flex;
+  justify-content: flex-start;
+}
+
+/* Botón azul admin */
+.btn-admin-blue {
+  background: #1d4ed8;
+  color: #fff;
+  padding: 0.9rem 1.4rem;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 18px rgba(29, 78, 216, .18);
+  transition: background .2s ease, transform .08s ease;
+}
+
+.btn-admin-blue:hover {
+  background: #153ea6;
+  transform: translateY(-1px);
+}
+
+.btn-admin-blue:active {
+  transform: translateY(0);
+  background: #1d4ed8;
+}
+
+.btn-admin-blue:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }

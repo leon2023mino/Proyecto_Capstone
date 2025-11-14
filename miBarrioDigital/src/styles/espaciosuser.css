@@ -1,29 +1,65 @@
-/* ===========================================
+/* ===================================================
    ESPACIOS — VISTA USUARIO
-   Paleta azul unificada Mi Barrio Digital
-=========================================== */
+   Estilo moderno alineado con Proyectos (paleta azul)
+=================================================== */
 
 :root {
   --brand-blue: #0f3d91;
   --brand-blue-dark: #0d3275;
   --surface: #ffffff;
   --border: #d6d9e0;
-  --text: #1f2937;
-  --text-muted: #6b7280;
+  --text: #1e293b;
+  --text-muted: #64748b;
   --radius: 14px;
   --shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
 }
 
-/* Card general */
+/* ===========================
+   CONTENEDOR PRINCIPAL
+=========================== */
+.espacios-user-page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.espacios-user-header {
+  margin-bottom: 1.8rem;
+}
+
+.espacios-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0 0 0.3rem 0;
+}
+
+.espacios-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin: 0;
+}
+
+/* Grid */
+.espacios-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+/* ===========================
+   TARJETA DE ESPACIO
+=========================== */
 .espacio-card {
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  box-shadow: var(--shadow);
   overflow: hidden;
-  transition: transform 0.15s ease, box-shadow 0.2s ease;
+  box-shadow: var(--shadow);
   display: flex;
   flex-direction: column;
+  transition: transform 0.15s ease, box-shadow 0.2s ease;
 }
 
 .espacio-card:hover {
@@ -46,7 +82,9 @@
   font-style: italic;
 }
 
-/* Contenido */
+/* ===========================
+   CONTENIDO
+=========================== */
 .espacio-body {
   padding: 1rem 1.25rem;
 }
@@ -59,12 +97,12 @@
 
 .espacio-header h3 {
   margin: 0;
-  font-size: 1.2rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--brand-blue-dark);
 }
 
-/* Estado */
+/* Estado (solo lectura) */
 .estado-label {
   font-size: 0.85rem;
   padding: 0.35rem 0.75rem;
@@ -73,37 +111,37 @@
 }
 
 .estado-label.activo {
-  background: rgba(56, 178, 172, 0.19);
-  color: #065f46;
+  background: rgba(15, 61, 145, 0.18);
+  color: var(--brand-blue-dark);
 }
 
 .estado-label.inactivo {
-  background: rgba(239, 68, 68, 0.18);
-  color: #b91c1c;
-}
-
-/* Botón admin para cambiar estado */
-.estado-btn {
-  padding: 0.4rem 0.8rem;
-  border-radius: 999px;
-  border: none;
-  font-weight: 700;
-  cursor: pointer;
-  font-size: 0.85rem;
-  transition: background 0.2s ease;
-}
-
-.estado-btn.activo {
-  background: rgba(56, 178, 172, 0.2);
-  color: #065f46;
-}
-
-.estado-btn.inactivo {
   background: rgba(239, 68, 68, 0.2);
   color: #b91c1c;
 }
 
-/* Footer */
+/* Estado admin (cambia estado) */
+.estado-btn-admin {
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.estado-btn-admin.activo {
+  background: var(--brand-blue);
+}
+
+.estado-btn-admin.inactivo {
+  background: #777;
+}
+
+/* ===========================
+   BOTONES (ESTÁNDAR)
+=========================== */
 .espacio-footer {
   margin-top: 1rem;
   display: flex;
@@ -111,50 +149,71 @@
   flex-wrap: wrap;
 }
 
-/* -------- BOTONES -------- */
-
-/* Botón Editar (admin) */
-.btn-editar-espacio {
-  width: 100%;
-  text-align: center;
-  padding: 0.7rem 1rem;
-  border-radius: 10px;
+/* Botón sólido */
+.btn-blue {
   background: var(--brand-blue);
-  color: #fff;
-  font-weight: 700;
-  text-decoration: none;
-  display: block;
-  transition: background 0.25s ease, transform 0.12s ease;
-  box-shadow: 0 6px 14px rgba(15, 61, 145, 0.25);
-}
-
-.btn-editar-espacio:hover {
-  background: var(--brand-blue-dark);
-  transform: translateY(-2px);
-}
-
-/* Botón Ver Espacio (usuario) */
-.btn-ver-espacio {
-  width: 100%;
-  padding: 0.7rem 1rem;
+  color: white !important;
+  padding: 0.6rem 1rem;
   border-radius: 10px;
-  background: var(--brand-blue);
-  color: #fff;
-  font-weight: 700;
   border: none;
   cursor: pointer;
+  font-weight: 700;
+  width: 100%;
+  display: block;
+  text-align: center;
   transition: background 0.25s ease, transform 0.12s ease;
   box-shadow: 0 6px 14px rgba(15, 61, 145, 0.25);
 }
 
-.btn-ver-espacio:hover:not(:disabled) {
+.btn-blue:hover {
   background: var(--brand-blue-dark);
   transform: translateY(-2px);
 }
 
-.btn-ver-espacio:disabled {
-  background: #a3afc2 !important;
-  cursor: not-allowed;
-  box-shadow: none !important;
-  transform: none !important;
+/* Outline */
+.btn-blue-outline {
+  color: var(--brand-blue);
+  border: 2px solid var(--brand-blue);
+  background: transparent;
+  padding: 0.55rem 1rem;
+  border-radius: 10px;
+  width: 100%;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.btn-blue-outline:hover {
+  background: var(--brand-blue);
+  color: white;
+}
+
+/* Delete */
+.btn-red {
+  background: #d93025;
+  color: white !important;
+  padding: 0.6rem 1rem;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.25s ease;
+}
+
+.btn-red:hover {
+  background: #b3271d;
+}
+
+/* Mensajes */
+.no-data {
+  text-align: center;
+  color: #64748b;
+  padding: 2rem 0;
+  font-size: 1.1rem;
+}
+
+.loading-text {
+  text-align: center;
+  color: #475569;
 }

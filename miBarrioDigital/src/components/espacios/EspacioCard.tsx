@@ -1,8 +1,10 @@
-import { doc, updateDoc } from "firebase/firestore";
+import { doc, updateDoc, deleteDoc } from "firebase/firestore";
 import { db } from "../../firebase/config";
 import { type Espacio } from "../../hooks/useEspacios";
 import "../../styles/AdministrarEspacios.css";
 import { NavLink, useNavigate } from "react-router-dom";
+
+import { Pencil, Trash2, Eye } from "lucide-react";
 
 type EspacioCardProps = {
   espacio: Espacio;
@@ -16,7 +18,7 @@ export function EspacioCard({ espacio, role }: EspacioCardProps) {
   const toggleActivo = async () => {
     const nuevoEstado = !espacio.activo;
     const confirmar = window.confirm(
-      `¿Estás seguro que deseas marcar este espacio como ${
+      `¿Deseas marcar este espacio como ${
         nuevoEstado ? "Activo" : "Inactivo"
       }?`
     );
@@ -25,47 +27,56 @@ export function EspacioCard({ espacio, role }: EspacioCardProps) {
     try {
       const ref = doc(db, "spaces", espacio.id);
       await updateDoc(ref, { activo: nuevoEstado });
-      alert(`✅ Estado cambiado a ${nuevoEstado ? "Activo" : "Inactivo"}`);
+      alert(`✅ Estado actualizado correctamente.`);
     } catch (error) {
-      console.error("Error al actualizar el estado:", error);
-      alert("❌ Error al cambiar el estado.");
+      console.error("Error al actualizar estado:", error);
+      alert("❌ No se pudo cambiar el estado.");
     }
   };
 
-  // 🔹 Navegar al detalle del espacio
-  const irAlEspacio = () => {
-    navigate(`/VerEspacio/${espacio.id}`);
+  // 🔥 Eliminar espacio (solo admin)
+  const borrarEspacio = async () => {
+    const confirmar = window.confirm(
+      `⚠️ ¿Eliminar el espacio "${espacio.nombre}"?\nEsta acción no se puede deshacer.`
+    );
+    if (!confirmar) return;
+
+    try {
+      await deleteDoc(doc(db, "spaces", espacio.id));
+      alert("🗑️ Espacio eliminado correctamente.");
+    } catch (error) {
+      console.error("Error al eliminar:", error);
+      alert("❌ No se pudo eliminar el espacio.");
+    }
   };
 
   return (
-    <div className="espacio-card">
-      {/* 🔹 Imagen superior */}
+    <article className="espacio-card">
+      {/* Imagen */}
       {espacio.imagen ? (
-        <img
-          src={espacio.imagen}
-          alt={espacio.nombre}
-          className="espacio-thumb"
-        />
+        <img src={espacio.imagen} alt={espacio.nombre} className="espacio-thumb" />
       ) : (
         <div className="espacio-thumb sin-imagen">Sin imagen</div>
       )}
 
-      {/* 🔹 Contenido principal */}
       <div className="espacio-body">
         <div className="espacio-header">
           <h3>{espacio.nombre}</h3>
 
+          {/* CHIP de estado */}
           {role === "admin" ? (
             <button
               onClick={toggleActivo}
-              className={`estado-btn ${espacio.activo ? "activo" : "inactivo"}`}
+              className={`estado-chip-admin ${
+                espacio.activo ? "chip-activo" : "chip-inactivo"
+              }`}
             >
               {espacio.activo ? "Activo" : "Inactivo"}
             </button>
           ) : (
             <span
-              className={`estado-label ${
-                espacio.activo ? "activo" : "inactivo"
+              className={`estado-chip ${
+                espacio.activo ? "chip-activo" : "chip-inactivo"
               }`}
             >
               {espacio.activo ? "Activo" : "Inactivo"}
@@ -73,45 +84,39 @@ export function EspacioCard({ espacio, role }: EspacioCardProps) {
           )}
         </div>
 
-        <p>
-          <strong>Tipo:</strong> {espacio.tipo}
-        </p>
-        <p>
-          <strong>Aforo:</strong> {espacio.aforo}
-        </p>
-        <p>
-          <strong>Ubicación:</strong> {espacio.ubicacion}
-        </p>
+        {/* Información */}
+        <div className="espacio-info">
+          <p><strong>Tipo:</strong> {espacio.tipo}</p>
+          <p><strong>Aforo:</strong> {espacio.aforo}</p>
+          <p><strong>Ubicación:</strong> {espacio.ubicacion}</p>
+        </div>
 
-        {/* 🔹 Botones inferiores */}
+        {/* ACCIONES */}
         <div className="espacio-footer">
-          {/* Solo admins pueden editar */}
-          {role === "admin" && (
-            <NavLink
-              to={`/admin/EditarEspacio/${espacio.id}`}
-              className="btn-editar-espacio"
-            >
-              ✏️ Editar espacio
-            </NavLink>
-          )}
+          {role === "admin" ? (
+            <>
+              <NavLink
+                to={`/admin/EditarEspacio/${espacio.id}`}
+                className="btn-admin-blue"
+              >
+                <Pencil size={16} /> Editar
+              </NavLink>
 
-          {/* 🔹 Solo vecinos o usuarios normales pueden ver el espacio */}
-          {(role === "vecino" || role === "usuario" || !role) && (
+              <button className="btn-admin-red" onClick={borrarEspacio}>
+                <Trash2 size={16} /> Eliminar
+              </button>
+            </>
+          ) : (
             <button
-              onClick={irAlEspacio}
-              className="btn-ver-espacio"
+              onClick={() => navigate(`/VerEspacio/${espacio.id}`)}
+              className="btn-admin-blue-outline"
               disabled={!espacio.activo}
-              title={
-                espacio.activo
-                  ? "Ver más detalles del espacio"
-                  : "Espacio inactivo temporalmente"
-              }
             >
-              🏡 Ver espacio
+              <Eye size={16} /> Ver espacio
             </button>
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }

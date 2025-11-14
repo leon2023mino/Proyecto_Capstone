@@ -176,4 +176,116 @@
 .crear-espacio-form button:hover {
   opacity: 0.9;
 }
+/* ============================================
+   🎨 Botones Administrar Espacios (Estilo Azul)
+============================================ */
+
+.btn-admin-blue {
+  background: #0f3d91;
+  color: white;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-admin-blue:hover {
+  background: #0d357e;
+}
+
+.btn-admin-blue-outline {
+  background: transparent;
+  color: #0f3d91;
+  border: 2px solid #0f3d91;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.2s;
+}
+
+.btn-admin-blue-outline:hover {
+  background: #0f3d91;
+  color: white;
+}
+
+.btn-admin-red {
+  background: #d93025;
+  color: white;
+  padding: 0.5rem 0.9rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.btn-admin-red:hover {
+  background: #b7271d;
+}
+
+/* Botón estado (admin) */
+.estado-btn-admin {
+  padding: 0.35rem 0.8rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  color: white;
+  border: none;
+}
+
+.estado-btn-admin.activo {
+  background: #0f3d91;
+}
+
+.estado-btn-admin.inactivo {
+  background: #777;
+}
+.espacios-user-page {
+  width: 100%;
+  max-width: 1200px;
+  margin: 1rem auto;
+  padding: 1rem;
+}
+
+.espacios-user-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.espacios-title {
+  font-size: 1.9rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 0.25rem;
+}
+
+.espacios-subtitle {
+  color: #64748b;
+  font-size: 0.95rem;
+  margin: 0;
+}
+
+.espacios-grid {
+  display: grid;
+  gap: 1.5rem;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+}
+
+.no-data {
+  text-align: center;
+  color: #6b7280;
+  padding: 2rem 0;
+  font-size: 1.05rem;
+}
+
+.loading-text {
+  text-align: center;
+  color: #475569;
+}
 
