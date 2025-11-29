@@ -27,26 +27,36 @@
   display: block;
 }
 
-/* Texto sobre imagen */
+/* Texto sobre imagen (barra inferior suave) */
 .carousel-caption {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  background: linear-gradient(180deg, transparent 40%, rgba(0, 0, 0, 0.6));
-  color: #fff;
-  padding: 1rem 1.25rem;
+  /* menos área oscura para no tapar la imagen */
+  background: linear-gradient(
+    180deg,
+    transparent 65%,
+    rgba(0, 0, 0, 0.7)
+  );
+  padding: 0.7rem 1.25rem;
 }
 
+/* Título de la noticia */
 .carousel-caption h3 {
   font-size: 1.3rem;
   margin: 0;
   font-weight: 700;
+  color: #036ed1;       /* 🌟 AMARILLO */
+  /* Si lo quieres verde, cambia por:
+     color: #4caf50;
+  */
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.9);
 }
 
+/* Ocultamos el párrafo si existiera */
 .carousel-caption p {
-  font-size: 1rem;
-  margin: 0.25rem 0 0;
+  display: none;
 }
 
 /* Botones flecha */
@@ -113,5 +123,13 @@
     font-size: 1.6rem;
     width: 34px;
     height: 34px;
+  }
+
+  .carousel-caption {
+    padding: 0.5rem 1rem;
+  }
+
+  .carousel-caption h3 {
+    font-size: 1.1rem;
   }
 }

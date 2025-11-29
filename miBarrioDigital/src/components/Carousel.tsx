@@ -43,8 +43,11 @@ export default function Carousel({
             <img src={s.src} alt={s.title || `Slide ${i + 1}`} />
             {(s.title || s.text) && (
               <div className="carousel-caption">
-                {s.title && <h3>{s.title}</h3>}
-                {s.text && <p>{s.text}</p>}
+               {s.title && (
+  <div className="carousel-caption">
+    <h3>{s.title}</h3>
+  </div>
+)}
               </div>
             )}
           </div>
