@@ -1,0 +1,135 @@
+/* Contenedor general */
+.admin-usuarios {
+  padding: 1.5rem 2rem;
+  background-color: #f8fafc;
+  min-height: 100%;
+}
+
+.admin-usuarios h2 {
+  font-size: 1.6rem;
+  margin-bottom: 1rem;
+  color: #0f172a;
+}
+
+/* Contenedor de tabla (para scroll horizontal en pantallas pequeñas) */
+.admin-usuarios .tabla-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+/* Tabla de usuarios */
+.tabla-usuarios {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #ffffff;
+  border-radius: 0.75rem;
+  overflow: hidden;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+}
+
+.tabla-usuarios thead {
+  background: linear-gradient(90deg, #022f83, #0369a1);
+  color: #ffffff;
+}
+
+.tabla-usuarios th,
+.tabla-usuarios td {
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.95rem;
+}
+
+.tabla-usuarios th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.tabla-usuarios tbody tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.tabla-usuarios tbody tr:hover {
+  background-color: #e5f3ff;
+}
+
+/* Texto de celdas */
+.tabla-usuarios td {
+  color: #111827;
+}
+
+/* Columna de acciones centrada un poco */
+.tabla-usuarios td:last-child {
+  white-space: nowrap;
+}
+
+/* Botones de rol */
+.btn-rol {
+  border: none;
+  border-radius: 999px;
+  padding: 0.35rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: transform 0.1s ease, box-shadow 0.1s ease, opacity 0.15s ease;
+}
+
+/* Botón hacer admin */
+.btn-admin {
+  background: linear-gradient(90deg, #0f766e, #059669);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(5, 150, 105, 0.4);
+}
+
+/* Botón pasar a vecino */
+.btn-vecino {
+  background: linear-gradient(90deg, #f97316, #ea580c);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(234, 88, 12, 0.4);
+}
+
+.btn-rol:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(15, 23, 42, 0.2);
+}
+
+.btn-rol:active {
+  transform: translateY(0);
+  box-shadow: none;
+  opacity: 0.9;
+}
+
+/* Mensajes de estado */
+.admin-usuarios p {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .admin-usuarios {
+    padding: 1rem;
+  }
+
+  .tabla-usuarios th,
+  .tabla-usuarios td {
+    padding: 0.6rem 0.7rem;
+    font-size: 0.8rem;
+  }
+
+  .btn-rol {
+    padding: 0.3rem 0.7rem;
+    font-size: 0.75rem;
+  }
+}
+.acciones-usuarios {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+/* Botón eliminar */
+.btn-delete {
+  background: linear-gradient(90deg, #dc2626, #b91c1c);
+  color: #ffffff;
+  box-shadow: 0 2px 6px rgba(220, 38, 38, 0.4);
+}

@@ -28,7 +28,49 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-/** Menú principal con íconos */
+/** Items del menú principal */
+const menuItems = [
+  {
+    title: "Dashboard",
+    url: "/admin/Dashboards",
+    icon: Home,
+  },
+  {
+    title: "Administrar usuarios", // 👈 NUEVO
+    url: "/admin/AdministrarUsuarios",
+    icon: User,
+  },
+  {
+    title: "Actividades",
+    url: "/admin/AdministrarActividades",
+    icon: Calendar,
+  },
+  {
+    title: "Proyectos",
+    url: "/admin/AdministrarProyectos",
+    icon: FolderKanban,
+  },
+  {
+    title: "Noticias",
+    url: "/admin/AdministrarNoticias",
+    icon: Newspaper,
+  },
+  {
+    title: "Espacios comunes",
+    url: "/admin/AdministrarEspacios",
+    icon: Building2,
+  },
+  {
+    title: "Solicitudes",
+    url: "/admin/AdministrarSolicitudes",
+    icon: ClipboardList,
+  },
+  {
+    title: "Correos masivos",
+    url: "/admin/EnviarCorreo",
+    icon: Mail,
+  },
+];
 
 export function AdminSidebar() {
   const { open } = useSidebar();
@@ -52,11 +94,11 @@ export function AdminSidebar() {
         {/* 🔹 MENÚ PRINCIPAL */}
         <div>
           <SidebarGroup>
-            <NavLink to={"/admin/dashboards"}>
-              <SidebarGroupLabel className="text-[#0f3d91] font-bold text-sm px-4 py-3 uppercase tracking-wider">
-                Panel Admin
-              </SidebarGroupLabel>
-            </NavLink>
+           <NavLink to={"/admin/Dashboards"}>
+  <SidebarGroupLabel className="text-[#0f3d91] font-bold text-sm px-4 py-3 uppercase tracking-wider">
+    Panel Admin
+  </SidebarGroupLabel>
+</NavLink>
 
             <SidebarGroupContent>
               <SidebarMenu>

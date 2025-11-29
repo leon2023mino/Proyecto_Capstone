@@ -33,7 +33,7 @@ import ElegirTipoCertificado from "./pages/user/ElegirTipoCertificado.tsx";
 import ExportCertificado from "./pages/user/ObetenerCertificado.tsx";
 import CrearEspacio from "./pages/admin/CrearEspacio.tsx";
 import AdministrarEspacios from "./pages/admin/AdministrarEspacios.tsx";
-import EditarEspacio from "./pages/admin/EditarEspacio.tsx"; // 👈 nuevo import
+import EditarEspacio from "./pages/admin/EditarEspacio.tsx";
 import AdminSolicitudes from "./pages/admin/AdminSolicitudes.tsx";
 import CrearActividad from "./pages/admin/CrearActividad.tsx";
 import ActividadesUser from "./pages/user/ActividadesUser.tsx";
@@ -42,6 +42,9 @@ import AdministrarActividades from "./pages/admin/AdministrarActividades.tsx";
 import Dashboard from "./pages/admin/Dashboards.tsx";
 import { AdminLayout } from "./components/AdminLayout.tsx";
 import EnviarCorreo from "./pages/admin/EnviarCorreo.tsx";
+
+// 👇 NUEVO: importar la vista de Administrar Usuarios
+import AdministrarUsuarios from "./pages/admin/AdministrarUsuarios.tsx";
 
 const router = createBrowserRouter([
   {
@@ -77,10 +80,8 @@ const router = createBrowserRouter([
         element: <AdminLayout />,
         children: [
           { path: "Dashboards", element: <Dashboard /> },
-          {
-            path: "AdministrarActividades",
-            element: <AdministrarActividades />,
-          },
+
+          { path: "AdministrarActividades", element: <AdministrarActividades /> },
           { path: "VerActividadAdmin/:id", element: <VerActividadAdmin /> },
           { path: "CrearActividad", element: <CrearActividad /> },
 
@@ -94,16 +95,16 @@ const router = createBrowserRouter([
 
           { path: "AdministrarEspacios", element: <AdministrarEspacios /> },
           { path: "CrearEspacio", element: <CrearEspacio /> },
-          { path: "EditarEspacio/:id", element: <EditarEspacio /> }, // 👈 nueva ruta de edición
+          { path: "EditarEspacio/:id", element: <EditarEspacio /> },
 
           { path: "RegistroUserAdmin", element: <RegistroUserAdmin /> },
           { path: "ListaSolicitudes", element: <ListaSolicitudes /> },
-          {
-            path: "AdministrarSolicitudes",
-            element: <AdministrarSolicitudes />,
-          },
+          { path: "AdministrarSolicitudes", element: <AdministrarSolicitudes /> },
           { path: "AdminSolicitudes", element: <AdminSolicitudes /> },
           { path: "EnviarCorreo", element: <EnviarCorreo /> },
+
+          // 👇 NUEVA RUTA: administrar usuarios
+          { path: "AdministrarUsuarios", element: <AdministrarUsuarios /> },
         ],
       },
     ],

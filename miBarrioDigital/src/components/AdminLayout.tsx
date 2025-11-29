@@ -128,7 +128,6 @@ export function AdminLayout({
                 <Newspaper className="h-4 w-4" /> Administrar Noticias
               </NavLink>
 
-              {/* ✅ AGREGADO: Crear Noticia */}
               <NavLink to="/admin/CrearNoticia" className={navClasses}>
                 <FilePlus2 className="h-4 w-4" /> Crear Noticia
               </NavLink>
@@ -180,11 +179,21 @@ export function AdminLayout({
               >
                 <ClipboardList className="h-4 w-4" /> Solicitudes
               </NavLink>
+
+              <NavLink
+                to="/admin/AdministrarUsuarios"
+                className={navClasses}
+              >
+                <Users className="h-4 w-4" /> Administrar Usuarios
+              </NavLink>
+
               <NavLink to="/admin/RegistroUserAdmin" className={navClasses}>
-                <Users className="h-4 w-4" /> Crear Usuario
+                <FilePlus2 className="h-4 w-4" /> Crear Usuario
               </NavLink>
             </div>
           </div>
+
+          {/* 📧 Avisos */}
           <div className="mt-2">
             <div className="px-3 text-xs uppercase tracking-wider text-[hsl(var(--muted-foreground))] mb-1">
               Avisos
