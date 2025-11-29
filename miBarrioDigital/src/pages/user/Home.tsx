@@ -121,27 +121,47 @@ export default function Home() {
 
       {/* ⚙️ Accesos rápidos */}
       <section className="layout">
-        <div className="grid">
-          <NavLink className="card quick" to="/EspaciosUser">
-            <h3>🏠 Reservar espacio</h3>
-            <p>Agenda la sede social, multicancha o sala de reuniones.</p>
-          </NavLink>
+ <div className="grid">
+  <NavLink className="card quick" to="/EspaciosUser">
+    <div className="card-content">
+      <span className="card-emoji">🏠</span>
+      <h3 className="card-title">Reservar espacio</h3>
+      <p className="card-desc">
+        Agenda la sede social, multicancha o sala de reuniones.
+      </p>
+    </div>
+  </NavLink>
 
-          <NavLink className="card quick" to="/Proyectos">
-            <h3>💡 Proyectos</h3>
-            <p>Revisa iniciativas, apoya o propone ideas para tu barrio.</p>
-          </NavLink>
+  <NavLink className="card quick" to="/Proyectos">
+    <div className="card-content">
+      <span className="card-emoji">💡</span>
+      <h3 className="card-title">Proyectos</h3>
+      <p className="card-desc">
+        Revisa iniciativas, apoya o propone ideas para tu barrio.
+      </p>
+    </div>
+  </NavLink>
 
-          <NavLink className="card quick" to="/ActividadesUser">
-            <h3>🎉 Actividades</h3>
-            <p>Participa en talleres, operativos y eventos comunitarios.</p>
-          </NavLink>
+  <NavLink className="card quick" to="/ActividadesUser">
+    <div className="card-content">
+      <span className="card-emoji">🎉</span>
+      <h3 className="card-title">Actividades</h3>
+      <p className="card-desc">
+        Participa en talleres, operativos y eventos comunitarios.
+      </p>
+    </div>
+  </NavLink>
 
-          <NavLink className="card quick" to="/noticias">
-            <h3>📰 Noticias</h3>
-            <p>Infórmate de las últimas novedades del barrio.</p>
-          </NavLink>
-        </div>
+  <NavLink className="card quick" to="/noticias">
+    <div className="card-content">
+      <span className="card-emoji">📰</span>
+      <h3 className="card-title">Noticias</h3>
+      <p className="card-desc">
+        Infórmate de las últimas novedades del barrio.
+      </p>
+    </div>
+  </NavLink>
+</div>
 
         {/* 📅 Lateral derecho */}
         <aside className="aside">

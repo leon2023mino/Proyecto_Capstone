@@ -131,33 +131,55 @@
 
 /* ===== Tarjetas de acceso rápido ===== */
 .card.quick {
-  background: var(--fondo);
-  border: 1px solid var(--borde);
-  border-radius: 14px;
-  padding: 1.25rem 1rem;
+  position: relative;
   text-decoration: none;
-  color: var(--gris-texto);
-  box-shadow: var(--sombra);
-  transition: transform 0.15s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
 }
 
-.card.quick:hover {
-  transform: translateY(-4px);
-  border-color: #cfd6e9;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.1);
+.card-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-.card.quick h3 {
-  margin: 0 0 0.25rem;
-  color: var(--azul-oscuro);
-  font-size: 1.1rem;
+/* Emoji grande arriba */
+.card-emoji {
+  font-size: 2.5rem; /* ajusta a gusto */
+  margin-bottom: 0.4rem;
 }
 
-.card.quick p {
+/* Título centrado y siempre visible */
+.card-title {
+  font-size: 1.2rem; /* o más grande si quieres */
   margin: 0;
-  color: var(--gris-suave);
-  font-size: 0.95rem;
 }
+
+/* Descripción oculta por defecto */
+.card-desc {
+  margin-top: 0.6rem;
+  font-size: 0.95rem;
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+  transform: translateY(8px);
+  transition:
+    opacity 0.2s ease,
+    max-height 0.2s ease,
+    transform 0.2s ease;
+}
+
+/* Al pasar el mouse aparece la descripción */
+.card.quick:hover .card-desc {
+  opacity: 1;
+  max-height: 80px; /* suficiente para tu texto */
+  transform: translateY(0);
+}
+
 
 /* ===== Aside lateral ===== */
 .aside {
