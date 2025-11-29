@@ -73,7 +73,18 @@ export function useRegistroUser() {
       return true;
     } catch (err: any) {
       console.error("❌ Error registrarUsuario:", err);
-      setErrors([err.message || "Error desconocido al registrar usuario."]);
+
+      // 🔹 Manejo más amigable de errores
+      if (err?.code === "auth/email-already-in-use") {
+        setErrors([
+          "Este correo ya está registrado en el sistema. Si el usuario olvidó su contraseña, puede recuperarla desde el inicio de sesión.",
+        ]);
+      } else {
+        setErrors([
+          err?.message || "Error desconocido al registrar usuario.",
+        ]);
+      }
+
       return false;
     } finally {
       setSending(false);
@@ -125,7 +136,7 @@ export function useRegistroUser() {
   };
 
   // ------------------------------------------------
-  // 🟩 Aprobar solicitud (MEGA ACTUALIZADO)
+  // 🟩 Aprobar solicitud
   // ------------------------------------------------
   const aprobarSolicitud = async (
     solicitudId: string,
@@ -133,6 +144,7 @@ export function useRegistroUser() {
     adminId?: string
   ) => {
     let secondaryApp: any = null;
+    let secondaryAuth: any = null;
 
     try {
       const tipo = solicitudCompleta?.tipo || "registro";
@@ -180,7 +192,7 @@ export function useRegistroUser() {
       }
 
       // ---------------------------------------------
-      // 🟢 3) Aprobar REGISTRO (CORREGIDO AQUÍ)
+      // 🟢 3) Aprobar REGISTRO
       // ---------------------------------------------
       const d: DatosSolicitud = solicitudCompleta?.datos;
 
@@ -190,48 +202,76 @@ export function useRegistroUser() {
 
       const { email, nombre, rut, direccion, role } = d;
 
-      // Cerrar apps secundarias previas
+      // Cerrar apps secundarias previas si existen
       const existing = getApps().find((a) => a.name === "SecondaryApp");
       if (existing) await deleteApp(existing);
 
       // Crear app secundaria
       secondaryApp = initializeApp(firebaseConfig, "SecondaryApp");
-      const secondaryAuth = getAuth(secondaryApp);
+      secondaryAuth = getAuth(secondaryApp);
       await setPersistence(secondaryAuth, inMemoryPersistence);
 
       const tempPass = Math.random().toString(36).slice(-8) + "Aa1!";
 
-      const cred = await createUserWithEmailAndPassword(
-        secondaryAuth,
-        email,
-        tempPass
-      );
+      try {
+        const cred = await createUserWithEmailAndPassword(
+          secondaryAuth,
+          email,
+          tempPass
+        );
 
-      await setDoc(doc(db, "users", cred.user.uid), {
-        displayName: nombre,
-        email,
-        rut,
-        direccion,
-        role: role || "vecino",
-        membershipStatus: "activo",
-        createdAt: serverTimestamp(),
-      });
+        await setDoc(doc(db, "users", cred.user.uid), {
+          displayName: nombre,
+          email,
+          rut,
+          direccion,
+          role: role || "vecino",
+          membershipStatus: "activo",
+          createdAt: serverTimestamp(),
+        });
 
-      await sendPasswordResetEmail(secondaryAuth, email);
+        await sendPasswordResetEmail(secondaryAuth, email);
+      } catch (error: any) {
+        // 🔹 Caso especial: el correo ya existe en Auth
+        if (error?.code === "auth/email-already-in-use") {
+          const friendlyError: any = new Error(
+            "Este correo ya tiene una cuenta registrada en el sistema."
+          );
+          friendlyError.code = "auth/email-already-in-use";
+          throw friendlyError;
+        }
 
+        throw error;
+      }
+
+      // Si todo salió bien, marcamos la solicitud como aprobada
       await updateDoc(doc(db, "requests", solicitudId), {
         estado: "aprobada",
         revisadoPor: adminId || null,
         revisadoEn: serverTimestamp(),
       });
 
-      await signOut(secondaryAuth);
-      await deleteApp(secondaryApp);
-
       alert(`✅ Usuario ${nombre} creado y correo enviado a ${email}.`);
     } catch (error: any) {
       console.error("❌ Error aprobarSolicitud:", error);
-      alert(error.message || "Error al aprobar la solicitud.");
+      // Muy importante: RE-lanzar el error para que AdminSolicitudes lo capture
+      throw error;
+    } finally {
+      // Limpieza de la app secundaria
+      if (secondaryAuth) {
+        try {
+          await signOut(secondaryAuth);
+        } catch {
+          /* ignore */
+        }
+      }
+      if (secondaryApp) {
+        try {
+          await deleteApp(secondaryApp);
+        } catch {
+          /* ignore */
+        }
+      }
     }
   };
 

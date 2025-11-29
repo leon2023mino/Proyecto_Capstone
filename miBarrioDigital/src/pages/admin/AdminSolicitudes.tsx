@@ -8,6 +8,11 @@ export default function AdminSolicitudes() {
     "pendiente" | "aprobada" | "rechazada" | "todas"
   >("todas");
 
+  // Estado para mensajes y control de acción en curso
+  const [mensaje, setMensaje] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [procesandoId, setProcesandoId] = useState<string | null>(null);
+
   // 🔹 Hook que carga las solicitudes
   const { solicitudes, loading } = useSolicitudes(
     undefined,
@@ -25,6 +30,45 @@ export default function AdminSolicitudes() {
     setFiltroEstado(e.target.value as any);
   };
 
+  const handleAprobar = async (id: string, solicitud: any) => {
+    setMensaje(null);
+    setError(null);
+    setProcesandoId(id);
+
+    try {
+      await aprobarSolicitud(id, solicitud, adminId);
+      setMensaje("Solicitud aprobada correctamente.");
+    } catch (err: any) {
+      console.error("Error al aprobar solicitud:", err);
+
+      if (err?.code === "auth/email-already-in-use") {
+        setError(
+          "Esta solicitud corresponde a un correo que ya tiene cuenta registrada. Revisa en 'Administrar usuarios'."
+        );
+      } else {
+        setError("No se pudo aprobar la solicitud. Intenta nuevamente.");
+      }
+    } finally {
+      setProcesandoId(null);
+    }
+  };
+
+  const handleRechazar = async (id: string) => {
+    setMensaje(null);
+    setError(null);
+    setProcesandoId(id);
+
+    try {
+      await rechazarSolicitud(id, adminId);
+      setMensaje("Solicitud rechazada correctamente.");
+    } catch (err) {
+      console.error("Error al rechazar solicitud:", err);
+      setError("No se pudo rechazar la solicitud. Intenta nuevamente.");
+    } finally {
+      setProcesandoId(null);
+    }
+  };
+
   if (loading) return <p>Cargando solicitudes...</p>;
 
   return (
@@ -33,6 +77,37 @@ export default function AdminSolicitudes() {
       style={{ maxWidth: "700px", margin: "0 auto" }}
     >
       <h2>Gestión de Solicitudes</h2>
+
+      {/* Mensajes globales */}
+      {mensaje && (
+        <div
+          style={{
+            marginBottom: "0.75rem",
+            padding: "0.5rem 0.75rem",
+            borderRadius: "6px",
+            backgroundColor: "#e3f6eb",
+            color: "#166534",
+            fontSize: "0.9rem",
+          }}
+        >
+          {mensaje}
+        </div>
+      )}
+
+      {error && (
+        <div
+          style={{
+            marginBottom: "0.75rem",
+            padding: "0.5rem 0.75rem",
+            borderRadius: "6px",
+            backgroundColor: "#fee2e2",
+            color: "#b91c1c",
+            fontSize: "0.9rem",
+          }}
+        >
+          {error}
+        </div>
+      )}
 
       {/* Selector de filtro */}
       <div style={{ marginBottom: "1rem" }}>
@@ -53,6 +128,8 @@ export default function AdminSolicitudes() {
             const esActividad = s.tipo === "actividad";
             const esCertificado = s.tipo === "certificado";
             const esRegistro = s.tipo === "registro";
+
+            const estaProcesando = procesandoId === s.id;
 
             return (
               <li
@@ -88,6 +165,7 @@ export default function AdminSolicitudes() {
                 </strong>{" "}
                 — <em>{s.tipo}</em>
                 <br />
+
                 {/* 🔹 Información específica */}
                 {esActividad ? (
                   <>
@@ -121,6 +199,7 @@ export default function AdminSolicitudes() {
                     <br />
                   </>
                 )}
+
                 {/* 🔹 Estado */}
                 <small>
                   Estado:{" "}
@@ -138,11 +217,12 @@ export default function AdminSolicitudes() {
                     {s.estado}
                   </span>
                 </small>
+
                 {/* 🔹 Botones */}
                 {s.estado === "pendiente" && (
                   <div style={{ marginTop: "0.6rem" }}>
                     <button
-                      onClick={() => aprobarSolicitud(s.id!, s, adminId)}
+                      onClick={() => handleAprobar(s.id!, s)}
                       style={{
                         marginRight: "0.5rem",
                         backgroundColor: "#57b460",
@@ -150,22 +230,26 @@ export default function AdminSolicitudes() {
                         border: "none",
                         padding: "6px 10px",
                         borderRadius: "4px",
-                        cursor: "pointer",
+                        cursor: estaProcesando ? "default" : "pointer",
+                        opacity: estaProcesando ? 0.7 : 1,
                       }}
+                      disabled={estaProcesando}
                     >
-                      ✅ Aprobar
+                      {estaProcesando ? "Procesando..." : "✅ Aprobar"}
                     </button>
 
                     <button
-                      onClick={() => rechazarSolicitud(s.id!, adminId)}
+                      onClick={() => handleRechazar(s.id!)}
                       style={{
                         backgroundColor: "#c73f3f",
                         color: "white",
                         border: "none",
                         padding: "6px 10px",
                         borderRadius: "4px",
-                        cursor: "pointer",
+                        cursor: estaProcesando ? "default" : "pointer",
+                        opacity: estaProcesando ? 0.7 : 1,
                       }}
+                      disabled={estaProcesando}
                     >
                       ❌ Rechazar
                     </button>
