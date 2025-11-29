@@ -150,7 +150,7 @@ export default function VerNoticiaAdmin() {
             >
               {saving ? "Guardando..." : "Guardar cambios"}
             </button>
-            <NavLink to="/AdministrarNoticias">
+            <NavLink to="/admin/AdministrarNoticias">
               <button className="btn-secondary">← Volver</button>
             </NavLink>
           </div>

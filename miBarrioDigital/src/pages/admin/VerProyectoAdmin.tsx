@@ -168,7 +168,7 @@ export default function VerProyectoAdmin() {
               {saving ? "Guardando..." : "Guardar cambios"}
             </button>
 
-            <NavLink to="/AdministrarProyectos">
+            <NavLink to="/admin/AdministrarProyectos">
               <button className="btn-secondary">← Volver</button>
             </NavLink>
 
